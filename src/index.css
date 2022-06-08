@@ -1,13 +1,29 @@
-body {
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..900&display=swap');
+
+* {
+  padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Cairo', sans-serif;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  direction: rtl;
+}
+
+.App {
+  display: grid;
+  grid-template-columns: 20vw 1fr;
+  grid-template-rows: auto 1fr;
+}
+
+.App > :nth-child(1) {
+  grid-row: 1 / -1;
+}
+
+.App > :nth-child(2) {
+  grid-row: 1 / 1;
+}
+
+.App > :nth-child(3) {
+  grid-row: 2 / 2;
 }
