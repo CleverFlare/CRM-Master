@@ -20,14 +20,134 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { Box } from "@mui/system";
-import { useState } from "react";
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const SideBar = ({ width, name, role, permanent, open, onClose }) => {
   const [customers, setCustomers] = useState(false);
   const [projects, setProjects] = useState(false);
   const [employees, setEmployees] = useState(false);
   const [settings, setSettings] = useState(false);
-  const variant = open ? "temporary" : "persistent";
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleLogout = () => {
+    console.log("logout");
+  };
+
+  const menuItems = [
+    {
+      type: "normal",
+      text: "الرئيسية",
+      icon: <AutoAwesomeMosaicIcon sx={{ color: "white" }} />,
+      path: "/",
+    },
+    {
+      type: "parent",
+      text: "العملاء",
+      icon: <GroupsIcon sx={{ color: "white" }} />,
+      expander: customers,
+      setExpander: setCustomers,
+      children: [
+        {
+          text: "احصائيات العملاء",
+          path: "/customers/statistics",
+        },
+        {
+          text: "جميع العملاء",
+          path: "/customers/total",
+        },
+        {
+          text: "العملاء الجدد",
+          path: "/customers/new",
+        },
+        {
+          text: "العملاء المحذوفة",
+          path: "/customers/deleted",
+        },
+        {
+          text: "إضافة عميل جديد",
+          path: "/customers/add-new",
+        },
+        {
+          text: "إستيراد عملاء",
+          path: "/customers/import",
+        },
+        {
+          text: "تصدير عملاء",
+          path: "/customers/export",
+        },
+      ],
+    },
+    {
+      type: "parent",
+      text: "المشاريع",
+      icon: <StoreIcon sx={{ color: "white" }} />,
+      expander: projects,
+      setExpander: setProjects,
+      children: [
+        {
+          text: "عرض المشاريع",
+          path: "/projects/display",
+        },
+        {
+          text: "إضافة مشروع جديد",
+          path: "/projects/new",
+        },
+      ],
+    },
+    {
+      type: "normal",
+      text: "تقارير فريق المبيعات",
+      icon: <FeedIcon sx={{ color: "white" }} />,
+      path: "/reports",
+    },
+    {
+      type: "parent",
+      text: "الموظفين",
+      icon: <BadgeIcon sx={{ color: "white" }} />,
+      expander: employees,
+      setExpander: setEmployees,
+      children: [
+        {
+          text: "إضافة موظف جديد",
+          path: "/employees/new",
+        },
+        {
+          text: "بيانات الموظفين",
+          path: "/employees/display",
+        },
+      ],
+    },
+    {
+      type: "normal",
+      text: "إضافة قناة",
+      icon: <AddCircleIcon sx={{ color: "white" }} />,
+      path: "/add-channel",
+    },
+    "divider",
+    {
+      type: "parent",
+      text: "الإعدادات",
+      icon: <SettingsIcon sx={{ color: "white" }} />,
+      expander: settings,
+      setExpander: setSettings,
+      children: [
+        {
+          text: "تعديل كلمة السر",
+          path: "/settings/change-password",
+        },
+      ],
+    },
+    "divider",
+    {
+      type: "normal",
+      text: "تسجيل الخروج",
+      icon: <LogoutIcon sx={{ color: "white" }} />,
+      callback: handleLogout,
+    },
+  ];
 
   const handleExpand = (value, setter) => {
     setter(!value);
@@ -76,187 +196,122 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
         </Box>
       </Box>
       <List>
-        <ListItemButton>
-          <ListItemIcon sx={{ minWidth: "34px" }}>
-            <AutoAwesomeMosaicIcon sx={{ color: "white" }} />
-          </ListItemIcon>
-          <ListItemText primary="الرئيسية" sx={{ textAlign: "right" }} />
-        </ListItemButton>
-        <ListItemButton onClick={() => handleExpand(customers, setCustomers)}>
-          <ListItemIcon sx={{ minWidth: "34px" }}>
-            <GroupsIcon sx={{ color: "white" }} />
-          </ListItemIcon>
-          <ListItemText primary="العملاء" sx={{ textAlign: "right" }} />
-          {customers ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={customers} timeout="auto" unmountOnExit>
-          <List>
-            <ListItemButton sx={{ pr: 7 }}>
-              <ListItemText
-                primary="احصائيات العملاء"
-                sx={{
-                  textAlign: "right",
-                  "& .MuiListItemText-primary": { fontSize: ".80rem" },
-                }}
+        {menuItems.map((item, index) => {
+          if (item === "divider")
+            return (
+              <Divider
+                sx={{ borderColor: "rgb(255 255 255 / 8%)" }}
+                key={index}
               />
-            </ListItemButton>
-            <ListItemButton sx={{ pr: 7 }}>
-              <ListItemText
-                primary="جميع العملاء"
-                sx={{
-                  textAlign: "right",
-                  "& .MuiListItemText-primary": { fontSize: ".80rem" },
-                }}
-              />
-            </ListItemButton>
-            <ListItemButton sx={{ pr: 7 }}>
-              <ListItemText
-                primary="العملاء الجدد"
-                sx={{
-                  textAlign: "right",
-                  "& .MuiListItemText-primary": { fontSize: ".80rem" },
-                }}
-              />
-            </ListItemButton>
-            <ListItemButton sx={{ pr: 7 }}>
-              <ListItemText
-                primary="العملاء المحذوفة"
-                sx={{
-                  textAlign: "right",
-                  "& .MuiListItemText-primary": { fontSize: ".80rem" },
-                }}
-              />
-            </ListItemButton>
-            <ListItemButton sx={{ pr: 7 }}>
-              <ListItemText
-                primary="إضافة عميل جديد"
-                sx={{
-                  textAlign: "right",
-                  "& .MuiListItemText-primary": { fontSize: ".80rem" },
-                }}
-              />
-            </ListItemButton>
-            <ListItemButton sx={{ pr: 7 }}>
-              <ListItemText
-                primary="إستيراد عملاء"
-                sx={{
-                  textAlign: "right",
-                  "& .MuiListItemText-primary": { fontSize: ".80rem" },
-                }}
-              />
-            </ListItemButton>
-            <ListItemButton sx={{ pr: 7 }}>
-              <ListItemText
-                primary="تصدير عملاء"
-                sx={{
-                  textAlign: "right",
-                  "& .MuiListItemText-primary": { fontSize: ".80rem" },
-                }}
-              />
-            </ListItemButton>
-          </List>
-        </Collapse>
-        <ListItemButton onClick={() => handleExpand(projects, setProjects)}>
-          <ListItemIcon sx={{ minWidth: "34px" }}>
-            <StoreIcon sx={{ color: "white" }} />
-          </ListItemIcon>
-          <ListItemText primary="المشاريع" sx={{ textAlign: "right" }} />
-          {projects ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={projects} timeout="auto" unmountOnExit>
-          <List>
-            <ListItemButton sx={{ pr: 7 }}>
-              <ListItemText
-                primary="عرض المشاريع"
-                sx={{
-                  textAlign: "right",
-                  "& .MuiListItemText-primary": { fontSize: ".80rem" },
-                }}
-              />
-            </ListItemButton>
-            <ListItemButton sx={{ pr: 7 }}>
-              <ListItemText
-                primary="إضافة مشروع جديد"
-                sx={{
-                  textAlign: "right",
-                  "& .MuiListItemText-primary": { fontSize: ".80rem" },
-                }}
-              />
-            </ListItemButton>
-          </List>
-        </Collapse>
-        <ListItemButton>
-          <ListItemIcon sx={{ minWidth: "34px" }}>
-            <FeedIcon sx={{ color: "white" }} />
-          </ListItemIcon>
-          <ListItemText
-            primary="تقارير فريق المبيعات"
-            sx={{ textAlign: "right" }}
-          />
-        </ListItemButton>
-        <ListItemButton onClick={() => handleExpand(employees, setEmployees)}>
-          <ListItemIcon sx={{ minWidth: "34px" }}>
-            <BadgeIcon sx={{ color: "white" }} />
-          </ListItemIcon>
-          <ListItemText primary="الموظفين" sx={{ textAlign: "right" }} />
-          {employees ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={employees} timeout="auto" unmountOnExit>
-          <List>
-            <ListItemButton sx={{ pr: 7 }}>
-              <ListItemText
-                primary="إضافة موظف جديد"
-                sx={{
-                  textAlign: "right",
-                  "& .MuiListItemText-primary": { fontSize: ".80rem" },
-                }}
-              />
-            </ListItemButton>
-            <ListItemButton sx={{ pr: 7 }}>
-              <ListItemText
-                primary="تعديل بيانات الموظفين"
-                sx={{
-                  textAlign: "right",
-                  "& .MuiListItemText-primary": { fontSize: ".80rem" },
-                }}
-              />
-            </ListItemButton>
-          </List>
-        </Collapse>
-        <ListItemButton>
-          <ListItemIcon sx={{ minWidth: "34px" }}>
-            <AddCircleIcon sx={{ color: "white" }} />
-          </ListItemIcon>
-          <ListItemText primary="إضافة قناة" sx={{ textAlign: "right" }} />
-        </ListItemButton>
-        <Divider sx={{ borderColor: "rgb(255 255 255 / 8%)" }} />
-        <ListItemButton onClick={() => handleExpand(settings, setSettings)}>
-          <ListItemIcon sx={{ minWidth: "34px" }}>
-            <SettingsIcon sx={{ color: "white" }} />
-          </ListItemIcon>
-          <ListItemText primary="الإعدادات" sx={{ textAlign: "right" }} />
-          {settings ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={settings} timeout="auto" unmountOnExit>
-          <List>
-            <ListItemButton sx={{ pr: 7 }}>
-              <ListItemText
-                primary="تعديل كلمة السر"
-                sx={{
-                  textAlign: "right",
-                  "& .MuiListItemText-primary": { fontSize: ".80rem" },
-                }}
-              />
-            </ListItemButton>
-          </List>
-        </Collapse>
-        <Divider sx={{ borderColor: "rgb(255 255 255 / 8%)" }} />
-        <ListItemButton>
-          <ListItemIcon sx={{ minWidth: "34px" }}>
-            <LogoutIcon sx={{ color: "white" }} />
-          </ListItemIcon>
-          <ListItemText primary="تسجيل الخروج" sx={{ textAlign: "right" }} />
-        </ListItemButton>
+            );
+
+          switch (item.type) {
+            case "normal":
+              return (
+                <ListItemButton
+                  key={index}
+                  sx={{
+                    bgcolor:
+                      location.pathname === item.path ? "#f4f4f4" : "initial",
+                    "& *": {
+                      color:
+                        location.pathname === item.path
+                          ? "primary.main"
+                          : "white",
+                    },
+                    "&:hover": {
+                      bgcolor:
+                        location.pathname === item.path ? "#f4f4f4" : "initial",
+                    },
+                    "&:hover *": {
+                      color:
+                        location.pathname === item.path
+                          ? "primary.main"
+                          : "white",
+                    },
+                  }}
+                  onClick={() =>
+                    item.path ? navigate(item.path) : item.callback()
+                  }
+                >
+                  <ListItemIcon sx={{ minWidth: "34px" }}>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.text}
+                    sx={{
+                      textAlign: "right",
+                    }}
+                  />
+                </ListItemButton>
+              );
+            case "parent":
+              return (
+                <React.Fragment key={index}>
+                  <ListItemButton
+                    onClick={() =>
+                      handleExpand(item.expander, item.setExpander)
+                    }
+                  >
+                    <ListItemIcon sx={{ minWidth: "34px" }}>
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.text}
+                      sx={{
+                        textAlign: "right",
+                      }}
+                    />
+                    {item.expander ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+
+                  <Collapse in={item.expander} timeout="auto" unmountOnExit>
+                    {item.children.map((child, index) => (
+                      <ListItemButton
+                        key={index}
+                        sx={{
+                          pr: 7,
+                          bgcolor:
+                            location.pathname === child.path
+                              ? "#f4f4f4"
+                              : "initial",
+                          "& *": {
+                            color:
+                              location.pathname === child.path
+                                ? "primary.main"
+                                : "white",
+                          },
+                          "&:hover": {
+                            bgcolor:
+                              location.pathname === child.path
+                                ? "#f4f4f4"
+                                : "initial",
+                          },
+                          "&:hover *": {
+                            color:
+                              location.pathname === child.path
+                                ? "primary.main"
+                                : "white",
+                          },
+                        }}
+                        onClick={() => navigate(child.path)}
+                      >
+                        <ListItemText
+                          primary={child.text}
+                          sx={{
+                            textAlign: "right",
+                            "& .MuiListItemText-primary": {
+                              fontSize: ".80rem",
+                            },
+                          }}
+                        />
+                      </ListItemButton>
+                    ))}
+                  </Collapse>
+                </React.Fragment>
+              );
+          }
+        })}
       </List>
     </Drawer>
   );
