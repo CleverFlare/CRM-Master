@@ -157,7 +157,7 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
     <Drawer
       variant={permanent ? "permanent" : "temporary"}
       open={open}
-      anchor="left"
+      anchor="right"
       sx={{
         width: width,
         "& .MuiDrawer-paper": {
@@ -165,8 +165,10 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
           bgcolor: "#233975",
           color: "white",
           border: "none",
-          borderRadius: !permanent ? "50px 0 0 50px" : 0,
+          borderRadius: !permanent ? "0 50px 50px 0" : 0,
           boxShadow: "-1px -1px 10px -1px rgb(35 57 117)",
+          right: "none",
+          left: 0,
         },
         "& .MuiBackdrop-root": {
           bgcolor: "rgb(255 255 255 / 50%)",
