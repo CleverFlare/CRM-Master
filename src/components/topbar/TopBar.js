@@ -21,7 +21,7 @@ import { Box } from "@mui/system";
 
 const NotificationItem = ({ onClick, picture, content, time, burgerMenu }) => {
   return (
-    <ListItemButton onClick={onClick} sx={{ textAlign: "right" }}>
+    <ListItemButton onClick={onClick}>
       <ListItemAvatar>
         <Avatar src={picture} sx={{ bgcolor: "orange" }}>
           M
@@ -88,7 +88,7 @@ const TopBar = ({ mobile, onBurgerClick }) => {
               }}
             >
               <List sx={{ maxWidth: 500, width: "100%" }}>
-                <ListItem sx={{ textAlign: "right" }}>
+                <ListItem>
                   <ListItemText primary="الإشعارات" />
                 </ListItem>
                 <Divider variant="middle" />

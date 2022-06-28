@@ -1,6 +1,8 @@
-import Home from "./pages/Home";
+import Home from "./pages/home/Home";
+import TotalCustomers from "./pages/total-customers/TotalCustomers";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./Layout";
+import ChangePassword from "./pages/change-password/ChangePassword";
 
 function App() {
   return (
@@ -9,6 +11,11 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/customers/total" element={<TotalCustomers />} />
+            <Route
+              path="/settings/change-password"
+              element={<ChangePassword />}
+            />
           </Routes>
         </Layout>
       </Router>

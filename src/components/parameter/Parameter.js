@@ -1,11 +1,17 @@
-import { Typography } from "@mui/material";
+import { Box, Breadcrumbs, Link, Typography } from "@mui/material";
+import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 
-const Parameter = ({ path }) => {
+const Parameter = ({ links }) => {
   return (
     <div style={{ padding: "20px 0" }}>
-      <Typography variant="body2" color="primary">
-        الرئيسية
-      </Typography>
+      <Breadcrumbs separator={<KeyboardDoubleArrowLeftIcon color="primary" />}>
+        {links &&
+          links.map((item, index) => (
+            <Link underline="none" color="primary.main" key={index}>
+              {item.text}
+            </Link>
+          ))}
+      </Breadcrumbs>
     </div>
   );
 };

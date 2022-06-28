@@ -157,7 +157,7 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
     <Drawer
       variant={permanent ? "permanent" : "temporary"}
       open={open}
-      anchor="right"
+      anchor="left"
       sx={{
         width: width,
         "& .MuiDrawer-paper": {
@@ -237,12 +237,7 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
                   <ListItemIcon sx={{ minWidth: "34px" }}>
                     {item.icon}
                   </ListItemIcon>
-                  <ListItemText
-                    primary={item.text}
-                    sx={{
-                      textAlign: "right",
-                    }}
-                  />
+                  <ListItemText primary={item.text} />
                 </ListItemButton>
               );
             case "parent":
@@ -256,12 +251,7 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
                     <ListItemIcon sx={{ minWidth: "34px" }}>
                       {item.icon}
                     </ListItemIcon>
-                    <ListItemText
-                      primary={item.text}
-                      sx={{
-                        textAlign: "right",
-                      }}
-                    />
+                    <ListItemText primary={item.text} />
                     {item.expander ? <ExpandLess /> : <ExpandMore />}
                   </ListItemButton>
 
@@ -299,7 +289,6 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
                         <ListItemText
                           primary={child.text}
                           sx={{
-                            textAlign: "right",
                             "& .MuiListItemText-primary": {
                               fontSize: ".80rem",
                             },
