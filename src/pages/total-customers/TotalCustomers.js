@@ -1,8 +1,9 @@
-import { DataGrid } from "@mui/x-data-grid";
+// import { DataGrid } from "@mui/x-data-grid";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Container } from "@mui/system";
 import Parameter from "../../components/parameter/Parameter";
 import { Avatar, Box, Paper } from "@mui/material";
+import DataGrid from "../../components/data-grid/DataGrid";
 
 const columns = [
   {
@@ -147,58 +148,21 @@ const rows = [
 
 const TotalCustomers = () => {
   return (
-    <div style={{ height: 697, direction: "ltr" }}>
+    <div style={{ height: 697 }}>
       <Container sx={{ height: "100%" }}>
-        <Box sx={{ direction: "ltr" }}>
-          <Parameter
-            links={[
-              {
-                text: "العملاء",
-                path: "#",
-              },
-              {
-                text: "جميع العملاء",
-                path: "/customers/total",
-              },
-            ]}
-          />
-        </Box>
-        <Paper sx={{ height: "100%" }} elevation={2}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            headerHeight={70}
-            components={{
-              ColumnMenuIcon: MenuIcon,
-            }}
-            sx={{
-              "& .MuiDataGrid-row:not(.MuiDataGrid-row--dynamicHeight)>.MuiDataGrid-cell":
-                {
-                  direction: "ltr",
-                },
-              "& .MuiDataGrid-columnHeaderDraggableContainer": {
-                direction: "ltr",
-              },
-              "& .MuiDataGrid-footerContainer": {
-                display: "flex",
-                justifyContent: "center",
-              },
-              "& .even": {
-                bgcolor: "rgba(0, 0, 0, 0.08)",
-              },
-              "& .odd:hover": {
-                bgcolor: "rgba(0, 0, 0, 0.02)",
-              },
-              "& .even:hover": {
-                bgcolor: "rgba(0, 0, 0, 0.10)",
-              },
-            }}
-            getRowClassName={(params) =>
-              params.indexRelativeToCurrentPage % 2 === 0 ? "odd" : "even"
-            }
-            hideFooterPagination
-          />
-        </Paper>
+        <Parameter
+          links={[
+            {
+              text: "العملاء",
+              path: "#",
+            },
+            {
+              text: "جميع العملاء",
+              path: "/customers/total",
+            },
+          ]}
+        />
+        <DataGrid />
       </Container>
     </div>
   );
