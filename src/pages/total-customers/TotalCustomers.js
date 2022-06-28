@@ -2,38 +2,44 @@ import { DataGrid } from "@mui/x-data-grid";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Container } from "@mui/system";
 import Parameter from "../../components/parameter/Parameter";
-import { Avatar, Paper } from "@mui/material";
+import { Avatar, Box, Paper } from "@mui/material";
 
 const columns = [
   {
-    field: "name",
-    headerName: "الأسم",
+    field: "channel",
+    headerName: "القناة",
     flex: 1,
-  },
-  {
-    field: "phone",
-    headerName: "الهاتف",
-    flex: 1,
-  },
-  {
-    field: "project",
-    headerName: "المشروع",
-    flex: 1,
-  },
-  {
-    field: "comment",
-    headerName: "تعليق",
-    flex: 1,
+    minWidth: 130,
   },
   {
     field: "saler",
     headerName: "مسؤول المبيعات",
     flex: 1,
+    minWidth: 130,
   },
   {
-    field: "channel",
-    headerName: "القناة",
+    field: "comment",
+    headerName: "تعليق",
     flex: 1,
+    minWidth: 130,
+  },
+  {
+    field: "project",
+    headerName: "المشروع",
+    flex: 1,
+    minWidth: 130,
+  },
+  {
+    field: "phone",
+    headerName: "الهاتف",
+    flex: 1,
+    minWidth: 130,
+  },
+  {
+    field: "name",
+    headerName: "الأسم",
+    flex: 1,
+    minWidth: 130,
   },
 ];
 
@@ -141,20 +147,22 @@ const rows = [
 
 const TotalCustomers = () => {
   return (
-    <div style={{ height: 697 }}>
+    <div style={{ height: 697, direction: "ltr" }}>
       <Container sx={{ height: "100%" }}>
-        <Parameter
-          links={[
-            {
-              text: "العملاء",
-              path: "#",
-            },
-            {
-              text: "جميع العملاء",
-              path: "/customers/total",
-            },
-          ]}
-        />
+        <Box sx={{ direction: "ltr" }}>
+          <Parameter
+            links={[
+              {
+                text: "العملاء",
+                path: "#",
+              },
+              {
+                text: "جميع العملاء",
+                path: "/customers/total",
+              },
+            ]}
+          />
+        </Box>
         <Paper sx={{ height: "100%" }} elevation={2}>
           <DataGrid
             rows={rows}
@@ -164,6 +172,13 @@ const TotalCustomers = () => {
               ColumnMenuIcon: MenuIcon,
             }}
             sx={{
+              "& .MuiDataGrid-row:not(.MuiDataGrid-row--dynamicHeight)>.MuiDataGrid-cell":
+                {
+                  direction: "ltr",
+                },
+              "& .MuiDataGrid-columnHeaderDraggableContainer": {
+                direction: "ltr",
+              },
               "& .MuiDataGrid-footerContainer": {
                 display: "flex",
                 justifyContent: "center",
