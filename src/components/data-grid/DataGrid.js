@@ -30,7 +30,6 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { cloneElement, useState } from "react";
 
 const FilterColumn = ({ name, properties, disableSorting }) => {
-  const [hovered, setHovered] = useState(false);
   const [sort, setSort] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [balance, setBalance] = useState("equal");
@@ -74,8 +73,6 @@ const FilterColumn = ({ name, properties, disableSorting }) => {
       }}
       justifyContent={!properties ? "center" : "left"}
       onClick={disableSorting ? null : handleSetSort}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
     >
       <Box
         sx={{
@@ -87,7 +84,7 @@ const FilterColumn = ({ name, properties, disableSorting }) => {
         {name}**
       </Box>
       {!disableSorting && (
-        <Box sx={{ width: hovered || sort ? "auto" : 0, overflow: "hidden" }}>
+        <Box sx={{ overflow: "hidden" }}>
           <IconButton>
             {!sort && <ArrowUpwardIcon opacity={0.4} />}
             {sort === "top-to-bottom" && <ArrowUpwardIcon />}
@@ -98,7 +95,6 @@ const FilterColumn = ({ name, properties, disableSorting }) => {
       {properties && (
         <Box
           sx={{
-            width: hovered ? "auto" : 0,
             position: "absolute",
             top: "50%",
             right: 10,
@@ -135,7 +131,7 @@ const FilterColumn = ({ name, properties, disableSorting }) => {
               ))
             ) : (
               <Stack
-                direction="row"
+                direction="column"
                 sx={{
                   width: "100%",
                   paddingInline: "20px",
@@ -145,12 +141,6 @@ const FilterColumn = ({ name, properties, disableSorting }) => {
                 spacing={2}
                 onClick={(event) => event.stopPropagation()}
               >
-                <TextField
-                  type="number"
-                  inputProps={{ min: 0 }}
-                  placeholder="ادخل الرقم"
-                  size="small"
-                />
                 <FormControl>
                   <Select
                     value={balance}
@@ -162,6 +152,12 @@ const FilterColumn = ({ name, properties, disableSorting }) => {
                     <MenuItem value="less">اقل من</MenuItem>
                   </Select>
                 </FormControl>
+                <TextField
+                  type="number"
+                  inputProps={{ min: 0 }}
+                  placeholder="ادخل الرقم"
+                  size="small"
+                />
               </Stack>
             )}
           </Menu>
