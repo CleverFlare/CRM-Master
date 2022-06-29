@@ -32,7 +32,7 @@ const Post = ({ name, picture, children }) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleOnClose = () => {
+  const handleCloseMenu = () => {
     setAnchorEl(null);
   };
   return (
@@ -53,7 +53,7 @@ const Post = ({ name, picture, children }) => {
             <Menu
               anchorEl={anchorEl}
               open={open}
-              onClose={handleOnClose}
+              onClose={handleCloseMenu}
               anchorOrigin={{
                 vertical: "center",
                 horizontal: "center",
@@ -63,19 +63,19 @@ const Post = ({ name, picture, children }) => {
                 horizontal: "left",
               }}
             >
-              <MenuItem onClick={handleOnClose}>
+              <MenuItem onClick={handleCloseMenu}>
                 <ListItemIcon>
                   <EditIcon />
                 </ListItemIcon>
                 <ListItemText>تعديل المنشور</ListItemText>
               </MenuItem>
-              <MenuItem onClick={handleOnClose}>
+              <MenuItem onClick={handleCloseMenu}>
                 <ListItemIcon>
                   <DeleteIcon />
                 </ListItemIcon>
                 <ListItemText>نقل إلى سلة المهملات</ListItemText>
               </MenuItem>
-              <MenuItem onClick={handleOnClose}>
+              <MenuItem onClick={handleCloseMenu}>
                 <ListItemIcon>
                   <NotificationsOffIcon />
                 </ListItemIcon>

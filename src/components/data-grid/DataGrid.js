@@ -3,6 +3,11 @@ import {
   Button,
   Divider,
   IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  MenuList,
   Pagination,
   Paper,
   Stack,
@@ -11,6 +16,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -18,14 +24,25 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { useState } from "react";
+import { cloneElement, useState } from "react";
 
-const FilterColumn = ({ name, noBurger }) => {
+const FilterColumn = ({ name, properties }) => {
   const [hovered, setHovered] = useState(false);
   const [sort, setSort] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleOpenMenu = (event) => {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = (event) => {
+    event.stopPropagation();
+    setAnchorEl(null);
+  };
 
   const handleSetSort = (event) => {
-    console.log(event);
     switch (sort) {
       case "top-to-bottom":
         return setSort("bottom-to-top");
@@ -34,10 +51,6 @@ const FilterColumn = ({ name, noBurger }) => {
       default:
         return setSort("top-to-bottom");
     }
-  };
-
-  const handleFilterMenu = (event) => {
-    event.stopPropagation();
   };
 
   return (
@@ -51,7 +64,7 @@ const FilterColumn = ({ name, noBurger }) => {
         position: "relative",
         minWidth: 110,
       }}
-      justifyContent={noBurger ? "center" : "left"}
+      justifyContent={!properties ? "center" : "left"}
       onClick={handleSetSort}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -72,7 +85,7 @@ const FilterColumn = ({ name, noBurger }) => {
           {sort === "bottom-to-top" && <ArrowDownwardIcon />}
         </IconButton>
       </Box>
-      {!noBurger && (
+      {properties && (
         <Box
           sx={{
             width: hovered ? "auto" : 0,
@@ -82,9 +95,54 @@ const FilterColumn = ({ name, noBurger }) => {
             transform: "translateY(-50%)",
           }}
         >
-          <IconButton onClick={handleFilterMenu}>
+          <IconButton onClick={handleOpenMenu}>
             <MenuIcon sx={{ width: 18, height: 18 }} />
           </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleCloseMenu}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+            sx={{
+              "& .MuiMenu-paper": {
+                minWidth: 200,
+              },
+            }}
+          >
+            {Array.isArray(properties) ? (
+              properties.map((item, index) => (
+                <MenuItem key={index} onClick={handleCloseMenu}>
+                  {item.icon && <ListItemIcon>{item.icon}</ListItemIcon>}
+                  <ListItemText>{item.text}</ListItemText>
+                </MenuItem>
+              ))
+            ) : (
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  paddingInline: "20px",
+                  boxSizing: "border-box",
+                }}
+                onClick={(event) => event.stopPropagation()}
+              >
+                <TextField
+                  type="number"
+                  inputProps={{ min: 0 }}
+                  placeholder="ادخل الرقم"
+                  size="small"
+                />
+              </Box>
+            )}
+          </Menu>
         </Box>
       )}
     </Stack>
@@ -137,6 +195,77 @@ const TablePagination = () => {
   );
 };
 
+const areaMenu = [
+  {
+    text: "الشيخ زايد",
+  },
+  {
+    text: "الشيخ زايد",
+  },
+  {
+    text: "الشيخ زايد",
+  },
+  {
+    text: "الشيخ زايد",
+  },
+];
+
+const code = [
+  {
+    text: "(20+)",
+    icon: (
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/2560px-Flag_of_Egypt.svg.png"
+        style={{ maxWidth: 20 }}
+      />
+    ),
+  },
+  {
+    text: "(20+)",
+    icon: (
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/2560px-Flag_of_Egypt.svg.png"
+        style={{ maxWidth: 20 }}
+      />
+    ),
+  },
+  {
+    text: "(20+)",
+    icon: (
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/2560px-Flag_of_Egypt.svg.png"
+        style={{ maxWidth: 20 }}
+      />
+    ),
+  },
+  {
+    text: "(20+)",
+    icon: (
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/2560px-Flag_of_Egypt.svg.png"
+        style={{ maxWidth: 20 }}
+      />
+    ),
+  },
+];
+
+const projectsMenu = [
+  {
+    text: "الشيخ زايد & أكتوبر",
+  },
+  {
+    text: "الشيخ زايد & أكتوبر",
+  },
+  {
+    text: "الشيخ زايد & أكتوبر",
+  },
+  {
+    text: "الشيخ زايد & أكتوبر",
+  },
+];
+
+const balance = "search";
+
 const DataGrid = () => {
   return (
     <Paper sx={{ overflowX: "auto" }}>
@@ -154,11 +283,11 @@ const DataGrid = () => {
             }
             sx={{ width: "100%", height: 70 }}
           >
-            <FilterColumn name="الأسم" noBurger />
-            <FilterColumn name="كود البلد" />
-            <FilterColumn name="المنطقة" />
-            <FilterColumn name="المشروع" />
-            <FilterColumn name="الميزانية" />
+            <FilterColumn name="الأسم" />
+            <FilterColumn name="كود البلد" properties={code} />
+            <FilterColumn name="المنطقة" properties={areaMenu} />
+            <FilterColumn name="المشروع" properties={projectsMenu} />
+            <FilterColumn name="الميزانية" properties={balance} />
           </Stack>
           <Divider orientation="horizontal" />
           {/* Grid Content */}
