@@ -26,7 +26,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { cloneElement, useState } from "react";
 
-const FilterColumn = ({ name, properties }) => {
+const FilterColumn = ({ name, properties, disableSorting }) => {
   const [hovered, setHovered] = useState(false);
   const [sort, setSort] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -60,12 +60,12 @@ const FilterColumn = ({ name, properties }) => {
         paddingInline: 5,
         cursor: "pointer",
         flex: 1,
-        overflowX: "hidden",
+        overflow: "hidden",
         position: "relative",
         minWidth: 110,
       }}
       justifyContent={!properties ? "center" : "left"}
-      onClick={handleSetSort}
+      onClick={disableSorting ? null : handleSetSort}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -78,13 +78,15 @@ const FilterColumn = ({ name, properties }) => {
       >
         {name}**
       </Box>
-      <Box sx={{ width: hovered || sort ? "auto" : 0, overflow: "hidden" }}>
-        <IconButton>
-          {!sort && <ArrowUpwardIcon opacity={0.4} />}
-          {sort === "top-to-bottom" && <ArrowUpwardIcon />}
-          {sort === "bottom-to-top" && <ArrowDownwardIcon />}
-        </IconButton>
-      </Box>
+      {!disableSorting && (
+        <Box sx={{ width: hovered || sort ? "auto" : 0, overflow: "hidden" }}>
+          <IconButton>
+            {!sort && <ArrowUpwardIcon opacity={0.4} />}
+            {sort === "top-to-bottom" && <ArrowUpwardIcon />}
+            {sort === "bottom-to-top" && <ArrowDownwardIcon />}
+          </IconButton>
+        </Box>
+      )}
       {properties && (
         <Box
           sx={{
@@ -284,10 +286,18 @@ const DataGrid = () => {
             sx={{ width: "100%", height: 70 }}
           >
             <FilterColumn name="الأسم" />
-            <FilterColumn name="كود البلد" properties={code} />
-            <FilterColumn name="المنطقة" properties={areaMenu} />
-            <FilterColumn name="المشروع" properties={projectsMenu} />
-            <FilterColumn name="الميزانية" properties={balance} />
+            <FilterColumn name="كود البلد" properties={code} disableSorting />
+            <FilterColumn name="المنطقة" properties={areaMenu} disableSorting />
+            <FilterColumn
+              name="المشروع"
+              properties={projectsMenu}
+              disableSorting
+            />
+            <FilterColumn
+              name="الميزانية"
+              properties={balance}
+              disableSorting
+            />
           </Stack>
           <Divider orientation="horizontal" />
           {/* Grid Content */}
