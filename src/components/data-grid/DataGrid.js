@@ -20,7 +20,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useState } from "react";
 
-const FilterColumn = ({ name }) => {
+const FilterColumn = ({ name, noBurger }) => {
   const [hovered, setHovered] = useState(false);
   const [sort, setSort] = useState(null);
 
@@ -49,7 +49,9 @@ const FilterColumn = ({ name }) => {
         flex: 1,
         overflowX: "hidden",
         position: "relative",
+        minWidth: 110,
       }}
+      justifyContent={noBurger ? "center" : "left"}
       onClick={handleSetSort}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -70,19 +72,21 @@ const FilterColumn = ({ name }) => {
           {sort === "bottom-to-top" && <ArrowDownwardIcon />}
         </IconButton>
       </Box>
-      <Box
-        sx={{
-          width: hovered ? "auto" : 0,
-          position: "absolute",
-          top: "50%",
-          right: 10,
-          transform: "translateY(-50%)",
-        }}
-      >
-        <IconButton onClick={handleFilterMenu}>
-          <MenuIcon sx={{ width: 18, height: 18 }} />
-        </IconButton>
-      </Box>
+      {!noBurger && (
+        <Box
+          sx={{
+            width: hovered ? "auto" : 0,
+            position: "absolute",
+            top: "50%",
+            right: 10,
+            transform: "translateY(-50%)",
+          }}
+        >
+          <IconButton onClick={handleFilterMenu}>
+            <MenuIcon sx={{ width: 18, height: 18 }} />
+          </IconButton>
+        </Box>
+      )}
     </Stack>
   );
 };
@@ -135,109 +139,117 @@ const TablePagination = () => {
 
 const DataGrid = () => {
   return (
-    <Paper>
-      {/* Grid Header */}
-      <Stack
-        direction="row"
-        alignItems="center"
-        divider={<Divider orientation="vertical" variant="middle" flexItem />}
-        sx={{ width: "100%", height: 70 }}
-      >
-        <FilterColumn name="الأسم" />
-        <FilterColumn name="كود البلد" />
-        <FilterColumn name="المنطقة" />
-        <FilterColumn name="المشروع" />
-        <FilterColumn name="الميزانية" />
-      </Stack>
-      <Divider orientation="horizontal" />
-      {/* Grid Content */}
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>الأسم</TableCell>
-            <TableCell>الهاتف</TableCell>
-            <TableCell>المشروع</TableCell>
-            <TableCell>تعليق</TableCell>
-            <TableCell>مسؤول المبيعات</TableCell>
-            <TableCell>القناة</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <TableRow sx={{ bgcolor: "#f5f5f5" }}>
-            <TableCell>محمد علي</TableCell>
-            <TableCell>01010203112</TableCell>
-            <TableCell>الشيخ زايد & أكتوبر</TableCell>
-            <TableCell>لايوجد</TableCell>
-            <TableCell>أحمد محمد</TableCell>
-            <TableCell>اليوتيوب</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>محمد علي</TableCell>
-            <TableCell>01010203112</TableCell>
-            <TableCell>الشيخ زايد & أكتوبر</TableCell>
-            <TableCell>لايوجد</TableCell>
-            <TableCell>أحمد محمد</TableCell>
-            <TableCell>اليوتيوب</TableCell>
-          </TableRow>
-          <TableRow sx={{ bgcolor: "#f5f5f5" }}>
-            <TableCell>محمد علي</TableCell>
-            <TableCell>01010203112</TableCell>
-            <TableCell>الشيخ زايد & أكتوبر</TableCell>
-            <TableCell>لايوجد</TableCell>
-            <TableCell>أحمد محمد</TableCell>
-            <TableCell>اليوتيوب</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>محمد علي</TableCell>
-            <TableCell>01010203112</TableCell>
-            <TableCell>الشيخ زايد & أكتوبر</TableCell>
-            <TableCell>لايوجد</TableCell>
-            <TableCell>أحمد محمد</TableCell>
-            <TableCell>اليوتيوب</TableCell>
-          </TableRow>
-          <TableRow sx={{ bgcolor: "#f5f5f5" }}>
-            <TableCell>محمد علي</TableCell>
-            <TableCell>01010203112</TableCell>
-            <TableCell>الشيخ زايد & أكتوبر</TableCell>
-            <TableCell>لايوجد</TableCell>
-            <TableCell>أحمد محمد</TableCell>
-            <TableCell>اليوتيوب</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>محمد علي</TableCell>
-            <TableCell>01010203112</TableCell>
-            <TableCell>الشيخ زايد & أكتوبر</TableCell>
-            <TableCell>لايوجد</TableCell>
-            <TableCell>أحمد محمد</TableCell>
-            <TableCell>اليوتيوب</TableCell>
-          </TableRow>
-          <TableRow sx={{ bgcolor: "#f5f5f5" }}>
-            <TableCell>محمد علي</TableCell>
-            <TableCell>01010203112</TableCell>
-            <TableCell>الشيخ زايد & أكتوبر</TableCell>
-            <TableCell>لايوجد</TableCell>
-            <TableCell>أحمد محمد</TableCell>
-            <TableCell>اليوتيوب</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>محمد علي</TableCell>
-            <TableCell>01010203112</TableCell>
-            <TableCell>الشيخ زايد & أكتوبر</TableCell>
-            <TableCell>لايوجد</TableCell>
-            <TableCell>أحمد محمد</TableCell>
-            <TableCell>اليوتيوب</TableCell>
-          </TableRow>
-          <TableRow sx={{ bgcolor: "#f5f5f5" }}>
-            <TableCell>محمد علي</TableCell>
-            <TableCell>01010203112</TableCell>
-            <TableCell>الشيخ زايد & أكتوبر</TableCell>
-            <TableCell>لايوجد</TableCell>
-            <TableCell>أحمد محمد</TableCell>
-            <TableCell>اليوتيوب</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-      {/* Grid Footer */}
+    <Paper sx={{ overflowX: "auto" }}>
+      <Box sx={{ overflowX: "auto" }}>
+        <Stack
+          direction="column"
+          sx={{ width: "max-content", minWidth: "100%" }}
+        >
+          {/* Grid Header */}
+          <Stack
+            direction="row"
+            alignItems="center"
+            divider={
+              <Divider orientation="vertical" variant="middle" flexItem />
+            }
+            sx={{ width: "100%", height: 70 }}
+          >
+            <FilterColumn name="الأسم" noBurger />
+            <FilterColumn name="كود البلد" />
+            <FilterColumn name="المنطقة" />
+            <FilterColumn name="المشروع" />
+            <FilterColumn name="الميزانية" />
+          </Stack>
+          <Divider orientation="horizontal" />
+          {/* Grid Content */}
+          <Table sx={{ width: "100%" }}>
+            <TableHead>
+              <TableRow>
+                <TableCell>الأسم</TableCell>
+                <TableCell>الهاتف</TableCell>
+                <TableCell>المشروع</TableCell>
+                <TableCell>تعليق</TableCell>
+                <TableCell>مسؤول المبيعات</TableCell>
+                <TableCell>القناة</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow sx={{ bgcolor: "#f5f5f5" }}>
+                <TableCell>محمد علي</TableCell>
+                <TableCell>01010203112</TableCell>
+                <TableCell>الشيخ زايد & أكتوبر</TableCell>
+                <TableCell>لايوجد</TableCell>
+                <TableCell>أحمد محمد</TableCell>
+                <TableCell>اليوتيوب</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>محمد علي</TableCell>
+                <TableCell>01010203112</TableCell>
+                <TableCell>الشيخ زايد & أكتوبر</TableCell>
+                <TableCell>لايوجد</TableCell>
+                <TableCell>أحمد محمد</TableCell>
+                <TableCell>اليوتيوب</TableCell>
+              </TableRow>
+              <TableRow sx={{ bgcolor: "#f5f5f5" }}>
+                <TableCell>محمد علي</TableCell>
+                <TableCell>01010203112</TableCell>
+                <TableCell>الشيخ زايد & أكتوبر</TableCell>
+                <TableCell>لايوجد</TableCell>
+                <TableCell>أحمد محمد</TableCell>
+                <TableCell>اليوتيوب</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>محمد علي</TableCell>
+                <TableCell>01010203112</TableCell>
+                <TableCell>الشيخ زايد & أكتوبر</TableCell>
+                <TableCell>لايوجد</TableCell>
+                <TableCell>أحمد محمد</TableCell>
+                <TableCell>اليوتيوب</TableCell>
+              </TableRow>
+              <TableRow sx={{ bgcolor: "#f5f5f5" }}>
+                <TableCell>محمد علي</TableCell>
+                <TableCell>01010203112</TableCell>
+                <TableCell>الشيخ زايد & أكتوبر</TableCell>
+                <TableCell>لايوجد</TableCell>
+                <TableCell>أحمد محمد</TableCell>
+                <TableCell>اليوتيوب</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>محمد علي</TableCell>
+                <TableCell>01010203112</TableCell>
+                <TableCell>الشيخ زايد & أكتوبر</TableCell>
+                <TableCell>لايوجد</TableCell>
+                <TableCell>أحمد محمد</TableCell>
+                <TableCell>اليوتيوب</TableCell>
+              </TableRow>
+              <TableRow sx={{ bgcolor: "#f5f5f5" }}>
+                <TableCell>محمد علي</TableCell>
+                <TableCell>01010203112</TableCell>
+                <TableCell>الشيخ زايد & أكتوبر</TableCell>
+                <TableCell>لايوجد</TableCell>
+                <TableCell>أحمد محمد</TableCell>
+                <TableCell>اليوتيوب</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>محمد علي</TableCell>
+                <TableCell>01010203112</TableCell>
+                <TableCell>الشيخ زايد & أكتوبر</TableCell>
+                <TableCell>لايوجد</TableCell>
+                <TableCell>أحمد محمد</TableCell>
+                <TableCell>اليوتيوب</TableCell>
+              </TableRow>
+              <TableRow sx={{ bgcolor: "#f5f5f5" }}>
+                <TableCell>محمد علي</TableCell>
+                <TableCell>01010203112</TableCell>
+                <TableCell>الشيخ زايد & أكتوبر</TableCell>
+                <TableCell>لايوجد</TableCell>
+                <TableCell>أحمد محمد</TableCell>
+                <TableCell>اليوتيوب</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </Stack>
+      </Box>
       <Stack
         direction="row"
         justifyContent="center"
