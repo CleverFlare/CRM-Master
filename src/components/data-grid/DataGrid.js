@@ -2,7 +2,9 @@ import {
   Box,
   Button,
   Divider,
+  FormControl,
   IconButton,
+  InputLabel,
   ListItemIcon,
   ListItemText,
   Menu,
@@ -10,6 +12,7 @@ import {
   MenuList,
   Pagination,
   Paper,
+  Select,
   Stack,
   Table,
   TableBody,
@@ -30,6 +33,7 @@ const FilterColumn = ({ name, properties, disableSorting }) => {
   const [hovered, setHovered] = useState(false);
   const [sort, setSort] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [balance, setBalance] = useState("equal");
   const open = Boolean(anchorEl);
 
   const handleOpenMenu = (event) => {
@@ -51,6 +55,10 @@ const FilterColumn = ({ name, properties, disableSorting }) => {
       default:
         return setSort("top-to-bottom");
     }
+  };
+
+  const handleBalanceChange = (event) => {
+    setBalance(event.target.value);
   };
 
   return (
@@ -126,14 +134,15 @@ const FilterColumn = ({ name, properties, disableSorting }) => {
                 </MenuItem>
               ))
             ) : (
-              <Box
+              <Stack
+                direction="row"
                 sx={{
                   width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
                   paddingInline: "20px",
                   boxSizing: "border-box",
                 }}
+                justifyContent="center"
+                spacing={2}
                 onClick={(event) => event.stopPropagation()}
               >
                 <TextField
@@ -142,7 +151,18 @@ const FilterColumn = ({ name, properties, disableSorting }) => {
                   placeholder="ادخل الرقم"
                   size="small"
                 />
-              </Box>
+                <FormControl>
+                  <Select
+                    value={balance}
+                    onChange={handleBalanceChange}
+                    size="small"
+                  >
+                    <MenuItem value="equal">يساوي</MenuItem>
+                    <MenuItem value="greater">اكثر من</MenuItem>
+                    <MenuItem value="less">اقل من</MenuItem>
+                  </Select>
+                </FormControl>
+              </Stack>
             )}
           </Menu>
         </Box>
@@ -266,7 +286,7 @@ const projectsMenu = [
   },
 ];
 
-const balance = "search";
+const balance = "filter";
 
 const DataGrid = () => {
   return (
