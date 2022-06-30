@@ -43,3 +43,12 @@ body {
 ::placeholder {
   color: #23397580;
 }
+
+.disable-number-controllers::-webkit-outer-spin-button,
+.disable-number-controllers::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.disable-number-controllers {
+  -moz-appearance: textfield;
+}

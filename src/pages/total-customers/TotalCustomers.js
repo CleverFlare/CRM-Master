@@ -146,6 +146,124 @@ const rows = [
   },
 ];
 
+const dummyColumns = [
+  {
+    field: "name",
+    headerName: "الأسم",
+  },
+  {
+    field: "phone",
+    headerName: "الهاتف",
+  },
+  {
+    field: "project",
+    headerName: "المشروع",
+  },
+  {
+    field: "comment",
+    headerName: "تعليق",
+  },
+  {
+    field: "saler",
+    headerName: "مسؤول المبيعات",
+  },
+  {
+    field: "channel",
+    headerName: "القناة",
+  },
+];
+
+const dummyRows = [
+  {
+    name: "أ",
+    phone: "01010203112",
+    project: "الشيخ زايد & أكتوبر",
+    comment: "لايوجد",
+    saler: "أحمد محمد",
+    channel: "اليوتيوب",
+  },
+  {
+    name: "ت",
+    phone: "01010203112",
+    project: "الشيخ زايد & أكتوبر",
+    comment: "لايوجد",
+    saler: "أحمد محمد",
+    channel: "لايوجد",
+  },
+  {
+    name: "ج",
+    phone: "01010203112",
+    project: "الشيخ زايد & أكتوبر",
+    comment: "لايوجد",
+    saler: "أحمد محمد",
+    channel: "لايوجد",
+  },
+  {
+    name: "ث",
+    phone: "01010203112",
+    project: "الشيخ زايد & أكتوبر",
+    comment: "لايوجد",
+    saler: "أحمد محمد",
+    channel: "لايوجد",
+  },
+  {
+    name: "ب",
+    phone: "01010203112",
+    project: "الشيخ زايد & أكتوبر",
+    comment: "لايوجد",
+    saler: "أحمد محمد",
+    channel: "اليوتيوب",
+  },
+  {
+    name: "د",
+    phone: "01010203112",
+    project: "الشيخ زايد & أكتوبر",
+    comment: "لايوجد",
+    saler: "أحمد محمد",
+    channel: "لايوجد",
+  },
+  {
+    name: "ح",
+    phone: "01010203112",
+    project: "الشيخ زايد & أكتوبر",
+    comment: "لايوجد",
+    saler: "أحمد محمد",
+    channel: "لايوجد",
+  },
+  {
+    name: "ز",
+    phone: "01010203112",
+    project: "الشيخ زايد & أكتوبر",
+    comment: "لايوجد",
+    saler: "أحمد محمد",
+    channel: "لايوجد",
+  },
+  {
+    name: "خ",
+    phone: "01010203112",
+    project: "الشيخ زايد & أكتوبر",
+    comment: "لايوجد",
+    saler: "أحمد محمد",
+    channel: "لايوجد",
+  },
+  {
+    name: "ذ",
+    phone: "01010203112",
+    project: "الشيخ زايد & أكتوبر",
+    comment: "لايوجد",
+    saler: "أحمد محمد",
+    channel: "لايوجد",
+  },
+  {
+    name: "ر",
+    phone: "01010203112",
+    project: "الشيخ زايد & أكتوبر",
+    comment: "لايوجد",
+    saler: "أحمد محمد",
+    channel: "لايوجد",
+  },
+];
+
 const TotalCustomers = () => {
   return (
     <div style={{ height: 697 }}>
@@ -162,7 +280,7 @@ const TotalCustomers = () => {
             },
           ]}
         />
-        <DataGrid />
+        <DataGrid rows={dummyRows} columns={dummyColumns} />
       </Container>
     </div>
   );

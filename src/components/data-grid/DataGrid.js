@@ -27,9 +27,17 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { cloneElement, useState } from "react";
+import { useState } from "react";
+import { useEffect } from "react";
 
-const FilterColumn = ({ name, properties, disableSorting }) => {
+const FilterItem = ({
+  name,
+  properties,
+  disableSorting,
+  onSortTopToBottom,
+  onSortBottomToTop,
+  onSortReset,
+}) => {
   const [sort, setSort] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [balance, setBalance] = useState("equal");
@@ -48,11 +56,16 @@ const FilterColumn = ({ name, properties, disableSorting }) => {
   const handleSetSort = (event) => {
     switch (sort) {
       case "top-to-bottom":
-        return setSort("bottom-to-top");
+        setSort("bottom-to-top");
+        onSortBottomToTop();
+        break;
       case "bottom-to-top":
-        return setSort(null);
+        setSort(null);
+        onSortReset();
+        break;
       default:
-        return setSort("top-to-bottom");
+        setSort("top-to-bottom");
+        onSortTopToBottom();
     }
   };
 
@@ -168,6 +181,26 @@ const FilterColumn = ({ name, properties, disableSorting }) => {
 };
 
 const TablePagination = () => {
+  const [page, setPage] = useState(1);
+  const max = 19;
+
+  const handleChange = (event) => {
+    setPage(event.target.value);
+  };
+
+  const handleIncrease = () => {
+    setPage((prev) => prev + 1);
+  };
+
+  const handleDecrease = () => {
+    setPage((prev) => prev - 1);
+  };
+
+  useEffect(() => {
+    if (page < 1) setPage(1);
+    if (page > max) setPage(max);
+  }, [page]);
+
   return (
     <Stack
       direction="row"
@@ -177,22 +210,24 @@ const TablePagination = () => {
       spacing={1}
       sx={{ direction: "ltr" }}
     >
-      <IconButton>
+      <IconButton onClick={handleIncrease}>
         <ArrowForwardIosIcon
           sx={{ width: "15px", height: "15px" }}
           color="primary"
         />
       </IconButton>
       <Typography variant="caption" sx={{ fontWeight: "bold" }} color="primary">
-        19
+        {max}
       </Typography>
       <Typography variant="caption" sx={{ fontWeight: "bold" }} color="primary">
         من
       </Typography>
       <Box sx={{ color: "primary" }}>
         <input
-          type="text"
-          defaultValue={1}
+          type="number"
+          className="disable-number-controllers"
+          value={page}
+          onInput={handleChange}
           style={{
             width: 20,
             height: 20,
@@ -200,10 +235,11 @@ const TablePagination = () => {
             fontWeight: "bold",
             outline: "none",
             color: "#233975",
+            direction: "ltr",
           }}
         />
       </Box>
-      <IconButton>
+      <IconButton onClick={handleDecrease}>
         <ArrowBackIosNewIcon
           sx={{ width: "15px", height: "15px" }}
           color="primary"
@@ -284,7 +320,31 @@ const projectsMenu = [
 
 const balance = "filter";
 
-const DataGrid = () => {
+const DataGrid = ({ rows, columns }) => {
+  const [rowsCopy, setRowsCopy] = useState(rows ? rows : null);
+
+  const handleSortTopToBottom = () => {
+    const newArray = [...rows];
+    return setRowsCopy([
+      ...newArray.sort((a, b) => a.name.localeCompare(b.name, ["ar"])),
+    ]);
+  };
+
+  const handleSortBottomToTop = () => {
+    const newArray = [...rows];
+    return setRowsCopy([
+      ...newArray.sort((a, b) => b.name.localeCompare(a.name, ["ar"])),
+    ]);
+  };
+
+  const handleSortReset = () => {
+    return setRowsCopy([...rows]);
+  };
+
+  useEffect(() => {
+    setRowsCopy(rows);
+  }, []);
+
   return (
     <Paper sx={{ overflowX: "auto" }}>
       <Box sx={{ overflowX: "auto" }}>
@@ -301,106 +361,67 @@ const DataGrid = () => {
             }
             sx={{ width: "100%", height: 70 }}
           >
-            <FilterColumn name="الأسم" />
-            <FilterColumn name="كود البلد" properties={code} disableSorting />
-            <FilterColumn name="المنطقة" properties={areaMenu} disableSorting />
-            <FilterColumn
+            <FilterItem
+              name="الأسم"
+              onSortTopToBottom={handleSortTopToBottom}
+              onSortBottomToTop={handleSortBottomToTop}
+              onSortReset={handleSortReset}
+            />
+            <FilterItem name="كود البلد" properties={code} disableSorting />
+            <FilterItem name="المنطقة" properties={areaMenu} disableSorting />
+            <FilterItem
               name="المشروع"
               properties={projectsMenu}
               disableSorting
             />
-            <FilterColumn
-              name="الميزانية"
-              properties={balance}
-              disableSorting
-            />
+            <FilterItem name="الميزانية" properties={balance} disableSorting />
           </Stack>
           <Divider orientation="horizontal" />
           {/* Grid Content */}
-          <Table sx={{ width: "100%" }}>
+          <Table
+            sx={{
+              width: "100%",
+              "& .MuiTableCell-root": {
+                border: "none",
+              },
+            }}
+          >
             <TableHead>
               <TableRow>
-                <TableCell>الأسم</TableCell>
-                <TableCell>الهاتف</TableCell>
-                <TableCell>المشروع</TableCell>
-                <TableCell>تعليق</TableCell>
-                <TableCell>مسؤول المبيعات</TableCell>
-                <TableCell>القناة</TableCell>
+                {columns.map((column, index) => (
+                  <TableCell key={index}>
+                    {column.headerName ? column.headerName : column.field}
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow sx={{ bgcolor: "#f5f5f5" }}>
-                <TableCell>محمد علي</TableCell>
-                <TableCell>01010203112</TableCell>
-                <TableCell>الشيخ زايد & أكتوبر</TableCell>
-                <TableCell>لايوجد</TableCell>
-                <TableCell>أحمد محمد</TableCell>
-                <TableCell>اليوتيوب</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>محمد علي</TableCell>
-                <TableCell>01010203112</TableCell>
-                <TableCell>الشيخ زايد & أكتوبر</TableCell>
-                <TableCell>لايوجد</TableCell>
-                <TableCell>أحمد محمد</TableCell>
-                <TableCell>اليوتيوب</TableCell>
-              </TableRow>
-              <TableRow sx={{ bgcolor: "#f5f5f5" }}>
-                <TableCell>محمد علي</TableCell>
-                <TableCell>01010203112</TableCell>
-                <TableCell>الشيخ زايد & أكتوبر</TableCell>
-                <TableCell>لايوجد</TableCell>
-                <TableCell>أحمد محمد</TableCell>
-                <TableCell>اليوتيوب</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>محمد علي</TableCell>
-                <TableCell>01010203112</TableCell>
-                <TableCell>الشيخ زايد & أكتوبر</TableCell>
-                <TableCell>لايوجد</TableCell>
-                <TableCell>أحمد محمد</TableCell>
-                <TableCell>اليوتيوب</TableCell>
-              </TableRow>
-              <TableRow sx={{ bgcolor: "#f5f5f5" }}>
-                <TableCell>محمد علي</TableCell>
-                <TableCell>01010203112</TableCell>
-                <TableCell>الشيخ زايد & أكتوبر</TableCell>
-                <TableCell>لايوجد</TableCell>
-                <TableCell>أحمد محمد</TableCell>
-                <TableCell>اليوتيوب</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>محمد علي</TableCell>
-                <TableCell>01010203112</TableCell>
-                <TableCell>الشيخ زايد & أكتوبر</TableCell>
-                <TableCell>لايوجد</TableCell>
-                <TableCell>أحمد محمد</TableCell>
-                <TableCell>اليوتيوب</TableCell>
-              </TableRow>
-              <TableRow sx={{ bgcolor: "#f5f5f5" }}>
-                <TableCell>محمد علي</TableCell>
-                <TableCell>01010203112</TableCell>
-                <TableCell>الشيخ زايد & أكتوبر</TableCell>
-                <TableCell>لايوجد</TableCell>
-                <TableCell>أحمد محمد</TableCell>
-                <TableCell>اليوتيوب</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>محمد علي</TableCell>
-                <TableCell>01010203112</TableCell>
-                <TableCell>الشيخ زايد & أكتوبر</TableCell>
-                <TableCell>لايوجد</TableCell>
-                <TableCell>أحمد محمد</TableCell>
-                <TableCell>اليوتيوب</TableCell>
-              </TableRow>
-              <TableRow sx={{ bgcolor: "#f5f5f5" }}>
-                <TableCell>محمد علي</TableCell>
-                <TableCell>01010203112</TableCell>
-                <TableCell>الشيخ زايد & أكتوبر</TableCell>
-                <TableCell>لايوجد</TableCell>
-                <TableCell>أحمد محمد</TableCell>
-                <TableCell>اليوتيوب</TableCell>
-              </TableRow>
+              {rowsCopy &&
+                rowsCopy.map((row, rowIndex) => {
+                  return (
+                    <TableRow
+                      sx={{
+                        bgcolor: rowIndex % 2 == 0 ? "#f5f5f5" : "initial",
+                      }}
+                      key={rowIndex}
+                    >
+                      {columns &&
+                        columns.map((column, columnIndex) => {
+                          if (row[column.field]) {
+                            return (
+                              <TableCell key={columnIndex}>
+                                {row[column.field]}
+                              </TableCell>
+                            );
+                          } else {
+                            throw Error(
+                              `The field "${column.field}" does not match any key in the object, error fired at index ${rowIndex}`
+                            );
+                          }
+                        })}
+                    </TableRow>
+                  );
+                })}
             </TableBody>
           </Table>
         </Stack>
@@ -417,7 +438,3 @@ const DataGrid = () => {
 };
 
 export default DataGrid;
-
-// text-overflow: ellipsis;
-//     overflow: hidden;
-//     white-space: nowrap;
