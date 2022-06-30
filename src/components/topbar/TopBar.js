@@ -125,6 +125,7 @@ const TopBar = ({ mobile, onBurgerClick }) => {
               "& .MuiInputBase-input": {
                 paddingInline: "10px",
                 fontSize: "12px",
+                border: "none",
               },
             }}
             autoComplete="off"

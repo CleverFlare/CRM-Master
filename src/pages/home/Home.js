@@ -3,11 +3,12 @@ import Parameter from "../../components/parameter/Parameter";
 import Publisher from "../../components/publisher/Publisher";
 import { Typography } from "@mui/material";
 import Post from "../../components/post/Post";
+import Wrapper from "../../components/wrapper/Wrapper";
 
 const Home = () => {
   return (
     <div>
-      <Container sx={{ height: "100%" }}>
+      <Wrapper sx={{ height: "100%" }}>
         <Parameter
           links={[
             {
@@ -27,7 +28,7 @@ const Home = () => {
         <Post name="أحمد مجدي">
           محتاج شقه متكرر فى الشيخ زايد بادجت 2 ونص كاش بحرى نص تشطيب
         </Post>
-      </Container>
+      </Wrapper>
     </div>
   );
 };
