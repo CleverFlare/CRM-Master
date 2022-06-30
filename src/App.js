@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./Layout";
 import ChangePassword from "./pages/change-password/ChangePassword";
 
+console.log("new device");
+
 function App() {
   return (
     <div className="App">
