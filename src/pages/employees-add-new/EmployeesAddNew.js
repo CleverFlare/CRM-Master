@@ -55,8 +55,29 @@ const EmployeesAddNew = () => {
     confirm: false,
   });
 
+  const [controls, setControls] = useState({
+    name: "",
+    code:
+      "(+20)" +
+      (
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/2560px-Flag_of_Egypt.svg.png"
+          style={{ maxWidth: 20 }}
+        />
+      ),
+    phone: "",
+    job: "",
+    email: "",
+    password: "",
+    confirm: "",
+  });
+
   const handleVisibilityToggle = (keyName) => {
     setVisibilities({ ...visibilities, [keyName]: !visibilities[keyName] });
+  };
+
+  const handleControlUpdate = (controlName, value) => {
+    setControls({ ...controls, [controlName]: value });
   };
 
   return (
@@ -95,6 +116,10 @@ const EmployeesAddNew = () => {
                 placeholder="الأسم"
                 sx={{ width: sm ? "100%" : "770px" }}
                 fullWidth={sm}
+                onChange={({ target: { value } }) =>
+                  handleControlUpdate("name", value)
+                }
+                value={controls.name}
               />
               <TextField
                 type="number"
@@ -118,6 +143,10 @@ const EmployeesAddNew = () => {
                 fullWidth={sm}
                 pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
                 autoComplete="off"
+                onChange={({ target: { value } }) =>
+                  handleControlUpdate("phone", value)
+                }
+                value={controls.phone}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start" sx={{ margin: 0 }}>
@@ -133,6 +162,10 @@ const EmployeesAddNew = () => {
                               alignItems: "center",
                             },
                           }}
+                          onChange={({ target: { value } }) =>
+                            handleControlUpdate("code", value)
+                          }
+                          value={controls.code}
                         >
                           {countries.map((item, index) => (
                             <MenuItem key={index} value={item.code + item.flag}>
@@ -166,6 +199,10 @@ const EmployeesAddNew = () => {
                 placeholder="الوظيفة"
                 sx={{ width: sm ? "100%" : "770px" }}
                 fullWidth={sm}
+                onChange={({ target: { value } }) =>
+                  handleControlUpdate("job", value)
+                }
+                value={controls.job}
               />
               <TextField
                 variant="standard"
@@ -174,6 +211,10 @@ const EmployeesAddNew = () => {
                 placeholder="البريد الإلكتروني"
                 sx={{ width: sm ? "100%" : "770px" }}
                 fullWidth={sm}
+                onChange={({ target: { value } }) =>
+                  handleControlUpdate("email", value)
+                }
+                value={controls.email}
               />
             </Stack>
             <Stack
@@ -189,6 +230,10 @@ const EmployeesAddNew = () => {
                 placeholder="الرقم السري"
                 sx={{ width: sm ? "100%" : "770px" }}
                 fullWidth={sm}
+                onChange={({ target: { value } }) =>
+                  handleControlUpdate("password", value)
+                }
+                value={controls.password}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end" sx={{ margin: 0 }}>
@@ -212,6 +257,10 @@ const EmployeesAddNew = () => {
                 placeholder="تأكيد الرقم السري"
                 sx={{ width: sm ? "100%" : "770px" }}
                 fullWidth={sm}
+                onChange={({ target: { value } }) =>
+                  handleControlUpdate("confirm", value)
+                }
+                value={controls.confirm}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end" sx={{ margin: 0 }}>

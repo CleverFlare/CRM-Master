@@ -96,6 +96,31 @@ const channels = [
 
 const CustomersAddNew = () => {
   const sm = useMediaQuery("(max-width:912px)");
+
+  const [controls, setControls] = useState({
+    name: "",
+    phone: "",
+    code:
+      "(+20)" +
+      (
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/2560px-Flag_of_Egypt.svg.png"
+          style={{ maxWidth: 20 }}
+        />
+      ),
+    email: "",
+    project: "",
+    saler: "",
+    mediator: "",
+    channel: "",
+    contact: "",
+    balance: "",
+  });
+
+  const handleControlUpdate = (controlName, value) => {
+    setControls({ ...controls, [controlName]: value });
+  };
+
   return (
     <>
       <Wrapper>
@@ -132,6 +157,10 @@ const CustomersAddNew = () => {
                 placeholder="الأسم"
                 sx={{ width: sm ? "100%" : "400px" }}
                 fullWidth={sm}
+                onChange={({ target: { value } }) =>
+                  handleControlUpdate("name", value)
+                }
+                value={controls.name}
               />
               <TextField
                 type="number"
@@ -155,6 +184,10 @@ const CustomersAddNew = () => {
                 fullWidth={sm}
                 pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
                 autoComplete="off"
+                onChange={({ target: { value } }) =>
+                  handleControlUpdate("phone", value)
+                }
+                value={controls.phone}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start" sx={{ margin: 0 }}>
@@ -170,6 +203,10 @@ const CustomersAddNew = () => {
                               alignItems: "center",
                             },
                           }}
+                          onChange={({ target: { value } }) =>
+                            handleControlUpdate("code", value)
+                          }
+                          value={controls.code}
                         >
                           {countries.map((item, index) => (
                             <MenuItem key={index} value={item.code + item.flag}>
@@ -196,6 +233,10 @@ const CustomersAddNew = () => {
                 placeholder="الريد الإلكتروني"
                 sx={{ width: sm ? "100%" : "400px" }}
                 fullWidth={sm}
+                onChange={({ target: { value } }) =>
+                  handleControlUpdate("email", value)
+                }
+                value={controls.email}
               />
             </Stack>
             <Stack
@@ -210,6 +251,10 @@ const CustomersAddNew = () => {
                 placeholder="المشروع"
                 sx={{ width: sm ? "100%" : "400px" }}
                 fullWidth={sm}
+                onChange={({ target: { value } }) =>
+                  handleControlUpdate("project", value)
+                }
+                value={controls.project}
               />
               <FormControl
                 variant="standard"
@@ -234,10 +279,14 @@ const CustomersAddNew = () => {
                   }}
                   MenuProps={{ PaperProps: { style: { maxHeight: "300px" } } }}
                   IconComponent={KeyboardArrowDownIcon}
+                  onChange={({ target: { value } }) =>
+                    handleControlUpdate("saler", value)
+                  }
+                  value={controls.saler}
                 >
-                  {salers.map((item, index) => (
-                    <MenuItem value={item + index} key={index}>
-                      {item}
+                  {salers.map((saler, index) => (
+                    <MenuItem value={saler + index} key={index}>
+                      {saler}
                     </MenuItem>
                   ))}
                 </Select>
@@ -275,14 +324,18 @@ const CustomersAddNew = () => {
                       );
                     } else {
                       console.log(selected.length);
-                      return selected.replace(/\d/gi, "");
+                      return selected;
                     }
                   }}
                   MenuProps={{ PaperProps: { style: { maxHeight: "300px" } } }}
                   IconComponent={KeyboardArrowDownIcon}
+                  onChange={({ target: { value } }) =>
+                    handleControlUpdate("channel", value)
+                  }
+                  value={controls.channel}
                 >
                   {channels.map((channel, index) => (
-                    <MenuItem value={channel.name}>
+                    <MenuItem value={channel.name} key={index}>
                       <ListItemIcon sx={{ paddingRight: "10px" }}>
                         <Avatar
                           src={channel.picture}
@@ -305,13 +358,35 @@ const CustomersAddNew = () => {
                 placeholder="طريقة التواصل"
                 sx={{ width: sm ? "100%" : "400px" }}
                 fullWidth={sm}
+                onChange={({ target: { value } }) =>
+                  handleControlUpdate("contact", value)
+                }
+                value={controls.contact}
               />
               <TextField
+                type="number"
                 variant="standard"
                 label="الميزانية"
                 placeholder="الميزانية"
-                sx={{ width: sm ? "100%" : "400px" }}
+                sx={{
+                  width: sm ? "100%" : "400px",
+                  "& .MuiInputBase-root": {
+                    overflow: "hidden",
+                  },
+                  "& .MuiInputBase-input": {
+                    appearance: "textfield",
+                  },
+                  "& .MuiInputBase-input::-webkit-outer-spin-button, & .MuiInputBase-input::-webkit-inner-spin-button":
+                    {
+                      appearance: "none",
+                      margin: 0,
+                    },
+                }}
                 fullWidth={sm}
+                onChange={({ target: { value } }) =>
+                  handleControlUpdate("balance", value)
+                }
+                value={controls.balance}
               />
             </Stack>
           </Stack>
