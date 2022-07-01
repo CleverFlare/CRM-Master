@@ -18,6 +18,7 @@ import {
   Menu,
   useMediaQuery,
   FormLabel,
+  Avatar,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Parameter from "../../components/parameter/Parameter";
@@ -58,65 +59,43 @@ const salers = [
   "أحمد محمد",
   "أحمد محمد",
   "أحمد محمد",
+  "أحمد محمد",
+  "أحمد محمد",
+  "أحمد محمد",
+  "أحمد محمد",
+  "أحمد محمد",
+  "أحمد محمد",
+  "أحمد محمد",
+  "أحمد محمد",
+  "أحمد محمد",
+  "أحمد محمد",
 ];
 
-const selectChannels = [
+const channels = [
   {
-    name: "youtube",
-    arabic: "قناة اليوتيوب",
-    icon: <YouTubeIcon sx={{ color: "red" }} />,
+    name: "اليوتيوب",
+    picture:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/2560px-YouTube_full-color_icon_%282017%29.svg.png",
   },
   {
-    name: "facebook",
-    arabic: "قناة الفيسبوك",
-    icon: <FacebookIcon sx={{ color: "purple" }} />,
+    name: "الفيسبوك",
+    picture:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Facebook_icon.svg/768px-Facebook_icon.svg.png",
   },
   {
-    name: "telegram",
-    arabic: "قناة التيليجرام",
-    icon: <TelegramIcon sx={{ color: "skyblue" }} />,
+    name: "التيليجرام",
+    picture:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/240px-Telegram_logo.svg.png",
   },
   {
-    name: "whatsapp",
-    arabic: "قناة الواتساب",
-    icon: <WhatsAppIcon sx={{ color: "yellowgreen" }} />,
+    name: "الواتساب",
+    picture:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/WhatsApp_Logo.svg/2048px-WhatsApp_Logo.svg.png",
   },
 ];
 
 const CustomersAddNew = () => {
   const sm = useMediaQuery("(max-width:912px)");
-  const [countryCode, setCountryCode] = useState("(+20)");
-  const [channels, setChannels] = useState([]);
-  const [countryFlag, setCountryFlag] = useState(
-    <img
-      src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/2560px-Flag_of_Egypt.svg.png"
-      style={{ maxWidth: 20 }}
-    />
-  );
-
-  const [anchorCountry, setAnchorCountry] = useState(null);
-  const openCountryMenu = Boolean(anchorCountry);
-
-  const handleSetChannel = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setChannels(typeof value === "string" ? value.split(",") : value);
-    console.log(channels.some((e) => e === "youtube"));
-  };
-
-  const handleOpenCountryMenu = (event) => {
-    setAnchorCountry(event.currentTarget);
-  };
-
-  const handleClosenCountryMenu = (code, flag) => {
-    if (code && flag) {
-      setCountryCode(code);
-      setCountryFlag(flag);
-    }
-    setAnchorCountry(null);
-  };
-
   return (
     <>
       <Wrapper>
@@ -164,48 +143,49 @@ const CustomersAddNew = () => {
                   "& .MuiInputBase-root": {
                     overflow: "hidden",
                   },
+                  "& .MuiInputBase-input": {
+                    appearance: "textfield",
+                  },
+                  "& .MuiInputBase-input::-webkit-outer-spin-button, & .MuiInputBase-input::-webkit-inner-spin-button":
+                    {
+                      appearance: "none",
+                      margin: 0,
+                    },
                 }}
                 fullWidth={sm}
                 pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
+                autoComplete="off"
                 InputProps={{
                   startAdornment: (
-                    <InputAdornment position="start">
-                      <Button
-                        endIcon={<KeyboardArrowDownIcon />}
-                        startIcon={countryFlag}
-                        onClick={handleOpenCountryMenu}
-                        sx={{
-                          color: "black",
-                          borderRight: "1px solid #00000021",
-                        }}
+                    <InputAdornment position="start" sx={{ margin: 0 }}>
+                      <FormControl
+                        variant="standard"
+                        sx={{ width: "max-content" }}
                       >
-                        {countryCode ? countryCode : "(+)"}
-                      </Button>
-                      <Menu
-                        anchorEl={anchorCountry}
-                        open={openCountryMenu}
-                        onClose={() => handleClosenCountryMenu()}
-                        anchorOrigin={{
-                          vertical: "bottom",
-                          horizontal: "left",
-                        }}
-                        transformOrigin={{
-                          vertical: "top",
-                          horizontal: "left",
-                        }}
-                      >
-                        {countries.map((item, index) => (
-                          <MenuItem
-                            key={index}
-                            onClick={() =>
-                              handleClosenCountryMenu(item.code, item.flag)
-                            }
-                          >
-                            <ListItemIcon>{item.flag}</ListItemIcon>
-                            <ListItemText primary={item.code} />
-                          </MenuItem>
-                        ))}
-                      </Menu>
+                        <Select
+                          defaultValue={countries[0].code + countries[0].flag}
+                          sx={{
+                            "& .MuiSelect-standard": {
+                              display: "flex",
+                              alignItems: "center",
+                            },
+                          }}
+                        >
+                          {countries.map((item, index) => (
+                            <MenuItem key={index} value={item.code + item.flag}>
+                              <ListItemIcon
+                                sx={{
+                                  minWidth: "max-content",
+                                  marginRight: "5px",
+                                }}
+                              >
+                                {item.flag}
+                              </ListItemIcon>
+                              <ListItemText primary={item.code} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </InputAdornment>
                   ),
                 }}
@@ -231,31 +211,29 @@ const CustomersAddNew = () => {
                 sx={{ width: sm ? "100%" : "400px" }}
                 fullWidth={sm}
               />
-              {/* <TextField
+              <FormControl
                 variant="standard"
-                label="مسؤول المبيعات"
-                placeholder="مسؤول المبيعات"
                 sx={{ width: sm ? "100%" : "400px" }}
-                fullWidth={sm}
-              /> */}
-              <FormGroup sx={{ width: sm ? "100%" : "400px" }}>
-                <FormLabel
-                  sx={{
-                    transform: "translate(-50px, -5.5px) scale(0.75)",
-                    fontWeight: "bold",
-                  }}
-                >
-                  مسؤول المبيعات
-                </FormLabel>
+              >
+                <InputLabel id="something">مسؤول المبيعات</InputLabel>
                 <Select
-                  sx={{
-                    width: "100%",
-                    height: "35px",
-                    "& .muirtl-r49p9a-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                      {
-                        color: "black",
-                      },
+                  displayEmpty
+                  renderValue={(selected) => {
+                    if (!selected) {
+                      return (
+                        <Typography
+                          sx={{ color: "currentColor", opacity: "0.42" }}
+                        >
+                          مسؤول المبيعات
+                        </Typography>
+                      );
+                    } else {
+                      console.log(selected.length);
+                      return selected.replace(/\d/gi, "");
+                    }
                   }}
+                  MenuProps={{ PaperProps: { style: { maxHeight: "300px" } } }}
+                  IconComponent={KeyboardArrowDownIcon}
                 >
                   {salers.map((item, index) => (
                     <MenuItem value={item + index} key={index}>
@@ -263,7 +241,7 @@ const CustomersAddNew = () => {
                     </MenuItem>
                   ))}
                 </Select>
-              </FormGroup>
+              </FormControl>
               <TextField
                 variant="standard"
                 label="الوسيط"
@@ -278,51 +256,49 @@ const CustomersAddNew = () => {
               alignItems="center"
               spacing={sm ? 2 : 1}
             >
-              {/* <TextField
+              <FormControl
                 variant="standard"
-                label="القناة الإعلانية"
-                placeholder="القناة الإعلانية"
                 sx={{ width: sm ? "100%" : "400px" }}
-                fullWidth={sm}
-              /> */}
-              <FormGroup sx={{ width: sm ? "100%" : "400px" }}>
-                <FormLabel
-                  sx={{
-                    transform: "translate(-50px, -5.5px) scale(0.75)",
-                    fontWeight: "bold",
-                  }}
-                >
-                  القناة الإعلانية
-                </FormLabel>
+              >
+                <InputLabel>القناة الإعلانية</InputLabel>
                 <Select
-                  sx={{
-                    width: "100%",
-                    height: "35px",
-                    "& .muirtl-r49p9a-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                      {
-                        color: "black",
-                      },
+                  label="الناة الإعلانية"
+                  displayEmpty
+                  renderValue={(selected) => {
+                    if (!selected) {
+                      return (
+                        <Typography
+                          sx={{ color: "currentColor", opacity: "0.42" }}
+                        >
+                          القناة الإعلانية
+                        </Typography>
+                      );
+                    } else {
+                      console.log(selected.length);
+                      return selected.replace(/\d/gi, "");
+                    }
                   }}
-                  multiple
-                  value={channels}
-                  onChange={handleSetChannel}
-                  renderValue={(selected) => selected.join(", ")}
+                  MenuProps={{ PaperProps: { style: { maxHeight: "300px" } } }}
+                  IconComponent={KeyboardArrowDownIcon}
                 >
-                  {selectChannels.map((item, index) => (
-                    <MenuItem value={item.name} key={index}>
-                      <ListItemIcon>{item.icon}</ListItemIcon>
-                      <ListItemText primary={item.arabic} />
-                      <Box>
-                        {channels.some((e) => e === item.name) > 0 ? (
-                          <CancelIcon sx={{ color: "red" }} />
-                        ) : (
-                          <AddCircleIcon sx={{ color: "yellowgreen" }} />
-                        )}
-                      </Box>
+                  {channels.map((channel, index) => (
+                    <MenuItem value={channel.name}>
+                      <ListItemIcon sx={{ paddingRight: "10px" }}>
+                        <Avatar
+                          src={channel.picture}
+                          sx={{ bgcolor: "orange" }}
+                        >
+                          {channel.name[0].toUpperCase()}
+                        </Avatar>
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={"قناة " + channel.name}
+                        sx={{ color: (theme) => theme.palette.primary.main }}
+                      />
                     </MenuItem>
                   ))}
                 </Select>
-              </FormGroup>
+              </FormControl>
               <TextField
                 variant="standard"
                 label="طريقة التواصل"
