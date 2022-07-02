@@ -9,6 +9,9 @@ import EmployeesAddNew from "./pages/employees-add-new/EmployeesAddNew";
 import CustomersDeleted from "./pages/customers-deleted/CustomersDeleted";
 import CustomersNew from "./pages/customers-new/CustomersNew";
 import CustomersImport from "./pages/customers-import/CustomersImport";
+import CustomersExport from "./pages/customers-export/CustomersExport";
+import ProjectsDisplay from "./pages/projects-display/ProjectsDisplay";
+import ProjectsAddNew from "./pages/projects-add-new/ProjectsAddNew";
 
 function App() {
   return (
@@ -21,6 +24,9 @@ function App() {
             <Route path="/customers/deleted" element={<CustomersDeleted />} />
             <Route path="/customers/new" element={<CustomersNew />} />
             <Route path="/customers/import" element={<CustomersImport />} />
+            <Route path="/customers/export" element={<CustomersExport />} />
+            <Route path="/projects/display" element={<ProjectsDisplay />} />
+            <Route path="/projects/new" element={<ProjectsAddNew />} />
             <Route
               path="/settings/change-password"
               element={<ChangePassword />}
