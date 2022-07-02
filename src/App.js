@@ -12,6 +12,7 @@ import CustomersImport from "./pages/customers-import/CustomersImport";
 import CustomersExport from "./pages/customers-export/CustomersExport";
 import ProjectsDisplay from "./pages/projects-display/ProjectsDisplay";
 import ProjectsAddNew from "./pages/projects-add-new/ProjectsAddNew";
+import Reports from "./pages/reports/Reports";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route path="/customers/export" element={<CustomersExport />} />
             <Route path="/projects/display" element={<ProjectsDisplay />} />
             <Route path="/projects/new" element={<ProjectsAddNew />} />
+            <Route path="/reports" element={<Reports />} />
             <Route
               path="/settings/change-password"
               element={<ChangePassword />}

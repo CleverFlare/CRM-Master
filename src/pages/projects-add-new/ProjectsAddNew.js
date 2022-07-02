@@ -9,9 +9,11 @@ import {
 import Parameter from "../../components/parameter/Parameter";
 import Wrapper from "../../components/wrapper/Wrapper";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import { useRef } from "react";
 
 const ProjectsAddNew = () => {
-  const sm = useMediaQuery("(min-width: 1244px)");
+  const sm = useMediaQuery("(min-width: 896px)");
+  const fileRef = useRef();
   return (
     <Wrapper>
       <Parameter
@@ -34,14 +36,16 @@ const ProjectsAddNew = () => {
         alignItems="center"
         spacing={4}
       >
+        <input type="file" style={{ display: "none" }} ref={fileRef} />
         <Stack
           direction={sm ? "row" : "column"}
           alignItems={sm ? null : "center"}
           spacing={4}
+          sx={{ width: "100%" }}
         >
           <Paper
             sx={{ width: "max-content", padding: 2, cursor: "pointer" }}
-            onClick={() => console.log("clicked")}
+            onClick={() => fileRef.current.click()}
           >
             <Stack alignItems="center" sx={{ width: "max-content" }}>
               <AddPhotoAlternateIcon
@@ -55,33 +59,36 @@ const ProjectsAddNew = () => {
           </Paper>
           <Paper
             sx={{
-              padding: 2,
+              padding: sm ? 2 : 0,
               width: "100%",
               boxSizing: "border-box",
-              paddingRight: 30,
+              boxShadow: sm ? "inherit" : "none",
             }}
           >
             <Stack
               direction="column"
               justifyContent="space-between"
+              spacing={2}
               sx={{ height: "100%" }}
             >
               <TextField
                 variant="standard"
                 label="اسم المشروع"
                 placeholder="اسم المشروع"
+                sx={{ maxWidth: 600 }}
               />
               <TextField
                 variant="standard"
                 label="العنوان"
                 placeholder="عنوان المشروع"
+                sx={{ maxWidth: 600 }}
               />
             </Stack>
           </Paper>
         </Stack>
         <Button
           variant="contained"
-          sx={{ minWidth: "max-content", width: 130 }}
+          sx={{ minWidth: "max-content", width: sm ? 130 : "100%" }}
         >
           حفظ
         </Button>
