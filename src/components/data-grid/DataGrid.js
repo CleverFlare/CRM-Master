@@ -1,6 +1,9 @@
 import {
   Box,
   Divider,
+  FormControl,
+  IconButton,
+  InputAdornment,
   Paper,
   Stack,
   Table,
@@ -8,9 +11,12 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  TextField,
 } from "@mui/material";
 import FilterItem from "./items/FilterItem";
 import TablePagination from "./items/TablePagination";
+import SearchIcon from "@mui/icons-material/Search";
+import CustomersEditDialog from "../../components/customers-edit-dialog/CustomersEditDialog";
 import { useState, useEffect } from "react";
 
 const areaMenu = [
@@ -84,8 +90,18 @@ const projectsMenu = [
 
 const balance = "filter";
 
-const DataGrid = ({ rows, columns }) => {
+const DataGrid = ({ rows, columns, nameWithSearch }) => {
   const [rowsCopy, setRowsCopy] = useState(rows ? rows : null);
+  const [open, setOpen] = useState(false);
+  const [initials, setInitial] = useState(false);
+
+  const handleSetInitials = (value) => {
+    setInitial(value);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     setRowsCopy(rows);
@@ -108,24 +124,78 @@ const DataGrid = ({ rows, columns }) => {
               }
               sx={{ width: "100%", height: 70 }}
             >
-              <FilterItem
-                name="الأسم"
-                property="name"
-                array={rows}
-                setter={setRowsCopy}
-              />
-              <FilterItem name="كود البلد" properties={code} disableSorting />
-              <FilterItem name="المنطقة" properties={areaMenu} disableSorting />
-              <FilterItem
-                name="المشروع"
-                properties={projectsMenu}
-                disableSorting
-              />
-              <FilterItem
-                name="الميزانية"
-                properties={balance}
-                disableSorting
-              />
+              {nameWithSearch ? (
+                <>
+                  <FilterItem
+                    name="الأسم"
+                    property="name"
+                    array={rows}
+                    setter={setRowsCopy}
+                  />
+                  <Stack
+                    direction="row-reverse"
+                    alignItems="center"
+                    sx={{
+                      width: "100%",
+                      boxSizing: "border-box",
+                      paddingInline: 10,
+                    }}
+                  >
+                    <TextField
+                      variant="standard"
+                      placeholder="بحث"
+                      sx={{
+                        width: 400,
+                        "& .MuiInput-root": {
+                          borderRadius: "100vmax",
+                          border: "none",
+                          bgcolor: "#f5f5f5",
+                          padding: 0.5,
+                          boxSizing: "border-box",
+                        },
+                      }}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton>
+                              <SearchIcon />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Stack>
+                </>
+              ) : (
+                <>
+                  <FilterItem
+                    name="الأسم"
+                    property="name"
+                    array={rows}
+                    setter={setRowsCopy}
+                  />
+                  <FilterItem
+                    name="كود البلد"
+                    properties={code}
+                    disableSorting
+                  />
+                  <FilterItem
+                    name="المنطقة"
+                    properties={areaMenu}
+                    disableSorting
+                  />
+                  <FilterItem
+                    name="المشروع"
+                    properties={projectsMenu}
+                    disableSorting
+                  />
+                  <FilterItem
+                    name="الميزانية"
+                    properties={balance}
+                    disableSorting
+                  />
+                </>
+              )}
             </Stack>
             <Divider orientation="horizontal" />
             {/* Grid Content */}
@@ -158,6 +228,19 @@ const DataGrid = ({ rows, columns }) => {
                       >
                         {columns &&
                           columns.map((column, columnIndex) => {
+                            if (column.customeContent) {
+                              return (
+                                <TableCell key={columnIndex}>
+                                  {column.customeContent(
+                                    {
+                                      ...row,
+                                    },
+                                    setOpen,
+                                    handleSetInitials
+                                  )}
+                                </TableCell>
+                              );
+                            }
                             if (row[column.field]) {
                               return (
                                 <TableCell key={columnIndex}>
@@ -185,6 +268,11 @@ const DataGrid = ({ rows, columns }) => {
           <TablePagination />
         </Stack>
       </Paper>
+      <CustomersEditDialog
+        isOpened={open}
+        onClose={handleClose}
+        initials={initials}
+      />
     </Paper>
   );
 };

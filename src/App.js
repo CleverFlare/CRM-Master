@@ -13,6 +13,7 @@ import CustomersExport from "./pages/customers-export/CustomersExport";
 import ProjectsDisplay from "./pages/projects-display/ProjectsDisplay";
 import ProjectsAddNew from "./pages/projects-add-new/ProjectsAddNew";
 import Reports from "./pages/reports/Reports";
+import EmployeesData from "./pages/employees-data/EmployeesData";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
             <Route path="/add-channel" element={<AddChannel />} />
             <Route path="/customers/add-new" element={<CustomersAddNew />} />
             <Route path="/employees/new" element={<EmployeesAddNew />} />
+            <Route path="/employees/data" element={<EmployeesData />} />
           </Routes>
         </Layout>
       </Router>

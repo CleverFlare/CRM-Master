@@ -1,4 +1,3 @@
-// import { DataGrid } from "@mui/x-data-grid";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Container } from "@mui/system";
 import Parameter from "../../components/parameter/Parameter";

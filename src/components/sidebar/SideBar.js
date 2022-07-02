@@ -116,7 +116,7 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
         },
         {
           text: "بيانات الموظفين",
-          path: "/employees/display",
+          path: "/employees/data",
         },
       ],
     },
