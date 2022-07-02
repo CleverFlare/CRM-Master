@@ -147,6 +147,7 @@ const EmployeesAddNew = () => {
                   handleControlUpdate("phone", value)
                 }
                 value={controls.phone}
+                inputProps={{ min: 0 }}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start" sx={{ margin: 0 }}>

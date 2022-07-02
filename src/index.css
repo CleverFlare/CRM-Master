@@ -4,6 +4,7 @@
   padding: 0;
   margin: 0;
   font-family: "Cairo", sans-serif;
+  /* -ms-overflow-style: none; */
 }
 
 body {
@@ -52,3 +53,7 @@ body {
 .disable-number-controllers {
   -moz-appearance: textfield;
 }
+
+/* ::-webkit-scrollbar {
+  display: none;
+} */

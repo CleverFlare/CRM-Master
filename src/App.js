@@ -6,6 +6,9 @@ import ChangePassword from "./pages/change-password/ChangePassword";
 import AddChannel from "./pages/add-channel/AddChannel";
 import CustomersAddNew from "./pages/customers-add-new/CustomersAddNew";
 import EmployeesAddNew from "./pages/employees-add-new/EmployeesAddNew";
+import CustomersDeleted from "./pages/customers-deleted/CustomersDeleted";
+import CustomersNew from "./pages/customers-new/CustomersNew";
+import CustomersImport from "./pages/customers-import/CustomersImport";
 
 function App() {
   return (
@@ -15,6 +18,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/customers/total" element={<TotalCustomers />} />
+            <Route path="/customers/deleted" element={<CustomersDeleted />} />
+            <Route path="/customers/new" element={<CustomersNew />} />
+            <Route path="/customers/import" element={<CustomersImport />} />
             <Route
               path="/settings/change-password"
               element={<ChangePassword />}

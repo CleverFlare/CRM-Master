@@ -10,6 +10,11 @@ const theme = createTheme({
       light: "#2d4997",
       dark: "#1a2a56",
     },
+    neutral: {
+      main: "#5b6071",
+      light: "#7e859b",
+      dark: "#474a56",
+    },
   },
   components: {
     MuiCardHeader: {

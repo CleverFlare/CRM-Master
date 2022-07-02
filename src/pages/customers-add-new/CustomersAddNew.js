@@ -188,6 +188,7 @@ const CustomersAddNew = () => {
                   handleControlUpdate("phone", value)
                 }
                 value={controls.phone}
+                inputProps={{ min: 0 }}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start" sx={{ margin: 0 }}>
@@ -277,7 +278,7 @@ const CustomersAddNew = () => {
                       return selected.replace(/\d/gi, "");
                     }
                   }}
-                  MenuProps={{ PaperProps: { style: { maxHeight: "300px" } } }}
+                  MenuProps={{ PaperProps: { style: { maxHeight: "250px" } } }}
                   IconComponent={KeyboardArrowDownIcon}
                   onChange={({ target: { value } }) =>
                     handleControlUpdate("saler", value)
@@ -327,7 +328,7 @@ const CustomersAddNew = () => {
                       return selected;
                     }
                   }}
-                  MenuProps={{ PaperProps: { style: { maxHeight: "300px" } } }}
+                  MenuProps={{ PaperProps: { style: { maxHeight: "250px" } } }}
                   IconComponent={KeyboardArrowDownIcon}
                   onChange={({ target: { value } }) =>
                     handleControlUpdate("channel", value)

@@ -1,5 +1,6 @@
 import {
   Button,
+  Grid,
   IconButton,
   InputAdornment,
   Paper,
@@ -24,10 +25,19 @@ const AddChannel = () => {
             },
           ]}
         />
-        <Paper sx={{ padding: 2, maxWidth: "666px", boxSizing: "border-box" }}>
-          <Stack direction="column" spacing={2}>
-            <Stack direction="row" spacing={5} sx={{ paddingRight: 10 }}>
-              <Typography>اسم القناة</Typography>
+        <Paper
+          sx={{
+            padding: 2,
+            paddingRight: 10,
+            maxWidth: "766px",
+            boxSizing: "border-box",
+          }}
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={2}>
+              <Typography color="primary">اسم القناة</Typography>
+            </Grid>
+            <Grid item xs={10}>
               <Paper
                 elevation={4}
                 sx={{
@@ -36,9 +46,11 @@ const AddChannel = () => {
               >
                 <TextField variant="standard" fullWidth />
               </Paper>
-            </Stack>
-            <Stack direction="row" spacing={5} sx={{ paddingRight: 10 }}>
-              <Typography>اسم القناة</Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography color="primary">صورة القناة</Typography>
+            </Grid>
+            <Grid item xs={10}>
               <Paper
                 elevation={4}
                 sx={{
@@ -80,8 +92,8 @@ const AddChannel = () => {
                   }}
                 />
               </Paper>
-            </Stack>
-          </Stack>
+            </Grid>
+          </Grid>
         </Paper>
         <Stack
           direction="row"

@@ -36,7 +36,11 @@ const Post = ({ name, picture, children }) => {
     setAnchorEl(null);
   };
   return (
-    <Card sx={{ maxWidth: "666px" }}>
+    <Card
+      sx={{
+        maxWidth: "766px",
+      }}
+    >
       <CardHeader
         avatar={
           <Avatar src={picture ? picture : null}>
