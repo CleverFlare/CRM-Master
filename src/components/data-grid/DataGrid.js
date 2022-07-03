@@ -1,5 +1,6 @@
 import {
   Box,
+  Collapse,
   Divider,
   FormControl,
   IconButton,
@@ -90,10 +91,14 @@ const projectsMenu = [
 
 const balance = "filter";
 
-const DataGrid = ({ rows, columns, nameWithSearch }) => {
+const DataGrid = ({ rows, columns, nameWithSearch, maxRowsPerPage }) => {
   const [rowsCopy, setRowsCopy] = useState(rows ? rows : null);
   const [open, setOpen] = useState(false);
   const [initials, setInitial] = useState(false);
+  const [pages, setPages] = useState(19);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sliceStart, setSliceStart] = useState(0);
+  const [sliceEnd, setSliceEnd] = useState(maxRowsPerPage);
 
   const handleSetInitials = (value) => {
     setInitial(value);
@@ -105,7 +110,13 @@ const DataGrid = ({ rows, columns, nameWithSearch }) => {
 
   useEffect(() => {
     setRowsCopy(rows);
+    setPages(Math.ceil(rows.length / maxRowsPerPage));
   }, []);
+
+  useEffect(() => {
+    setSliceStart(maxRowsPerPage * (currentPage - 1));
+    setSliceEnd(maxRowsPerPage * currentPage);
+  }, [currentPage]);
 
   return (
     <Paper sx={{ overflowX: "auto" }} elevation={2}>
@@ -199,65 +210,71 @@ const DataGrid = ({ rows, columns, nameWithSearch }) => {
             </Stack>
             <Divider orientation="horizontal" />
             {/* Grid Content */}
-            <Table
-              sx={{
-                width: "100%",
-                "& .MuiTableCell-root": {
-                  border: "none",
-                },
-              }}
-            >
-              <TableHead>
-                <TableRow>
-                  {columns.map((column, index) => (
-                    <TableCell key={index}>
-                      {column.headerName ? column.headerName : column.field}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rowsCopy &&
-                  rowsCopy.map((row, rowIndex) => {
-                    return (
-                      <TableRow
-                        sx={{
-                          bgcolor: rowIndex % 2 == 0 ? "#f5f5f5" : "initial",
-                        }}
-                        key={rowIndex}
-                      >
-                        {columns &&
-                          columns.map((column, columnIndex) => {
-                            if (column.customeContent) {
-                              return (
-                                <TableCell key={columnIndex}>
-                                  {column.customeContent(
-                                    {
-                                      ...row,
-                                    },
-                                    setOpen,
-                                    handleSetInitials
-                                  )}
-                                </TableCell>
-                              );
-                            }
-                            if (row[column.field]) {
-                              return (
-                                <TableCell key={columnIndex}>
-                                  {row[column.field]}
-                                </TableCell>
-                              );
-                            } else {
-                              throw Error(
-                                `The field "${column.field}" does not match any key in the object, error fired at index ${rowIndex}`
-                              );
-                            }
-                          })}
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
+            <Box sx={{ maxHeight: 600, minHeight: 600, overflowY: "auto" }}>
+              <Table
+                sx={{
+                  width: "100%",
+                  "& .MuiTableCell-root": {
+                    height: "max-content",
+                    border: "none",
+                  },
+                }}
+              >
+                <TableHead>
+                  <TableRow>
+                    {columns.map((column, index) => (
+                      <TableCell key={index}>
+                        {column.headerName ? column.headerName : column.field}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {rowsCopy &&
+                    rowsCopy
+                      .slice(sliceStart, sliceEnd)
+                      .map((row, rowIndex) => {
+                        return (
+                          <TableRow
+                            sx={{
+                              bgcolor:
+                                rowIndex % 2 == 0 ? "#f5f5f5" : "initial",
+                            }}
+                            key={rowIndex}
+                          >
+                            {columns &&
+                              columns.map((column, columnIndex) => {
+                                if (column.customeContent) {
+                                  return (
+                                    <TableCell key={columnIndex}>
+                                      {column.customeContent(
+                                        {
+                                          ...row,
+                                        },
+                                        setOpen,
+                                        handleSetInitials
+                                      )}
+                                    </TableCell>
+                                  );
+                                }
+                                if (row[column.field]) {
+                                  return (
+                                    <TableCell key={columnIndex}>
+                                      {row[column.field]}
+                                    </TableCell>
+                                  );
+                                } else {
+                                  throw Error(
+                                    `The field "${column.field}" does not match any key in the object, error fired at index ${rowIndex}`
+                                  );
+                                }
+                              })}
+                          </TableRow>
+                        );
+                      })}
+                </TableBody>
+              </Table>
+            </Box>
           </Stack>
         </Box>
         <Stack
@@ -265,7 +282,11 @@ const DataGrid = ({ rows, columns, nameWithSearch }) => {
           justifyContent="center"
           sx={{ direction: "rtl", paddingBlock: 1 }}
         >
-          <TablePagination />
+          <TablePagination
+            max={pages}
+            page={currentPage}
+            setPage={setCurrentPage}
+          />
         </Stack>
       </Paper>
       <CustomersEditDialog

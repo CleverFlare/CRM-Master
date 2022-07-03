@@ -17,6 +17,35 @@ const theme = createTheme({
     },
   },
   components: {
+    MuiSwitch: {
+      styleOverrides: {
+        root: {
+          padding: "9px",
+        },
+        switchBase: {
+          left: "unset",
+          right: 0,
+          "&.Mui-checked": {
+            color: "unset",
+          },
+        },
+        colorPrimary: {
+          "&.Mui-checked + .MuiSwitch-track": {
+            opacity: 1,
+            backgroundColor: "#00c2a6",
+          },
+          "&.Mui-checked": {
+            transform: "translateX(-20px)",
+          },
+        },
+        track: {
+          // Controls default (unchecked) color for the track
+          opacity: 1,
+          backgroundColor: "#ff8a80",
+          borderRadius: "100vmax",
+        },
+      },
+    },
     MuiCardHeader: {
       styleOverrides: {
         avatar: {

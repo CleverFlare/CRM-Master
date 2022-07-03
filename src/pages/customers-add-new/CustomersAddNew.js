@@ -261,7 +261,7 @@ const CustomersAddNew = () => {
                 variant="standard"
                 sx={{ width: sm ? "100%" : "400px" }}
               >
-                <InputLabel id="something">مسؤول المبيعات</InputLabel>
+                <InputLabel>مسؤول المبيعات</InputLabel>
                 <Select
                   displayEmpty
                   renderValue={(selected) => {

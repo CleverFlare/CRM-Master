@@ -140,7 +140,7 @@ const CustomersDeleted = () => {
             },
           ]}
         />
-        <DataGrid rows={dummyRows} columns={dummyColumns} />
+        <DataGrid rows={dummyRows} columns={dummyColumns} maxRowsPerPage={10} />
       </Wrapper>
     </div>
   );

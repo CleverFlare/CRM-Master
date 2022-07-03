@@ -90,7 +90,7 @@ const dummyColumns = [
 
 const dummyRows = [
   {
-    name: "محمد علي",
+    name: "احمد علي",
     email: "mohammadali@gmail.com",
     job: "مندوب مبيعات",
   },
@@ -138,7 +138,12 @@ const EmployeesData = () => {
         <Parameter
           links={[{ text: "الموظفين" }, { text: "بيانات الموظفين" }]}
         />
-        <DataGrid rows={dummyRows} columns={dummyColumns} nameWithSearch />
+        <DataGrid
+          rows={dummyRows}
+          columns={dummyColumns}
+          nameWithSearch
+          maxRowsPerPage={5}
+        />
       </Wrapper>
     </>
   );

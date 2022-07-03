@@ -3,10 +3,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useState, useEffect } from "react";
 
-const TablePagination = () => {
-  const [page, setPage] = useState(1);
-  const max = 19;
-
+const TablePagination = ({ max, page, setPage }) => {
   const handleChange = (event) => {
     setPage(event.target.value);
   };

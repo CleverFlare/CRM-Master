@@ -8,11 +8,9 @@ import theme, { cacheRtl } from "./theme";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <CacheProvider value={cacheRtl}>
-      <ThemeProvider theme={theme}>
-        <App />
-      </ThemeProvider>
-    </CacheProvider>
-  </React.StrictMode>
+  <CacheProvider value={cacheRtl}>
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
+  </CacheProvider>
 );
