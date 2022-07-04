@@ -97,6 +97,20 @@ const channels = [
 const CustomersAddNew = () => {
   const sm = useMediaQuery("(max-width:912px)");
 
+  const [errors, setErrors] = useState({
+    name: false,
+    phone: false,
+    email: false,
+    project: false,
+    saler: false,
+    mediator: false,
+    channel: false,
+    contact: false,
+    balance: false,
+  });
+
+  const [doErrorsExist, setDoErrorsExist] = useState(true);
+
   const [controls, setControls] = useState({
     name: "",
     phone: "",
@@ -119,6 +133,71 @@ const CustomersAddNew = () => {
 
   const handleControlUpdate = (controlName, value) => {
     setControls({ ...controls, [controlName]: value });
+  };
+
+  const handleValidate = () => {
+    setDoErrorsExist(false);
+    setErrors({
+      name: false,
+      phone: false,
+      email: false,
+      project: false,
+      saler: false,
+      mediator: false,
+      channel: false,
+      contact: false,
+      balance: false,
+    });
+    if (!controls.name) {
+      setErrors((oldObject) => ({ ...oldObject, name: true }));
+      setDoErrorsExist(true);
+    }
+    if (!controls.phone) {
+      setErrors((oldObject) => ({ ...oldObject, phone: true }));
+      setDoErrorsExist(true);
+    }
+    if (!controls.email) {
+      setErrors((oldObject) => ({ ...oldObject, email: true }));
+      setDoErrorsExist(true);
+    }
+    if (!controls.project) {
+      setErrors((oldObject) => ({ ...oldObject, project: true }));
+      setDoErrorsExist(true);
+    }
+    if (!controls.saler) {
+      setErrors((oldObject) => ({ ...oldObject, saler: true }));
+      setDoErrorsExist(true);
+    }
+    if (!controls.mediator) {
+      setErrors((oldObject) => ({ ...oldObject, mediator: true }));
+      setDoErrorsExist(true);
+    }
+    if (!controls.channel) {
+      setErrors((oldObject) => ({ ...oldObject, channel: true }));
+      setDoErrorsExist(true);
+    }
+    if (!controls.contact) {
+      setErrors((oldObject) => ({ ...oldObject, contact: true }));
+      setDoErrorsExist(true);
+    }
+    if (!controls.balance) {
+      setErrors((oldObject) => ({ ...oldObject, balance: true }));
+      setDoErrorsExist(true);
+    }
+    return;
+  };
+
+  const handleSubmit = () => {
+    handleValidate();
+    if (doErrorsExist) return;
+    console.log(doErrorsExist);
+    // fetch("http://137.184.58.193:8000/aqar/api/router/Client/", {
+    //   method: "POST",
+    //   headers: {
+    //     //prettier-ignore
+    //     "Authorization": "Token 4b0d32e62fab4bf53d1907ab69cf6b3a9583eca1",
+    //   },
+    // });
   };
 
   return (
@@ -155,12 +234,18 @@ const CustomersAddNew = () => {
                 variant="standard"
                 label="الأسم"
                 placeholder="الأسم"
-                sx={{ width: sm ? "100%" : "400px" }}
+                sx={{
+                  width: sm ? "100%" : "400px",
+                  "& .MuiInputBase-formControl": {
+                    borderColor: errors.name ? "#ff000066" : "#00000021",
+                  },
+                }}
                 fullWidth={sm}
                 onChange={({ target: { value } }) =>
                   handleControlUpdate("name", value)
                 }
                 value={controls.name}
+                error={errors.name}
               />
               <TextField
                 type="number"
@@ -180,6 +265,9 @@ const CustomersAddNew = () => {
                       appearance: "none",
                       margin: 0,
                     },
+                  "& .MuiInputBase-formControl": {
+                    borderColor: errors.phone ? "#ff000066" : "#00000021",
+                  },
                 }}
                 fullWidth={sm}
                 pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
@@ -227,17 +315,24 @@ const CustomersAddNew = () => {
                     </InputAdornment>
                   ),
                 }}
+                error={errors.phone}
               />
               <TextField
                 variant="standard"
                 label="الريد الإلكتروني"
                 placeholder="الريد الإلكتروني"
-                sx={{ width: sm ? "100%" : "400px" }}
+                sx={{
+                  width: sm ? "100%" : "400px",
+                  "& .MuiInputBase-formControl": {
+                    borderColor: errors.email ? "#ff000066" : "#00000021",
+                  },
+                }}
                 fullWidth={sm}
                 onChange={({ target: { value } }) =>
                   handleControlUpdate("email", value)
                 }
                 value={controls.email}
+                error={errors.email}
               />
             </Stack>
             <Stack
@@ -250,16 +345,28 @@ const CustomersAddNew = () => {
                 variant="standard"
                 label="المشروع"
                 placeholder="المشروع"
-                sx={{ width: sm ? "100%" : "400px" }}
+                sx={{
+                  width: sm ? "100%" : "400px",
+                  "& .MuiInputBase-formControl": {
+                    borderColor: errors.project ? "#ff000066" : "#00000021",
+                  },
+                }}
                 fullWidth={sm}
                 onChange={({ target: { value } }) =>
                   handleControlUpdate("project", value)
                 }
                 value={controls.project}
+                error={errors.project}
               />
               <FormControl
                 variant="standard"
-                sx={{ width: sm ? "100%" : "400px" }}
+                sx={{
+                  width: sm ? "100%" : "400px",
+                  "& .MuiInputBase-formControl": {
+                    borderColor: errors.saler ? "#ff000066" : "#00000021",
+                  },
+                }}
+                error={errors.saler}
               >
                 <InputLabel>مسؤول المبيعات</InputLabel>
                 <Select
@@ -296,8 +403,21 @@ const CustomersAddNew = () => {
                 variant="standard"
                 label="الوسيط"
                 placeholder="الوسيط"
-                sx={{ width: sm ? "100%" : "400px" }}
+                sx={{
+                  width: sm ? "100%" : "400px",
+                  "& .MuiInputBase-formControl": {
+                    borderColor: errors.mediator ? "#ff000066" : "#00000021",
+                  },
+                }}
+                value={controls.mediator}
+                onChange={(event) =>
+                  setControls((oldObject) => ({
+                    ...oldObject,
+                    mediator: event.target.value,
+                  }))
+                }
                 fullWidth={sm}
+                error={errors.mediator}
               />
             </Stack>
             <Stack
@@ -308,7 +428,13 @@ const CustomersAddNew = () => {
             >
               <FormControl
                 variant="standard"
-                sx={{ width: sm ? "100%" : "400px" }}
+                sx={{
+                  width: sm ? "100%" : "400px",
+                  "& .MuiInputBase-formControl": {
+                    borderColor: errors.channel ? "#ff000066" : "#00000021",
+                  },
+                }}
+                error={errors.channel}
               >
                 <InputLabel>القناة الإعلانية</InputLabel>
                 <Select
@@ -324,7 +450,6 @@ const CustomersAddNew = () => {
                         </Typography>
                       );
                     } else {
-                      console.log(selected.length);
                       return selected;
                     }
                   }}
@@ -357,12 +482,18 @@ const CustomersAddNew = () => {
                 variant="standard"
                 label="طريقة التواصل"
                 placeholder="طريقة التواصل"
-                sx={{ width: sm ? "100%" : "400px" }}
+                sx={{
+                  width: sm ? "100%" : "400px",
+                  "& .MuiInputBase-formControl": {
+                    borderColor: errors.contact ? "#ff000066" : "#00000021",
+                  },
+                }}
                 fullWidth={sm}
                 onChange={({ target: { value } }) =>
                   handleControlUpdate("contact", value)
                 }
                 value={controls.contact}
+                error={errors.contact}
               />
               <TextField
                 type="number"
@@ -382,12 +513,16 @@ const CustomersAddNew = () => {
                       appearance: "none",
                       margin: 0,
                     },
+                  "& .MuiInputBase-formControl": {
+                    borderColor: errors.balance ? "#ff000066" : "#00000021",
+                  },
                 }}
                 fullWidth={sm}
                 onChange={({ target: { value } }) =>
                   handleControlUpdate("balance", value)
                 }
                 value={controls.balance}
+                error={errors.balance}
               />
             </Stack>
           </Stack>
@@ -397,7 +532,7 @@ const CustomersAddNew = () => {
             spacing={1}
             sx={{ padding: 2, bgcolor: "#fffaf3" }}
           >
-            <Button variant="contained" color="primary">
+            <Button variant="contained" color="primary" onClick={handleSubmit}>
               حفظ
             </Button>
             <Button variant="contained" color="error">

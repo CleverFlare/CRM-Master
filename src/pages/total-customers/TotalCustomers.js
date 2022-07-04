@@ -1,9 +1,7 @@
-import MenuIcon from "@mui/icons-material/Menu";
-import { Container } from "@mui/system";
 import Parameter from "../../components/parameter/Parameter";
-import { Avatar, Box, Paper } from "@mui/material";
 import DataGrid from "../../components/data-grid/DataGrid";
 import Wrapper from "../../components/wrapper/Wrapper";
+import { useEffect, useState } from "react";
 
 const dummyColumns = [
   {
@@ -32,147 +30,43 @@ const dummyColumns = [
   },
 ];
 
-const dummyRows = [
-  {
-    name: "أ",
-    phone: "01010203112",
-    project: "الشيخ زايد & أكتوبر",
-    comment: "لايوجد",
-    saler: "أحمد محمد",
-    channel: "اليوتيوب",
-  },
-  {
-    name: "ب",
-    phone: "01010203112",
-    project: "الشيخ زايد & أكتوبر",
-    comment: "لايوجد",
-    saler: "أحمد محمد",
-    channel: "اليوتيوب",
-  },
-  {
-    name: "ت",
-    phone: "01010203112",
-    project: "الشيخ زايد & أكتوبر",
-    comment: "لايوجد",
-    saler: "أحمد محمد",
-    channel: "اليوتيوب",
-  },
-  {
-    name: "ث",
-    phone: "01010203112",
-    project: "الشيخ زايد & أكتوبر",
-    comment: "لايوجد",
-    saler: "أحمد محمد",
-    channel: "اليوتيوب",
-  },
-  {
-    name: "ج",
-    phone: "01010203112",
-    project: "الشيخ زايد & أكتوبر",
-    comment: "لايوجد",
-    saler: "أحمد محمد",
-    channel: "اليوتيوب",
-  },
-  {
-    name: "ح",
-
-    phone: "01010203112",
-    project: "الشيخ زايد & أكتوبر",
-    comment: "لايوجد",
-    saler: "أحمد محمد",
-    channel: "اليوتيوب",
-  },
-  {
-    name: "خ",
-    phone: "01010203112",
-    project: "الشيخ زايد & أكتوبر",
-    comment: "لايوجد",
-    saler: "أحمد محمد",
-    channel: "اليوتيوب",
-  },
-  {
-    name: "خ",
-    phone: "01010203112",
-    project: "الشيخ زايد & أكتوبر",
-    comment: "لايوجد",
-    saler: "أحمد محمد",
-    channel: "اليوتيوب",
-  },
-  {
-    name: "خ",
-    phone: "01010203112",
-    project: "الشيخ زايد & أكتوبر",
-    comment: "لايوجد",
-    saler: "أحمد محمد",
-    channel: "اليوتيوب",
-  },
-  {
-    name: "خ",
-    phone: "01010203112",
-    project: "الشيخ زايد & أكتوبر",
-    comment: "لايوجد",
-    saler: "أحمد محمد",
-    channel: "اليوتيوب",
-  },
-  {
-    name: "خ",
-    phone: "01010203112",
-    project: "الشيخ زايد & أكتوبر",
-    comment: "لايوجد",
-    saler: "أحمد محمد",
-    channel: "اليوتيوب",
-  },
-  {
-    name: "خ",
-    phone: "01010203112",
-    project: "الشيخ زايد & أكتوبر",
-    comment: "لايوجد",
-    saler: "أحمد محمد",
-    channel: "اليوتيوب",
-  },
-  {
-    name: "خ",
-    phone: "01010203112",
-    project: "الشيخ زايد & أكتوبر",
-    comment: "لايوجد",
-    saler: "أحمد محمد",
-    channel: "اليوتيوب",
-  },
-  {
-    name: "خ",
-    phone: "01010203112",
-    project: "الشيخ زايد & أكتوبر",
-    comment: "لايوجد",
-    saler: "أحمد محمد",
-    channel: "اليوتيوب",
-  },
-  {
-    name: "خ",
-    phone: "01010203112",
-    project: "الشيخ زايد & أكتوبر",
-    comment: "لايوجد",
-    saler: "أحمد محمد",
-    channel: "اليوتيوب",
-  },
-  {
-    name: "خ",
-    phone: "01010203112",
-    project: "الشيخ زايد & أكتوبر",
-    comment: "لايوجد",
-    saler: "أحمد محمد",
-    channel: "اليوتيوب",
-  },
-  {
-    name: "خ",
-    phone: "01010203112",
-    project: "الشيخ زايد & أكتوبر",
-    comment: "لايوجد",
-    saler: "أحمد محمد",
-    channel: "اليوتيوب",
-  },
-];
-
 const TotalCustomers = () => {
+  const [rows, setRows] = useState(null);
+  const parseToProperData = (json) => {
+    let parentArray = [];
+    json.map((item, index) => {
+      console.log(item.bussiness.join(", "));
+      const customer = {
+        name: item.user.first_name + " " + item.user.last_name,
+        phone: item.user.phone,
+        project:
+          item.bussiness.length >= 0 ? item.bussiness.join(", ") : "لا يوجد",
+        comment: "لايوجد",
+        saler: item.agent,
+        channel: item.channel,
+      };
+      parentArray.push(customer);
+    });
+    return parentArray;
+  };
+
+  useEffect(() => {
+    fetch("http://137.184.58.193:8000/aqar/api/router/Client/", {
+      method: "GET",
+      headers: {
+        //prettier-ignore
+        "Authorization": "Token 4b0d32e62fab4bf53d1907ab69cf6b3a9583eca1",
+      },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((json) => {
+        console.log(json);
+        setRows(parseToProperData(json));
+        console.log(parseToProperData(json));
+      });
+  }, []);
   return (
     <div style={{ height: 697 }}>
       <Wrapper sx={{ height: "100%" }}>
@@ -188,7 +82,7 @@ const TotalCustomers = () => {
             },
           ]}
         />
-        <DataGrid rows={dummyRows} columns={dummyColumns} maxRowsPerPage={10} />
+        <DataGrid rows={rows} columns={dummyColumns} maxRowsPerPage={10} />
       </Wrapper>
     </div>
   );
