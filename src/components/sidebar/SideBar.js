@@ -1,12 +1,15 @@
 import {
   Avatar,
+  Badge,
   Collapse,
   Divider,
   Drawer,
+  IconButton,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Stack,
   Typography,
 } from "@mui/material";
 import AutoAwesomeMosaicIcon from "@mui/icons-material/AutoAwesomeMosaic";
@@ -19,6 +22,8 @@ import BadgeIcon from "@mui/icons-material/Badge";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
+import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
+import EditIcon from "@mui/icons-material/Edit";
 import { Box } from "@mui/system";
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -166,7 +171,7 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
           color: "white",
           border: "none",
           borderRadius: !permanent ? "0 50px 50px 0" : 0,
-          boxShadow: "-1px -1px 10px -1px rgb(35 57 117)",
+          boxShadow: "2px -1px 10px -1px rgb(35 57 117)",
           right: "none",
           left: 0,
         },
@@ -185,7 +190,30 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
           padding: "20px 0",
         }}
       >
-        <Avatar sx={{ width: 60, height: 60 }} />
+        <Badge
+          overlap="circular"
+          badgeContent={
+            <IconButton
+              sx={{
+                bgcolor: "white",
+                color: "black",
+                boxShadow: "0 0 10px #fff",
+                "&:hover": {
+                  bgcolor: "white",
+                },
+              }}
+              size="small"
+            >
+              <AddAPhotoIcon color="primary" fontSize="small" />
+            </IconButton>
+          }
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+        >
+          <Avatar sx={{ width: 60, height: 60 }} />
+        </Badge>
         <Box
           sx={{
             display: "flex",
@@ -193,7 +221,27 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
             paddingTop: "10px",
           }}
         >
-          <Typography>{name}</Typography>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="center"
+            sx={{ position: "relative" }}
+          >
+            <IconButton
+              sx={{
+                color: "white",
+                position: "absolute",
+                left: "-50%",
+              }}
+            >
+              <EditIcon
+                sx={{ color: "white" }}
+                fontSize="small"
+                sx={{ fontSize: "15px" }}
+              />
+            </IconButton>
+            <Typography>{name}</Typography>
+          </Stack>
           <Typography variant="caption">{role}</Typography>
         </Box>
       </Box>

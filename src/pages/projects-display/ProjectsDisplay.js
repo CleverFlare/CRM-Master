@@ -1,4 +1,5 @@
-import { Paper, Stack } from "@mui/material";
+import { Paper, Stack, Typography } from "@mui/material";
+import { Box } from "@mui/system";
 import { useState } from "react";
 import { useEffect } from "react";
 import Parameter from "../../components/parameter/Parameter";
@@ -13,14 +14,13 @@ const ProjectSkeletonsStack = () => {
       <ProjectSkeleton />
       <ProjectSkeleton />
       <ProjectSkeleton />
-      <ProjectSkeleton />
-      <ProjectSkeleton />
     </>
   );
 };
 
 const ProjectsDisplay = () => {
   const [projects, setProjects] = useState([]);
+  const [isPending, setIsPending] = useState(true);
   useEffect(() => {
     fetch("http://137.184.58.193:8000/aqar/api/router/Project/", {
       method: "GET",
@@ -35,6 +35,7 @@ const ProjectsDisplay = () => {
       .then((json) => {
         console.log(json);
         setProjects(json);
+        setIsPending(false);
       });
   }, []);
   return (
@@ -52,20 +53,8 @@ const ProjectsDisplay = () => {
         ]}
       />
       <Stack spacing={4}>
-        {projects.length <= 0 && <ProjectSkeletonsStack />}
+        {isPending && <ProjectSkeletonsStack />}
         {projects.length > 0 &&
-          // <>
-          //   <Project
-          //     picture="https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-          //     title={"مشروع الشيخ زايد & أكتوبر"}
-          //     address={"اكتوبر غرب سوميد، مجاور 2، فيلا 10"}
-          //   />
-          //   <Project
-          //     picture="https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-          //     title={"مشروع بس مش عارف اسميه ايه"}
-          //     address={"بلا بلا بلا بلا"}
-          //   />
-          // </>
           projects.map((project, index) => (
             <Project
               key={index}
@@ -75,6 +64,17 @@ const ProjectsDisplay = () => {
               id={project.id}
             />
           ))}
+        {projects.length <= 0 && !isPending && (
+          <Stack
+            justifyContent="center"
+            alignItems="center"
+            sx={{ width: "100%", flex: 1 }}
+          >
+            <Typography variant="h5" sx={{ color: "gray", fontWeight: "bold" }}>
+              لا يوجد مشاريع
+            </Typography>
+          </Stack>
+        )}
       </Stack>
     </Wrapper>
   );

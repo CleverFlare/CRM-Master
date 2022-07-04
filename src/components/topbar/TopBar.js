@@ -52,10 +52,7 @@ const TopBar = ({ mobile, onBurgerClick }) => {
     >
       <Toolbar>
         {mobile && (
-          <IconButton
-            sx={{ color: "white", marginLeft: 5 }}
-            onClick={() => onBurgerClick()}
-          >
+          <IconButton sx={{ color: "white" }} onClick={() => onBurgerClick()}>
             <MenuIcon />
           </IconButton>
         )}

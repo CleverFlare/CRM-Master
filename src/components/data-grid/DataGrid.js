@@ -108,6 +108,14 @@ const DataGrid = ({ rows, columns, nameWithSearch, maxRowsPerPage }) => {
     setOpen(false);
   };
 
+  const handleSearchName = (event) => {
+    const filteredArray = rows.filter((item, index) =>
+      item.name.includes(event.target.value)
+    );
+    console.log(filteredArray);
+    setRowsCopy(filteredArray);
+  };
+
   useEffect(() => {
     setRowsCopy(rows);
     setPages(Math.ceil(rows.length / maxRowsPerPage));
@@ -165,6 +173,7 @@ const DataGrid = ({ rows, columns, nameWithSearch, maxRowsPerPage }) => {
                           boxSizing: "border-box",
                         },
                       }}
+                      onChange={handleSearchName}
                       InputProps={{
                         endAdornment: (
                           <InputAdornment position="end">

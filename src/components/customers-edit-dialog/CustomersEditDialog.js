@@ -537,7 +537,7 @@ const CustomersEditDialog = ({ isOpened, onClose, initials }) => {
           >
             حفظ
           </Button>
-          <Button variant="contained" color="error">
+          <Button variant="contained" color="error" onClick={onClose}>
             إلغاء
           </Button>
         </Stack>

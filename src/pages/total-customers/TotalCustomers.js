@@ -8,7 +8,7 @@ import Wrapper from "../../components/wrapper/Wrapper";
 const dummyColumns = [
   {
     field: "name",
-    headerName: "الأسم",
+    headerName: "الاسم",
   },
   {
     field: "phone",
@@ -75,6 +75,7 @@ const dummyRows = [
   },
   {
     name: "ح",
+
     phone: "01010203112",
     project: "الشيخ زايد & أكتوبر",
     comment: "لايوجد",

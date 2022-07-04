@@ -110,7 +110,7 @@ const Post = ({ name, picture, children }) => {
           <Button endIcon={<ChatBubbleIcon />}>تعليقات</Button>
         </Tooltip>
         <Tooltip title="share">
-          <IconButton>
+          <IconButton color="primary">
             <ReplyIcon color="primary" sx={{ transform: "scaleX(-1)" }} />
           </IconButton>
         </Tooltip>

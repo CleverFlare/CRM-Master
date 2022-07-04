@@ -12,6 +12,7 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useRef } from "react";
 import { useState } from "react";
 import { Box } from "@mui/system";
+import ErrorPrompt from "../../components/error-prompt/ErrorPrompt";
 
 const ProjectsAddNew = () => {
   const sm = useMediaQuery("(min-width: 896px)");
@@ -19,8 +20,39 @@ const ProjectsAddNew = () => {
   const [address, setAddress] = useState("");
   const fileRef = useRef();
   const [imageURl, setImageURL] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [errors, setErrors] = useState({
+    name: false,
+    address: false,
+    image: false,
+  });
+  const openPrompt = Boolean(errorMessage);
+
+  const handleCheckForErrors = () => {
+    setErrors({
+      name: false,
+      address: false,
+      image: false,
+    });
+    setErrorMessage("");
+    if (!name || !address || !fileRef.current.files[0]) {
+      setErrorMessage("الرجاء ملئ جميع الخانات");
+    }
+    if (!name) {
+      setErrors((oldObject) => ({ ...oldObject, name: true }));
+    }
+    if (!address) {
+      setErrors((oldObject) => ({ ...oldObject, address: true }));
+    }
+    if (!fileRef.current.files[0]) {
+      setErrors((oldObject) => ({ ...oldObject, image: true }));
+    }
+    return;
+  };
 
   const handlePost = (event) => {
+    handleCheckForErrors();
+    if (errorMessage) return;
     const formData = new FormData();
 
     formData.append("name", name);
@@ -85,6 +117,7 @@ const ProjectsAddNew = () => {
               cursor: "pointer",
               position: "relative",
               overflow: "hidden",
+              outline: errors.image ? "1px solid #ff000066" : "unset",
             }}
             onClick={() => fileRef.current.click()}
           >
@@ -142,7 +175,12 @@ const ProjectsAddNew = () => {
                 variant="standard"
                 label="اسم المشروع"
                 placeholder="اسم المشروع"
-                sx={{ maxWidth: 600 }}
+                sx={{
+                  maxWidth: 600,
+                  "& .MuiInputBase-formControl": {
+                    borderColor: errors.name ? "#ff000066" : "#00000021",
+                  },
+                }}
                 value={name}
                 onChange={(event) => setName(event.target.value)}
               />
@@ -150,10 +188,23 @@ const ProjectsAddNew = () => {
                 variant="standard"
                 label="العنوان"
                 placeholder="عنوان المشروع"
-                sx={{ maxWidth: 600 }}
+                sx={{
+                  maxWidth: 600,
+                  "& .MuiInputBase-formControl": {
+                    borderColor: errors.address ? "#ff000066" : "#00000021",
+                  },
+                }}
                 value={address}
                 onChange={(event) => setAddress(event.target.value)}
               />
+
+              <ErrorPrompt
+                open={openPrompt}
+                onClose={() => setErrorMessage("")}
+                // sx={{ maxWidth: 600 }}
+              >
+                {errorMessage}
+              </ErrorPrompt>
             </Stack>
           </Paper>
         </Stack>

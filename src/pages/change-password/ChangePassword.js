@@ -74,6 +74,9 @@ const ChangePassword = () => {
                     paddingBlock: 1.2,
                     fontSize: 15,
                   },
+                  "& .MuiInputBase-formControl": {
+                    borderColor: "#233975",
+                  },
                 }}
                 InputProps={{
                   endAdornment: (
@@ -83,9 +86,9 @@ const ChangePassword = () => {
                     >
                       <IconButton>
                         {visibilities.old ? (
-                          <VisibilityIcon />
+                          <VisibilityIcon color="primary" />
                         ) : (
-                          <VisibilityOffIcon />
+                          <VisibilityOffIcon color="primary" />
                         )}
                       </IconButton>
                     </InputAdornment>
@@ -107,15 +110,18 @@ const ChangePassword = () => {
                     paddingBlock: 1.2,
                     fontSize: 15,
                   },
+                  "& .MuiInputBase-formControl": {
+                    borderColor: "#233975",
+                  },
                 }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton onClick={() => handleVisibilityToggle("new")}>
                         {visibilities.new ? (
-                          <VisibilityIcon />
+                          <VisibilityIcon color="primary" />
                         ) : (
-                          <VisibilityOffIcon />
+                          <VisibilityOffIcon color="primary" />
                         )}
                       </IconButton>
                     </InputAdornment>
@@ -137,6 +143,9 @@ const ChangePassword = () => {
                     paddingBlock: 1.2,
                     fontSize: 15,
                   },
+                  "& .MuiInputBase-formControl": {
+                    borderColor: "#233975",
+                  },
                 }}
                 InputProps={{
                   endAdornment: (
@@ -145,9 +154,9 @@ const ChangePassword = () => {
                         onClick={() => handleVisibilityToggle("confirm")}
                       >
                         {visibilities.confirm ? (
-                          <VisibilityIcon />
+                          <VisibilityIcon color="primary" />
                         ) : (
-                          <VisibilityOffIcon />
+                          <VisibilityOffIcon color="primary" />
                         )}
                       </IconButton>
                     </InputAdornment>
