@@ -19,6 +19,7 @@ import TablePagination from "./items/TablePagination";
 import SearchIcon from "@mui/icons-material/Search";
 import CustomersEditDialog from "../../components/customers-edit-dialog/CustomersEditDialog";
 import { useState, useEffect } from "react";
+import EditCustomerPassword from "../edit-customer-password/EditCustomerPassword";
 
 const areaMenu = [
   {
@@ -93,7 +94,8 @@ const balance = "filter";
 
 const DataGrid = ({ rows, columns, nameWithSearch, maxRowsPerPage }) => {
   const [rowsCopy, setRowsCopy] = useState(rows ? rows : null);
-  const [open, setOpen] = useState(false);
+  const [openEditInfo, setOpenEditInfo] = useState(false);
+  const [openEditPass, setOpenEditPass] = useState(false);
   const [initials, setInitial] = useState(false);
   const [pages, setPages] = useState(19);
   const [currentPage, setCurrentPage] = useState(1);
@@ -104,8 +106,12 @@ const DataGrid = ({ rows, columns, nameWithSearch, maxRowsPerPage }) => {
     setInitial(value);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseEditInfo = () => {
+    setOpenEditInfo(false);
+  };
+
+  const handleCloseEditPass = () => {
+    setOpenEditPass(false);
   };
 
   const handleSearchName = (event) => {
@@ -260,7 +266,8 @@ const DataGrid = ({ rows, columns, nameWithSearch, maxRowsPerPage }) => {
                                         {
                                           ...row,
                                         },
-                                        setOpen,
+                                        setOpenEditInfo,
+                                        setOpenEditPass,
                                         handleSetInitials
                                       )}
                                     </TableCell>
@@ -299,9 +306,13 @@ const DataGrid = ({ rows, columns, nameWithSearch, maxRowsPerPage }) => {
         </Stack>
       </Paper>
       <CustomersEditDialog
-        isOpened={open}
-        onClose={handleClose}
+        isOpened={openEditInfo}
+        onClose={handleCloseEditInfo}
         initials={initials}
+      />
+      <EditCustomerPassword
+        isOpened={openEditPass}
+        onClose={handleCloseEditPass}
       />
     </Paper>
   );

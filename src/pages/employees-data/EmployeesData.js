@@ -23,7 +23,7 @@ const dummyColumns = [
   {
     field: "edit",
     headerName: "تعديل",
-    customeContent: (params, setter, onEdit) => (
+    customeContent: (params, editInfoSetter, editPassSetter, onEdit) => (
       <>
         <Stack direction="row" sx={{ width: 300 }} spacing={2}>
           <IconButton
@@ -35,6 +35,9 @@ const dummyColumns = [
               "&:hover": {
                 backgroundColor: "#5c77c1",
               },
+            }}
+            onClick={() => {
+              editPassSetter(true);
             }}
           >
             <KeyIcon />
@@ -50,7 +53,7 @@ const dummyColumns = [
               },
             }}
             onClick={() => {
-              setter(true);
+              editInfoSetter(true);
               onEdit({ ...params });
             }}
           >

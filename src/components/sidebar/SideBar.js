@@ -55,10 +55,10 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
       expander: customers,
       setExpander: setCustomers,
       children: [
-        {
-          text: "احصائيات العملاء",
-          path: "/customers/statistics",
-        },
+        // {
+        //   text: "احصائيات العملاء",
+        //   path: "/customers/statistics",
+        // },
         {
           text: "جميع العملاء",
           path: "/customers/total",
@@ -310,7 +310,7 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
                       <ListItemButton
                         key={index}
                         sx={{
-                          pr: 7,
+                          pl: 7,
                           bgcolor:
                             location.pathname === child.path
                               ? "#f4f4f4"
