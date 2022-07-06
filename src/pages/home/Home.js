@@ -45,7 +45,7 @@ const Home = () => {
             },
           ]}
         />
-        <Publisher name="أحمد محمد" />
+        <Publisher name="أحمد محمد" dataSetter={setPosts} />
         <Typography
           variant="h6"
           color="primary"
@@ -53,14 +53,19 @@ const Home = () => {
         >
           احدث المنشورات
         </Typography>
-        <Stack spacing={2}>
+        <Stack spacing={2} sx={{ paddingBottom: "30px" }}>
           {isPending &&
             skeletonNumber.map((skeleton, index) => (
               <PostSkeleton key={index} />
             ))}
           {posts &&
             posts.map((post, index) => (
-              <Post name={post.user} key={post.id} date={post.created_at}>
+              <Post
+                name={post.user}
+                key={post.id}
+                date={post.created_at}
+                id={post.id}
+              >
                 {post.content}
               </Post>
             ))}

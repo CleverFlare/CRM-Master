@@ -13,10 +13,11 @@ import {
 import { Box } from "@mui/system";
 import { useState } from "react";
 
-const Publisher = ({ name, picture }) => {
+const Publisher = ({ name, picture, dataSetter }) => {
   const [content, setContent] = useState("");
 
   const handleSubmit = () => {
+    if (!content) return;
     const data = {
       content: content,
       organization: 1,
@@ -38,6 +39,8 @@ const Publisher = ({ name, picture }) => {
       })
       .then((json) => {
         console.log(json);
+        setContent("");
+        dataSetter((oldPosts) => [...oldPosts, json]);
       })
       .catch((err) => {
         console.log(err.message);
