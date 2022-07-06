@@ -23,7 +23,7 @@ const Publisher = ({ name, picture, dataSetter }) => {
       organization: 1,
       user: 1,
     };
-    fetch("http://137.184.58.193:8000/aqar/api/router/Post/", {
+    fetch("https://137.184.58.193:8000/aqar/api/router/Post/", {
       method: "POST",
       headers: {
         "Content-type": "application/json",

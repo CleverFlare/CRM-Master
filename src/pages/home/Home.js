@@ -12,7 +12,7 @@ const Home = () => {
   const skeletonNumber = Array(4).fill(0);
 
   useEffect(() => {
-    fetch("http://137.184.58.193:8000/aqar/api/router/Post/", {
+    fetch("https://137.184.58.193:8000/aqar/api/router/Post/", {
       method: "GET",
       headers: {
         //prettier-ignore
