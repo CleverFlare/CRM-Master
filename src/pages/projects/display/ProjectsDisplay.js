@@ -2,9 +2,9 @@ import { Paper, Stack, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
 import { useEffect } from "react";
-import Parameter from "../../components/parameter/Parameter";
-import Project, { ProjectSkeleton } from "../../components/project/Project";
-import Wrapper from "../../components/wrapper/Wrapper";
+import Parameter from "../../../components/parameter/Parameter";
+import Project, { ProjectSkeleton } from "../../../components/project/Project";
+import Wrapper from "../../../components/wrapper/Wrapper";
 
 const ProjectSkeletonsStack = () => {
   return (

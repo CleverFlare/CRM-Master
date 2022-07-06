@@ -75,6 +75,9 @@ const theme = createTheme({
         root: {
           border: "1px solid #00000021",
           borderRadius: 5,
+          "&.Mui-error": {
+            border: "1px solid #ff00006b",
+          },
         },
         input: {
           paddingInline: 10,

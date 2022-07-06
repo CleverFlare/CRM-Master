@@ -25,10 +25,13 @@ const DropBox = ({ variant }) => {
       progress: 0,
     },
   ]);
+
   const fileRef = useRef();
+
   const handleOpenFile = (event) => {
     fileRef.current.click();
   };
+
   return (
     <Paper sx={{ bgcolor: "#f5f6fa", maxWidth: 600, width: "100%" }}>
       <input type="file" style={{ display: "none" }} ref={fileRef} />

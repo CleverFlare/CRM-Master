@@ -1,10 +1,10 @@
 // import { DataGrid } from "@mui/x-data-grid";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Container } from "@mui/system";
-import Parameter from "../../components/parameter/Parameter";
+import Parameter from "../../../components/parameter/Parameter";
 import { Avatar, Box, Paper } from "@mui/material";
-import DataGrid from "../../components/data-grid/DataGrid";
-import Wrapper from "../../components/wrapper/Wrapper";
+import DataGrid from "../../../components/data-grid/DataGrid";
+import Wrapper from "../../../components/wrapper/Wrapper";
 
 const dummyColumns = [
   {
@@ -124,7 +124,7 @@ const dummyRows = [
   },
 ];
 
-const CustomersDeleted = () => {
+const CustomersNew = () => {
   return (
     <div style={{ height: 697 }}>
       <Wrapper sx={{ height: "100%" }}>
@@ -135,7 +135,7 @@ const CustomersDeleted = () => {
               path: "#",
             },
             {
-              text: "العملاء المحذوفة",
+              text: "العملاء الجدد",
               path: "/customers/total",
             },
           ]}
@@ -146,4 +146,4 @@ const CustomersDeleted = () => {
   );
 };
 
-export default CustomersDeleted;
+export default CustomersNew;

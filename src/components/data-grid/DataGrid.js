@@ -22,75 +22,9 @@ import SearchIcon from "@mui/icons-material/Search";
 import CustomersEditDialog from "../../components/customers-edit-dialog/CustomersEditDialog";
 import { useState, useEffect } from "react";
 import EditCustomerPassword from "../edit-customer-password/EditCustomerPassword";
-
-const areaMenu = [
-  {
-    text: "الشيخ زايد",
-  },
-  {
-    text: "الشيخ زايد",
-  },
-  {
-    text: "الشيخ زايد",
-  },
-  {
-    text: "الشيخ زايد",
-  },
-];
-
-const code = [
-  {
-    text: "(20+)",
-    icon: (
-      <img
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/2560px-Flag_of_Egypt.svg.png"
-        style={{ maxWidth: 20 }}
-      />
-    ),
-  },
-  {
-    text: "(20+)",
-    icon: (
-      <img
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/2560px-Flag_of_Egypt.svg.png"
-        style={{ maxWidth: 20 }}
-      />
-    ),
-  },
-  {
-    text: "(20+)",
-    icon: (
-      <img
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/2560px-Flag_of_Egypt.svg.png"
-        style={{ maxWidth: 20 }}
-      />
-    ),
-  },
-  {
-    text: "(20+)",
-    icon: (
-      <img
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/2560px-Flag_of_Egypt.svg.png"
-        style={{ maxWidth: 20 }}
-      />
-    ),
-  },
-];
-
-const projectsMenu = [
-  {
-    text: "الشيخ زايد & أكتوبر",
-  },
-  {
-    text: "الشيخ زايد & أكتوبر",
-  },
-  {
-    text: "الشيخ زايد & أكتوبر",
-  },
-  {
-    text: "الشيخ زايد & أكتوبر",
-  },
-];
+import areaMenu from "./assets/AreaMenuMapping";
+import code from "./assets/CountryCodeMapping";
+import projectsMenu from "./assets/ProjectsMenuMapping";
 
 const balance = "filter";
 

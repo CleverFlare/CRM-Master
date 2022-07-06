@@ -1,4 +1,4 @@
-import { Box, Breadcrumbs, Link, Typography } from "@mui/material";
+import { Breadcrumbs, Link } from "@mui/material";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 
 const Parameter = ({ links }) => {

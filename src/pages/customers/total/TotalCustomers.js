@@ -1,6 +1,6 @@
-import Parameter from "../../components/parameter/Parameter";
-import DataGrid from "../../components/data-grid/DataGrid";
-import Wrapper from "../../components/wrapper/Wrapper";
+import Parameter from "../../../components/parameter/Parameter";
+import DataGrid from "../../../components/data-grid/DataGrid";
+import Wrapper from "../../../components/wrapper/Wrapper";
 import { useEffect, useState } from "react";
 
 const dummyColumns = [

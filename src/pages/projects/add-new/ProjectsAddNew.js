@@ -6,13 +6,13 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import Parameter from "../../components/parameter/Parameter";
-import Wrapper from "../../components/wrapper/Wrapper";
+import Parameter from "../../../components/parameter/Parameter";
+import Wrapper from "../../../components/wrapper/Wrapper";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useRef } from "react";
 import { useState } from "react";
 import { Box } from "@mui/system";
-import ErrorPrompt from "../../components/error-prompt/ErrorPrompt";
+import ErrorPrompt from "../../../components/error-prompt/ErrorPrompt";
 
 const ProjectsAddNew = () => {
   const sm = useMediaQuery("(min-width: 896px)");

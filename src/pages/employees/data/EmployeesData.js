@@ -1,7 +1,7 @@
 import { IconButton, Paper, Stack } from "@mui/material";
-import DataGrid from "../../components/data-grid/DataGrid";
-import Parameter from "../../components/parameter/Parameter";
-import Wrapper from "../../components/wrapper/Wrapper";
+import DataGrid from "../../../components/data-grid/DataGrid";
+import Parameter from "../../../components/parameter/Parameter";
+import Wrapper from "../../../components/wrapper/Wrapper";
 import KeyIcon from "@mui/icons-material/Key";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";

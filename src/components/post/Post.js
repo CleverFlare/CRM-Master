@@ -24,7 +24,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useState } from "react";
 
-const Post = ({ name, picture, children }) => {
+const Post = ({ name, picture, date, children }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -89,14 +89,19 @@ const Post = ({ name, picture, children }) => {
           </div>
         }
         title={name}
-        subheader="منذ ساعة"
+        subheader={date ? date.split("T")[0].replace(/-/gi, "/") : "منذ ساعة"}
         sx={{
           "& .MuiCardHeader-title": { color: "#233975" },
           "& .MuiCardHeader-subheader": { color: "#233975", fontSize: "12px" },
         }}
       />
       <CardContent>
-        <Box sx={{ padding: "0 55px" }}>
+        <Box
+          sx={{
+            padding: "0 55px",
+            direction: /[a-z]/gi.test(children) ? "rtl" : "ltr",
+          }}
+        >
           <Typography variant="body2" color="primary">
             {children}
           </Typography>

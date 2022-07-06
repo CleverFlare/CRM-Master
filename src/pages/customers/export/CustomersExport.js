@@ -1,9 +1,9 @@
 import { Stack } from "@mui/material";
-import Parameter from "../../components/parameter/Parameter";
-import Wrapper from "../../components/wrapper/Wrapper";
-import DropBox from "../../components/drop-box/DropBox";
+import Parameter from "../../../components/parameter/Parameter";
+import Wrapper from "../../../components/wrapper/Wrapper";
+import DropBox from "../../../components/drop-box/DropBox";
 
-const CustomersImport = () => {
+const CustomersExport = () => {
   return (
     <>
       <Wrapper>
@@ -20,11 +20,11 @@ const CustomersImport = () => {
           ]}
         />
         <Stack alignItems="center">
-          <DropBox variant="download" />
+          <DropBox variant="upload" />
         </Stack>
       </Wrapper>
     </>
   );
 };
 
-export default CustomersImport;
+export default CustomersExport;

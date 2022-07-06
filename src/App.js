@@ -1,20 +1,20 @@
 import Home from "./pages/home/Home";
-import TotalCustomers from "./pages/total-customers/TotalCustomers";
+import TotalCustomers from "./pages/customers/total/TotalCustomers";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./Layout";
 import ChangePassword from "./pages/change-password/ChangePassword";
 import AddChannel from "./pages/add-channel/AddChannel";
-import CustomersAddNew from "./pages/customers-add-new/CustomersAddNew";
-import EmployeesAddNew from "./pages/employees-add-new/EmployeesAddNew";
-import CustomersDeleted from "./pages/customers-deleted/CustomersDeleted";
-import CustomersNew from "./pages/customers-new/CustomersNew";
-import CustomersImport from "./pages/customers-import/CustomersImport";
-import CustomersExport from "./pages/customers-export/CustomersExport";
-import ProjectsDisplay from "./pages/projects-display/ProjectsDisplay";
-import ProjectsAddNew from "./pages/projects-add-new/ProjectsAddNew";
+import CustomersAddNew from "./pages/customers/add-new/CustomersAddNew";
+import EmployeesAddNew from "./pages/employees/add-new/EmployeesAddNew";
+import CustomersDeleted from "./pages/customers/deleted/CustomersDeleted";
+import CustomersNew from "./pages/customers/new/CustomersNew";
+import CustomersImport from "./pages/customers/import/CustomersImport";
+import CustomersExport from "./pages/customers/export/CustomersExport";
+import ProjectsDisplay from "./pages/projects/display/ProjectsDisplay";
+import ProjectsAddNew from "./pages/projects/add-new/ProjectsAddNew";
 import Reports from "./pages/reports/Reports";
-import EmployeesData from "./pages/employees-data/EmployeesData";
-import CustomersStatistics from "./pages/customers-statistics/CustomersStatistics";
+import EmployeesData from "./pages/employees/data/EmployeesData";
+import CustomersStatistics from "./pages/customers/statistics/CustomersStatistics";
 
 function App() {
   return (

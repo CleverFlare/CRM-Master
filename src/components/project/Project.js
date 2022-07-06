@@ -4,28 +4,15 @@ import {
   CardContent,
   CardMedia,
   Collapse,
-  Paper,
   Skeleton,
   Stack,
   Typography,
 } from "@mui/material";
-import { Box } from "@mui/system";
 import { useState } from "react";
 
 export const ProjectSkeleton = () => {
   return (
     <Card sx={{ maxWidth: 800, height: 110, display: "flex" }}>
-      {/* <CardMedia
-        component="img"
-        sx={{
-          width: "100px",
-          objectFit: "cover",
-          objectPosition: "center",
-          borderRadius: "4px",
-        }}
-        image={picture}
-        alt="project's picture"
-      /> */}
       <Skeleton
         variant="rectangular"
         sx={{

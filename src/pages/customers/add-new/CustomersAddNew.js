@@ -2,126 +2,47 @@ import {
   Divider,
   FormControl,
   MenuItem,
-  Input,
   InputLabel,
   Paper,
   Select,
   Stack,
   TextField,
   Typography,
-  FormGroup,
   InputAdornment,
   ListItemText,
   ListItemIcon,
-  ButtonGroup,
   Button,
-  Menu,
   useMediaQuery,
-  FormLabel,
   Avatar,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import Parameter from "../../components/parameter/Parameter";
-import Wrapper from "../../components/wrapper/Wrapper";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import YouTubeIcon from "@mui/icons-material/YouTube";
-import TelegramIcon from "@mui/icons-material/Telegram";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import CancelIcon from "@mui/icons-material/Cancel";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+import Parameter from "../../../components/parameter/Parameter";
+import Wrapper from "../../../components/wrapper/Wrapper";
 import { useState } from "react";
-import { Box } from "@mui/system";
-
-const countries = [
-  {
-    code: "(+20)",
-    flag: (
-      <img
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/2560px-Flag_of_Egypt.svg.png"
-        style={{ maxWidth: 20 }}
-      />
-    ),
-  },
-  {
-    code: "(+1)",
-    flag: (
-      <img
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Flag_of_the_United_States_%28Pantone%29.svg/800px-Flag_of_the_United_States_%28Pantone%29.svg.png?20160113211754"
-        style={{ maxWidth: 20 }}
-      />
-    ),
-  },
-];
-
-const salers = [
-  "أحمد محمد",
-  "أحمد محمد",
-  "أحمد محمد",
-  "أحمد محمد",
-  "أحمد محمد",
-  "أحمد محمد",
-  "أحمد محمد",
-  "أحمد محمد",
-  "أحمد محمد",
-  "أحمد محمد",
-  "أحمد محمد",
-  "أحمد محمد",
-  "أحمد محمد",
-  "أحمد محمد",
-  "أحمد محمد",
-];
-
-const channels = [
-  {
-    name: "اليوتيوب",
-    picture:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/2560px-YouTube_full-color_icon_%282017%29.svg.png",
-  },
-  {
-    name: "الفيسبوك",
-    picture:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Facebook_icon.svg/768px-Facebook_icon.svg.png",
-  },
-  {
-    name: "التيليجرام",
-    picture:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/240px-Telegram_logo.svg.png",
-  },
-  {
-    name: "الواتساب",
-    picture:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/WhatsApp_Logo.svg/2048px-WhatsApp_Logo.svg.png",
-  },
-];
+import countries from "./assets/CountriesMapping";
+import salers from "./assets/SalersMapping";
+import channels from "./assets/ChannelsMapping";
+import { useEffect } from "react";
 
 const CustomersAddNew = () => {
   const sm = useMediaQuery("(max-width:912px)");
 
-  const [errors, setErrors] = useState({
-    name: false,
-    phone: false,
-    email: false,
-    project: false,
-    saler: false,
-    mediator: false,
-    channel: false,
-    contact: false,
-    balance: false,
-  });
+  const [errors, setErrors] = useState({});
+  const [isSubmit, setIsSubmit] = useState(false);
 
-  const [doErrorsExist, setDoErrorsExist] = useState(true);
+  const countriesCodeInit =
+    "(+20)" +
+    (
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/2560px-Flag_of_Egypt.svg.png"
+        style={{ maxWidth: 20 }}
+      />
+    );
 
   const [controls, setControls] = useState({
     name: "",
     phone: "",
-    code:
-      "(+20)" +
-      (
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/2560px-Flag_of_Egypt.svg.png"
-          style={{ maxWidth: 20 }}
-        />
-      ),
+    code: countriesCodeInit,
     email: "",
     project: "",
     saler: "",
@@ -135,70 +56,124 @@ const CustomersAddNew = () => {
     setControls({ ...controls, [controlName]: value });
   };
 
-  const handleValidate = () => {
-    setDoErrorsExist(false);
-    setErrors({
-      name: false,
-      phone: false,
-      email: false,
-      project: false,
-      saler: false,
-      mediator: false,
-      channel: false,
-      contact: false,
-      balance: false,
-    });
-    if (!controls.name) {
-      setErrors((oldObject) => ({ ...oldObject, name: true }));
-      setDoErrorsExist(true);
-    }
-    if (!controls.phone) {
-      setErrors((oldObject) => ({ ...oldObject, phone: true }));
-      setDoErrorsExist(true);
-    }
-    if (!controls.email) {
-      setErrors((oldObject) => ({ ...oldObject, email: true }));
-      setDoErrorsExist(true);
-    }
-    if (!controls.project) {
-      setErrors((oldObject) => ({ ...oldObject, project: true }));
-      setDoErrorsExist(true);
-    }
-    if (!controls.saler) {
-      setErrors((oldObject) => ({ ...oldObject, saler: true }));
-      setDoErrorsExist(true);
-    }
-    if (!controls.mediator) {
-      setErrors((oldObject) => ({ ...oldObject, mediator: true }));
-      setDoErrorsExist(true);
-    }
-    if (!controls.channel) {
-      setErrors((oldObject) => ({ ...oldObject, channel: true }));
-      setDoErrorsExist(true);
-    }
-    if (!controls.contact) {
-      setErrors((oldObject) => ({ ...oldObject, contact: true }));
-      setDoErrorsExist(true);
-    }
-    if (!controls.balance) {
-      setErrors((oldObject) => ({ ...oldObject, balance: true }));
-      setDoErrorsExist(true);
-    }
-    return;
+  const handleSubmit = () => {
+    handleValidation();
+    setIsSubmit(true);
   };
 
-  const handleSubmit = () => {
-    handleValidate();
-    if (doErrorsExist) return;
-    console.log(doErrorsExist);
-    // fetch("http://137.184.58.193:8000/aqar/api/router/Client/", {
-    //   method: "POST",
-    //   headers: {
-    //     //prettier-ignore
-    //     "Authorization": "Token 4b0d32e62fab4bf53d1907ab69cf6b3a9583eca1",
-    //   },
-    // });
+  const handleValidation = () => {
+    setErrors({});
+    if (!controls.name) {
+      setErrors((oldErrors) => ({
+        ...oldErrors,
+        name: "this field is required",
+      }));
+    }
+
+    if (!controls.phone) {
+      setErrors((oldErrors) => ({
+        ...oldErrors,
+        phone: "this field is required",
+      }));
+    }
+
+    if (!controls.email) {
+      setErrors((oldErrors) => ({
+        ...oldErrors,
+        email: "this field is required",
+      }));
+    } else if (
+      !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(controls.email)
+    ) {
+      setErrors((oldErrors) => ({
+        ...oldErrors,
+        email: "this is not a valid email",
+      }));
+      console.log(errors);
+    }
+
+    if (!controls.project) {
+      setErrors((oldErrors) => ({
+        ...oldErrors,
+        project: "this field is required",
+      }));
+    }
+
+    if (!controls.saler) {
+      setErrors((oldErrors) => ({
+        ...oldErrors,
+        saler: "this field is required",
+      }));
+    }
+
+    if (!controls.mediator) {
+      setErrors((oldErrors) => ({
+        ...oldErrors,
+        mediator: "this field is required",
+      }));
+    }
+
+    if (!controls.channel) {
+      setErrors((oldErrors) => ({
+        ...oldErrors,
+        channel: "this field is required",
+      }));
+    }
+
+    if (!controls.contact) {
+      setErrors((oldErrors) => ({
+        ...oldErrors,
+        contact: "this field is required",
+      }));
+    }
+
+    if (!controls.balance) {
+      setErrors((oldErrors) => ({
+        ...oldErrors,
+        balance: "this field is required",
+      }));
+    }
   };
+
+  useEffect(() => {
+    if (isSubmit) {
+      const requestBody = {
+        user: {
+          first_name: controls.name.split(" ")[0],
+          last_name: controls.name.split(" ")[1],
+          email: controls.email,
+          phone:
+            controls.code.replace(/\((.*?)\)\[.*?\]/gi, "$1") + controls.phone,
+        },
+        organization: 1,
+        business: ["بلا بلا بلا"],
+        channel: controls.channel,
+        agent: controls.saler,
+        min_budget: "00.00",
+        max_budget: "00.00",
+      };
+      fetch("http://137.184.58.193:8000/aqar/api/router/Client/", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          //prettier-ignore
+          "Authorization": "Token 4b0d32e62fab4bf53d1907ab69cf6b3a9583eca1",
+        },
+        body: JSON.stringify(requestBody),
+      })
+        .then((res) => {
+          if (!res.ok) throw Error("couldn't fetch the data for that resource");
+
+          return res.json();
+        })
+        .then((json) => {
+          console.log(json);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    }
+  }, [errors]);
 
   return (
     <>
@@ -227,7 +202,6 @@ const CustomersAddNew = () => {
             <Stack
               direction={sm ? "column" : "row"}
               justifyContent="space-between"
-              alignItems="center"
               spacing={sm ? 2 : 1}
             >
               <TextField
@@ -236,16 +210,14 @@ const CustomersAddNew = () => {
                 placeholder="الأسم"
                 sx={{
                   width: sm ? "100%" : "400px",
-                  "& .MuiInputBase-formControl": {
-                    borderColor: errors.name ? "#ff000066" : "#00000021",
-                  },
                 }}
                 fullWidth={sm}
                 onChange={({ target: { value } }) =>
                   handleControlUpdate("name", value)
                 }
                 value={controls.name}
-                error={errors.name}
+                error={Boolean(errors?.name)}
+                helperText={errors?.name}
               />
               <TextField
                 type="number"
@@ -265,9 +237,6 @@ const CustomersAddNew = () => {
                       appearance: "none",
                       margin: 0,
                     },
-                  "& .MuiInputBase-formControl": {
-                    borderColor: errors.phone ? "#ff000066" : "#00000021",
-                  },
                 }}
                 fullWidth={sm}
                 pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
@@ -315,30 +284,28 @@ const CustomersAddNew = () => {
                     </InputAdornment>
                   ),
                 }}
-                error={errors.phone}
+                error={Boolean(errors?.phone)}
+                helperText={errors?.phone}
               />
               <TextField
                 variant="standard"
-                label="الريد الإلكتروني"
-                placeholder="الريد الإلكتروني"
+                label="البريد الإلكتروني"
+                placeholder="البريد الإلكتروني"
                 sx={{
                   width: sm ? "100%" : "400px",
-                  "& .MuiInputBase-formControl": {
-                    borderColor: errors.email ? "#ff000066" : "#00000021",
-                  },
                 }}
                 fullWidth={sm}
                 onChange={({ target: { value } }) =>
                   handleControlUpdate("email", value)
                 }
                 value={controls.email}
-                error={errors.email}
+                error={Boolean(errors?.email)}
+                helperText={errors?.email}
               />
             </Stack>
             <Stack
               direction={sm ? "column" : "row"}
               justifyContent="space-between"
-              alignItems="center"
               spacing={sm ? 2 : 1}
             >
               <TextField
@@ -347,31 +314,22 @@ const CustomersAddNew = () => {
                 placeholder="المشروع"
                 sx={{
                   width: sm ? "100%" : "400px",
-                  "& .MuiInputBase-formControl": {
-                    borderColor: errors.project ? "#ff000066" : "#00000021",
-                  },
                 }}
                 fullWidth={sm}
                 onChange={({ target: { value } }) =>
                   handleControlUpdate("project", value)
                 }
                 value={controls.project}
-                error={errors.project}
+                error={Boolean(errors?.project)}
+                helperText={errors?.project}
               />
-              <FormControl
+              <TextField
                 variant="standard"
-                sx={{
-                  width: sm ? "100%" : "400px",
-                  "& .MuiInputBase-formControl": {
-                    borderColor: errors.saler ? "#ff000066" : "#00000021",
-                  },
-                }}
-                error={errors.saler}
-              >
-                <InputLabel>مسؤول المبيعات</InputLabel>
-                <Select
-                  displayEmpty
-                  renderValue={(selected) => {
+                label="مسؤول المبيعات"
+                select
+                SelectProps={{
+                  displayEmpty: true,
+                  renderValue: (selected) => {
                     if (!selected) {
                       return (
                         <Typography
@@ -384,30 +342,32 @@ const CustomersAddNew = () => {
                       console.log(selected.length);
                       return selected.replace(/\d/gi, "");
                     }
-                  }}
-                  MenuProps={{ PaperProps: { style: { maxHeight: "250px" } } }}
-                  IconComponent={KeyboardArrowDownIcon}
-                  onChange={({ target: { value } }) =>
-                    handleControlUpdate("saler", value)
-                  }
-                  value={controls.saler}
-                >
-                  {salers.map((saler, index) => (
-                    <MenuItem value={saler + index} key={index}>
-                      {saler}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                  },
+                  MenuProps: { PaperProps: { style: { maxHeight: "250px" } } },
+                  IconComponent: KeyboardArrowDownIcon,
+                }}
+                sx={{
+                  width: sm ? "100%" : "400px",
+                }}
+                onChange={({ target: { value } }) =>
+                  handleControlUpdate("saler", value)
+                }
+                value={controls.saler}
+                error={Boolean(errors?.saler)}
+                helperText={errors?.saler}
+              >
+                {salers.map((saler, index) => (
+                  <MenuItem value={saler + index} key={index}>
+                    {saler}
+                  </MenuItem>
+                ))}
+              </TextField>
               <TextField
                 variant="standard"
                 label="الوسيط"
                 placeholder="الوسيط"
                 sx={{
                   width: sm ? "100%" : "400px",
-                  "& .MuiInputBase-formControl": {
-                    borderColor: errors.mediator ? "#ff000066" : "#00000021",
-                  },
                 }}
                 value={controls.mediator}
                 onChange={(event) =>
@@ -417,30 +377,26 @@ const CustomersAddNew = () => {
                   }))
                 }
                 fullWidth={sm}
-                error={errors.mediator}
+                error={Boolean(errors?.mediator)}
+                helperText={errors?.mediator}
               />
             </Stack>
             <Stack
               direction={sm ? "column" : "row"}
               justifyContent="space-between"
-              alignItems="center"
               spacing={sm ? 2 : 1}
             >
-              <FormControl
+              <TextField
                 variant="standard"
+                label="القناة الإعلانية"
+                placeholder="القناة الإعلانية"
+                select
                 sx={{
                   width: sm ? "100%" : "400px",
-                  "& .MuiInputBase-formControl": {
-                    borderColor: errors.channel ? "#ff000066" : "#00000021",
-                  },
                 }}
-                error={errors.channel}
-              >
-                <InputLabel>القناة الإعلانية</InputLabel>
-                <Select
-                  label="الناة الإعلانية"
-                  displayEmpty
-                  renderValue={(selected) => {
+                SelectProps={{
+                  displayEmpty: true,
+                  renderValue: (selected) => {
                     if (!selected) {
                       return (
                         <Typography
@@ -452,48 +408,46 @@ const CustomersAddNew = () => {
                     } else {
                       return selected;
                     }
-                  }}
-                  MenuProps={{ PaperProps: { style: { maxHeight: "250px" } } }}
-                  IconComponent={KeyboardArrowDownIcon}
-                  onChange={({ target: { value } }) =>
-                    handleControlUpdate("channel", value)
-                  }
-                  value={controls.channel}
-                >
-                  {channels.map((channel, index) => (
-                    <MenuItem value={channel.name} key={index}>
-                      <ListItemIcon sx={{ paddingRight: "10px" }}>
-                        <Avatar
-                          src={channel.picture}
-                          sx={{ bgcolor: "orange" }}
-                        >
-                          {channel.name[0].toUpperCase()}
-                        </Avatar>
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={"قناة " + channel.name}
-                        sx={{ color: (theme) => theme.palette.primary.main }}
-                      />
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                  },
+                  MenuProps: { PaperProps: { style: { maxHeight: "250px" } } },
+                  IconComponent: KeyboardArrowDownIcon,
+                }}
+                onChange={({ target: { value } }) =>
+                  handleControlUpdate("channel", value)
+                }
+                value={controls.channel}
+                fullWidth={sm}
+                error={Boolean(errors?.channel)}
+                helperText={errors?.channel}
+              >
+                {channels.map((channel, index) => (
+                  <MenuItem value={channel.name} key={index}>
+                    <ListItemIcon sx={{ paddingRight: "10px" }}>
+                      <Avatar src={channel.picture} sx={{ bgcolor: "orange" }}>
+                        {channel.name[0].toUpperCase()}
+                      </Avatar>
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={"قناة " + channel.name}
+                      sx={{ color: (theme) => theme.palette.primary.main }}
+                    />
+                  </MenuItem>
+                ))}
+              </TextField>
               <TextField
                 variant="standard"
                 label="طريقة التواصل"
                 placeholder="طريقة التواصل"
                 sx={{
                   width: sm ? "100%" : "400px",
-                  "& .MuiInputBase-formControl": {
-                    borderColor: errors.contact ? "#ff000066" : "#00000021",
-                  },
                 }}
                 fullWidth={sm}
                 onChange={({ target: { value } }) =>
                   handleControlUpdate("contact", value)
                 }
                 value={controls.contact}
-                error={errors.contact}
+                error={Boolean(errors?.contact)}
+                helperText={errors?.contact}
               />
               <TextField
                 type="number"
@@ -513,16 +467,14 @@ const CustomersAddNew = () => {
                       appearance: "none",
                       margin: 0,
                     },
-                  "& .MuiInputBase-formControl": {
-                    borderColor: errors.balance ? "#ff000066" : "#00000021",
-                  },
                 }}
                 fullWidth={sm}
                 onChange={({ target: { value } }) =>
                   handleControlUpdate("balance", value)
                 }
                 value={controls.balance}
-                error={errors.balance}
+                error={Boolean(errors?.balance)}
+                helperText={errors?.balance}
               />
             </Stack>
           </Stack>
