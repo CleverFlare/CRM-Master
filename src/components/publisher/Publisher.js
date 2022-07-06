@@ -11,8 +11,39 @@ import {
   Tooltip,
 } from "@mui/material";
 import { Box } from "@mui/system";
+import { useState } from "react";
 
 const Publisher = ({ name, picture }) => {
+  const [content, setContent] = useState("");
+
+  const handleSubmit = () => {
+    const data = {
+      content: content,
+      organization: 1,
+      user: 1,
+    };
+    fetch("http://137.184.58.193:8000/aqar/api/router/Post/", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        //prettier-ignore
+        "Authorization": "Token 4b0d32e62fab4bf53d1907ab69cf6b3a9583eca1",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        if (!res.ok) throw Error("couldn't fetch the data for that resource");
+
+        return res.json();
+      })
+      .then((json) => {
+        console.log(json);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
+
   return (
     <Card sx={{ maxWidth: "766px" }}>
       <CardHeader
@@ -26,6 +57,8 @@ const Publisher = ({ name, picture }) => {
             type="text"
             style={{ width: "100%", border: "none", outline: "none" }}
             placeholder={`مالذي يدور في بالك، ${name.split(" ")[0]}؟`}
+            value={content}
+            onChange={(event) => setContent(event.target.value)}
           />
         }
       />
@@ -51,6 +84,7 @@ const Publisher = ({ name, picture }) => {
           variant="contained"
           sx={{ minWidth: "min-content", width: 200 }}
           disableElevation
+          onClick={handleSubmit}
         >
           إضافة
         </Button>

@@ -15,6 +15,7 @@ import {
   ListItemText,
   Divider,
   Tooltip,
+  Skeleton,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Box } from "@mui/system";
@@ -23,6 +24,46 @@ import NotificationsOffIcon from "@mui/icons-material/NotificationsOff";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useState } from "react";
+
+export const PostSkeleton = () => {
+  return (
+    <Card
+      sx={{
+        maxWidth: "766px",
+      }}
+    >
+      <CardHeader
+        avatar={<Skeleton variant="circular" width={40} height={40} />}
+        title={<Skeleton variant="text" width={200} />}
+        subheader={<Skeleton variant="text" width={100} />}
+        sx={{
+          "& .MuiCardHeader-title": { color: "#233975" },
+          "& .MuiCardHeader-subheader": { color: "#233975", fontSize: "12px" },
+        }}
+      />
+      <CardContent>
+        <Box
+          sx={{
+            padding: "0 55px",
+          }}
+        >
+          <Typography variant="body2" color="primary">
+            <Skeleton variant="text" />
+          </Typography>
+        </Box>
+      </CardContent>
+      <CardActions sx={{ justifyContent: "space-between" }}>
+        <Skeleton variant="rectangular" width={80} height={36} />
+        <Skeleton variant="rectangular" width={80} height={36} />
+        <Skeleton variant="circular" width={30} height={30} />
+      </CardActions>
+      <Divider />
+      <Box>
+        <Skeleton variant="rectangular" height={36} />
+      </Box>
+    </Card>
+  );
+};
 
 const Post = ({ name, picture, date, children }) => {
   const [anchorEl, setAnchorEl] = useState(null);

@@ -2,12 +2,14 @@ import Container from "@mui/material/Container";
 import Parameter from "../../components/parameter/Parameter";
 import Publisher from "../../components/publisher/Publisher";
 import { Stack, Typography } from "@mui/material";
-import Post from "../../components/post/Post";
+import Post, { PostSkeleton } from "../../components/post/Post";
 import Wrapper from "../../components/wrapper/Wrapper";
 import { useEffect, useState } from "react";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
+  const [isPending, setIsPending] = useState(true);
+  const skeletonNumber = Array(4).fill(0);
 
   useEffect(() => {
     fetch("http://137.184.58.193:8000/aqar/api/router/Post/", {
@@ -25,6 +27,7 @@ const Home = () => {
       .then((json) => {
         console.log(json);
         setPosts([...json]);
+        setIsPending(false);
       })
       .catch((err) => {
         console.log(err.message);
@@ -51,9 +54,10 @@ const Home = () => {
           احدث المنشورات
         </Typography>
         <Stack spacing={2}>
-          <Post name="احمد حاتم" date="2022-07-06T07:08:37.007914Z">
-            تجربة
-          </Post>
+          {isPending &&
+            skeletonNumber.map((skeleton, index) => (
+              <PostSkeleton key={index} />
+            ))}
           {posts &&
             posts.map((post, index) => (
               <Post name={post.user} key={post.id} date={post.created_at}>
