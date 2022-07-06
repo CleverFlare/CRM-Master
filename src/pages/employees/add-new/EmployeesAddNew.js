@@ -20,6 +20,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Parameter from "../../../components/parameter/Parameter";
 import Wrapper from "../../../components/wrapper/Wrapper";
 import { useState } from "react";
+import { useEffect } from "react";
 
 const countries = [
   {
@@ -44,6 +45,10 @@ const countries = [
 
 const EmployeesAddNew = () => {
   const sm = useMediaQuery("(max-width:912px)");
+
+  const [errors, setErrors] = useState({});
+
+  const [isSubmit, setIsSubmit] = useState(false);
 
   const [visibilities, setVisibilities] = useState({
     password: false,
@@ -75,6 +80,93 @@ const EmployeesAddNew = () => {
     setControls({ ...controls, [controlName]: value });
   };
 
+  const handleSubmit = () => {
+    handleValidation();
+    setIsSubmit(true);
+  };
+
+  const handleValidation = () => {
+    setErrors({});
+    if (!controls.name) {
+      setErrors((oldErrors) => ({ ...oldErrors, name: "هذا الحقل إلزامي" }));
+    }
+
+    if (!controls.phone) {
+      setErrors((oldErrors) => ({ ...oldErrors, phone: "هذا الحقل إلزامي" }));
+    }
+
+    if (!controls.job) {
+      setErrors((oldErrors) => ({ ...oldErrors, job: "هذا الحقل إلزامي" }));
+    }
+
+    if (!controls.email) {
+      setErrors((oldErrors) => ({ ...oldErrors, email: "هذا الحقل إلزامي" }));
+    } else if (
+      !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(controls.email)
+    ) {
+      setErrors((oldErrors) => ({
+        ...oldErrors,
+        email: "هذا البريد غير صالح",
+      }));
+    }
+
+    if (!controls.password) {
+      setErrors((oldErrors) => ({
+        ...oldErrors,
+        password: "هذا الحقل إلزامي",
+      }));
+    }
+
+    if (!controls.confirm) {
+      setErrors((oldErrors) => ({
+        ...oldErrors,
+        confirm: "هذا الحقل إلزامي",
+      }));
+    } else if (controls.confirm !== controls.password) {
+      setErrors((oldErrors) => ({
+        ...oldErrors,
+        confirm: "رمز التأكيد لا يطابق الرمز الحماية",
+      }));
+    }
+  };
+
+  useEffect(() => {
+    if (isSubmit && Object.keys(errors).length === 0) {
+      const requestBody = {
+        user: {
+          first_name: controls.name.split(" ")[0],
+          last_name: controls.name.split(" ")[1],
+          email: controls.email,
+          phone:
+            controls.code.replace(/\((.*?)\)\[.*?\]/gi, "$1") + controls.phone,
+          password: controls.password,
+        },
+        job: controls.job,
+        organization: 1,
+      };
+      fetch("http://137.184.58.193:8000/aqar/api/router/Employee/", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          //prettier-ignore
+          "Authorization": "Token 4b0d32e62fab4bf53d1907ab69cf6b3a9583eca1",
+        },
+        body: JSON.stringify(requestBody),
+      })
+        .then((res) => {
+          if (!res.ok) throw Error("couldn't fetch the data for that resource");
+
+          return res.json();
+        })
+        .then((json) => {
+          console.log(json);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    }
+  }, [errors]);
+
   return (
     <>
       <Wrapper>
@@ -102,7 +194,6 @@ const EmployeesAddNew = () => {
             <Stack
               direction={sm ? "column" : "row"}
               justifyContent="space-between"
-              alignItems="center"
               spacing={sm ? 2 : 1}
             >
               <TextField
@@ -115,6 +206,8 @@ const EmployeesAddNew = () => {
                   handleControlUpdate("name", value)
                 }
                 value={controls.name}
+                error={Boolean(errors?.name)}
+                helperText={errors?.name}
               />
               <TextField
                 type="number"
@@ -181,12 +274,13 @@ const EmployeesAddNew = () => {
                     </InputAdornment>
                   ),
                 }}
+                error={Boolean(errors?.phone)}
+                helperText={errors?.phone}
               />
             </Stack>
             <Stack
               direction={sm ? "column" : "row"}
               justifyContent="space-between"
-              alignItems="center"
               spacing={sm ? 2 : 1}
             >
               <TextField
@@ -199,6 +293,8 @@ const EmployeesAddNew = () => {
                   handleControlUpdate("job", value)
                 }
                 value={controls.job}
+                error={Boolean(errors?.job)}
+                helperText={errors?.job}
               />
               <TextField
                 variant="standard"
@@ -211,12 +307,13 @@ const EmployeesAddNew = () => {
                   handleControlUpdate("email", value)
                 }
                 value={controls.email}
+                error={Boolean(errors?.email)}
+                helperText={errors?.email}
               />
             </Stack>
             <Stack
               direction={sm ? "column" : "row"}
               justifyContent="space-between"
-              alignItems="center"
               spacing={sm ? 2 : 1}
             >
               <TextField
@@ -245,6 +342,8 @@ const EmployeesAddNew = () => {
                     </InputAdornment>
                   ),
                 }}
+                error={Boolean(errors?.password)}
+                helperText={errors?.password}
               />
               <TextField
                 type={visibilities.confirm ? "text" : "password"}
@@ -272,6 +371,8 @@ const EmployeesAddNew = () => {
                     </InputAdornment>
                   ),
                 }}
+                error={Boolean(errors?.confirm)}
+                helperText={errors?.confirm}
               />
             </Stack>
           </Stack>
@@ -281,7 +382,7 @@ const EmployeesAddNew = () => {
             spacing={1}
             sx={{ padding: 2, bgcolor: "#fffaf3" }}
           >
-            <Button variant="contained" color="primary">
+            <Button variant="contained" color="primary" onClick={handleSubmit}>
               حفظ
             </Button>
             <Button variant="contained" color="error">

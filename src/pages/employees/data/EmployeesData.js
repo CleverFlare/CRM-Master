@@ -6,6 +6,8 @@ import KeyIcon from "@mui/icons-material/Key";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import BlockIcon from "@mui/icons-material/Block";
+import { useState } from "react";
+import { useEffect } from "react";
 
 const dummyColumns = [
   {
@@ -135,6 +137,38 @@ const dummyRows = [
 ];
 
 const EmployeesData = () => {
+  const [employeesData, setEmployeesData] = useState(null);
+  useEffect(() => {
+    let convertToProperData = [];
+    fetch("http://137.184.58.193:8000/aqar/api/router/Employee/", {
+      method: "GET",
+      headers: {
+        //prettier-ignore
+        "Authorization": "Token 4b0d32e62fab4bf53d1907ab69cf6b3a9583eca1",
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw Error("couldn't fetch data for that resource");
+
+        return res.json();
+      })
+      .then((json) => {
+        console.log(json);
+        json.map((item) => {
+          const employee = {
+            name: item.user.first_name + " " + item.user.last_name,
+            email: item.user.email,
+            job: item.job,
+          };
+          convertToProperData.push(employee);
+        });
+        setEmployeesData(convertToProperData);
+        console.log(convertToProperData);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  }, []);
   return (
     <>
       <Wrapper>
@@ -142,7 +176,7 @@ const EmployeesData = () => {
           links={[{ text: "الموظفين" }, { text: "بيانات الموظفين" }]}
         />
         <DataGrid
-          rows={dummyRows}
+          rows={employeesData}
           columns={dummyColumns}
           nameWithSearch
           maxRowsPerPage={5}

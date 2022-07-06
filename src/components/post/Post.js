@@ -1,3 +1,4 @@
+import React from "react";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import ReplyIcon from "@mui/icons-material/Reply";
 import {
@@ -17,6 +18,12 @@ import {
   Tooltip,
   Skeleton,
   Collapse,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Grow,
+  Stack,
+  TextField,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Box } from "@mui/system";
@@ -26,6 +33,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useState } from "react";
 import { useEffect } from "react";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Grow direction="up" ref={ref} {...props} />;
+});
 
 export const PostSkeleton = () => {
   return (
@@ -67,10 +78,91 @@ export const PostSkeleton = () => {
   );
 };
 
+const EditPostDialog = ({ open, onClose, id, init, originalSetter }) => {
+  const [editedContent, setEditedContent] = useState(init);
+
+  const handleSubmit = () => {
+    if (!editedContent) return;
+    const data = {
+      content: editedContent,
+    };
+    fetch("http://137.184.58.193:8000/aqar/api/router/Post/" + id + "/", {
+      method: "PUT",
+      headers: {
+        "Content-type": "application/json",
+        //prettier-ignore
+        "Authorization": "Token 4b0d32e62fab4bf53d1907ab69cf6b3a9583eca1",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        if (!res.ok) throw Error("couldn't fetch the data for that resource");
+
+        originalSetter(editedContent);
+        return res.json();
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
+
+  return (
+    <Dialog
+      open={open}
+      onClose={() => {
+        onClose();
+        setEditedContent(init);
+      }}
+      TransitionComponent={Transition}
+      sx={{
+        "& .MuiDialog-paper": {
+          width: "100%",
+          maxWidth: 700,
+        },
+      }}
+    >
+      <DialogTitle>تعديل المنشور</DialogTitle>
+      <Divider />
+      <DialogContent>
+        <TextField
+          multiline
+          variant="standard"
+          fullWidth
+          value={editedContent}
+          onChange={(event) => setEditedContent(event.target.value)}
+        />
+      </DialogContent>
+      <Divider />
+      <DialogContent>
+        <Stack direction="row" spacing={2}>
+          <Button
+            variant="contained"
+            sx={{ width: 100 }}
+            onClick={handleSubmit}
+          >
+            حفظ
+          </Button>
+          <Button
+            variant="outlined"
+            sx={{ width: 100 }}
+            onClick={() => {
+              onClose();
+              setEditedContent(init);
+            }}
+          >
+            إلغاء
+          </Button>
+        </Stack>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 const Post = ({ name, picture, date, children, id }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [isDeleted, setIsDeleted] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
 
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -81,7 +173,7 @@ const Post = ({ name, picture, date, children, id }) => {
   };
 
   const handleDeletion = () => {
-    fetch("https://137.184.58.193:8000/aqar/api/router/Post/" + id + "/", {
+    fetch("http://137.184.58.193:8000/aqar/api/router/Post/" + id + "/", {
       method: "DELETE",
       headers: {
         //prettier-ignore
@@ -98,6 +190,10 @@ const Post = ({ name, picture, date, children, id }) => {
       });
   };
 
+  const handleCloseEditPostDialog = () => {
+    setOpenEdit(false);
+  };
+
   return (
     <Collapse in={!isDeleted} unmountOnExit>
       <Card
@@ -105,6 +201,11 @@ const Post = ({ name, picture, date, children, id }) => {
           maxWidth: "766px",
         }}
       >
+        <EditPostDialog
+          open={openEdit}
+          onClose={handleCloseEditPostDialog}
+          init={children}
+        />
         <CardHeader
           avatar={
             <Avatar src={picture ? picture : null}>
@@ -131,7 +232,12 @@ const Post = ({ name, picture, date, children, id }) => {
                   horizontal: "left",
                 }}
               >
-                <MenuItem onClick={handleCloseMenu}>
+                <MenuItem
+                  onClick={() => {
+                    handleCloseMenu();
+                    setOpenEdit(true);
+                  }}
+                >
                   <ListItemIcon>
                     <EditIcon />
                   </ListItemIcon>

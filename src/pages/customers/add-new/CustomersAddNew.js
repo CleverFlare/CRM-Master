@@ -66,77 +66,76 @@ const CustomersAddNew = () => {
     if (!controls.name) {
       setErrors((oldErrors) => ({
         ...oldErrors,
-        name: "this field is required",
+        name: "هذا الحقل إلزامي",
       }));
     }
 
     if (!controls.phone) {
       setErrors((oldErrors) => ({
         ...oldErrors,
-        phone: "this field is required",
+        phone: "هذا الحقل إلزامي",
       }));
     }
 
     if (!controls.email) {
       setErrors((oldErrors) => ({
         ...oldErrors,
-        email: "this field is required",
+        email: "هذا الحقل إلزامي",
       }));
     } else if (
       !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(controls.email)
     ) {
       setErrors((oldErrors) => ({
         ...oldErrors,
-        email: "this is not a valid email",
+        email: "هذا البريد غير صالح",
       }));
-      console.log(errors);
     }
 
     if (!controls.project) {
       setErrors((oldErrors) => ({
         ...oldErrors,
-        project: "this field is required",
+        project: "هذا الحقل إلزامي",
       }));
     }
 
     if (!controls.saler) {
       setErrors((oldErrors) => ({
         ...oldErrors,
-        saler: "this field is required",
+        saler: "هذا الحقل إلزامي",
       }));
     }
 
     if (!controls.mediator) {
       setErrors((oldErrors) => ({
         ...oldErrors,
-        mediator: "this field is required",
+        mediator: "هذا الحقل إلزامي",
       }));
     }
 
     if (!controls.channel) {
       setErrors((oldErrors) => ({
         ...oldErrors,
-        channel: "this field is required",
+        channel: "هذا الحقل إلزامي",
       }));
     }
 
     if (!controls.contact) {
       setErrors((oldErrors) => ({
         ...oldErrors,
-        contact: "this field is required",
+        contact: "هذا الحقل إلزامي",
       }));
     }
 
     if (!controls.balance) {
       setErrors((oldErrors) => ({
         ...oldErrors,
-        balance: "this field is required",
+        balance: "هذا الحقل إلزامي",
       }));
     }
   };
 
   useEffect(() => {
-    if (isSubmit) {
+    if (isSubmit && Object.keys(errors).length === 0) {
       const requestBody = {
         user: {
           first_name: controls.name.split(" ")[0],
@@ -148,7 +147,7 @@ const CustomersAddNew = () => {
         organization: 1,
         business: ["بلا بلا بلا"],
         channel: controls.channel,
-        agent: controls.saler,
+        agent: controls.saler.replace(/\d/gi, ""),
         min_budget: "00.00",
         max_budget: "00.00",
       };
