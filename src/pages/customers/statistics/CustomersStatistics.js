@@ -153,59 +153,76 @@ const CustomersStatistics = () => {
     <Wrapper>
       <Parameter links={[{ text: "عملاء" }, { text: "احصائيات العملاء" }]} />
       <Stack spacing={5}>
-        <Stack direction="row" spacing={2}>
-          <StatisticalCard
-            title="جميع العملاء"
-            since="منذ يوم"
-            number="19097"
-            percentage={100}
-            profit={100}
-          />
-          <StatisticalCard
-            title="العملاء المؤجله"
-            since="منذ شهر"
-            number="9856"
-            profit={4.1}
-            bars={[5, 4, 2, 4, 2, 3, 5, 1, 3]}
-          />
-          <StatisticalCard
-            title="العملاء الجدد"
-            since="اكتساب"
-            number="75.2%"
-            percentage={50}
-            loss={2.4}
-          />
-          <StatisticalCard
-            title="الموظفين الجدد"
-            since="منذ اسبوع"
-            number="2125"
-            profit={22.4}
-            bars={[5, 4, 2, 4, 2, 3, 5, 1, 3]}
-          />
-        </Stack>
-        <Grid container columnSpacing={3} sx={{ width: "100%" }}>
-          <Grid item md={3}>
+        <Grid container justifyContent="center" spacing={2} wrap="wrap">
+          <Grid item lg={3}>
+            <StatisticalCard
+              title="جميع العملاء"
+              since="منذ يوم"
+              number="19097"
+              percentage={100}
+              profit={100}
+            />
+          </Grid>
+          <Grid item lg={3}>
+            <StatisticalCard
+              title="العملاء المؤجله"
+              since="منذ شهر"
+              number="9856"
+              profit={4.1}
+              bars={[5, 4, 2, 4, 2, 3, 5, 1, 3]}
+            />
+          </Grid>
+          <Grid item lg={3}>
+            <StatisticalCard
+              title="العملاء الجدد"
+              since="اكتساب"
+              number="75.2%"
+              percentage={50}
+              loss={2.4}
+            />
+          </Grid>
+          <Grid item lg={3}>
+            <StatisticalCard
+              title="الموظفين الجدد"
+              since="منذ اسبوع"
+              number="2125"
+              profit={22.4}
+              bars={[5, 4, 2, 4, 2, 3, 5, 1, 3]}
+            />
+          </Grid>
+        </Grid>
+        <Grid
+          container
+          spacing={3}
+          justifyContent="center"
+          sx={{ width: "100%" }}
+          wrap="wrap"
+        >
+          <Grid item lg={3} md={12} sm={12} xs={12}>
             <DataTable
               title="الموظف المتابع"
               columns={followedDummyColumns}
               rows={followedDummyRows}
               width="100%"
+              minWidth="100px"
             />
           </Grid>
-          <Grid item md={6}>
+          <Grid item lg={6} md={12} sm={12} xs={12}>
             <DataTable
               title="حالة العميل"
               columns={statusDummyColumn}
               rows={statusDummyRows}
               width="100%"
+              minWidth="100px"
             />
           </Grid>
-          <Grid item md={3}>
+          <Grid item lg={3} md={12} sm={12} xs={12}>
             <DataTable
               title="افضل موظف"
               columns={bestDummyColumn}
               rows={bestDummyRows}
               width="100%"
+              minWidth="100px"
             />
           </Grid>
         </Grid>
