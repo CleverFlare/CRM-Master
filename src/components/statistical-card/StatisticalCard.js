@@ -23,7 +23,9 @@ const StatisticalCard = ({
       sx={{
         boxShadow: "0px 3px 10px -1px rgb(35 57 117)",
         bgcolor: (theme) => theme.palette.primary.main,
-        width: "280px",
+        minWidth: "210px",
+        maxWidth: "280px",
+        width: "100%",
         color: "white",
       }}
       elevation={3}
