@@ -1,7 +1,7 @@
 import { useMediaQuery } from "@mui/material";
 import { useState } from "react";
-import SideBar from "./components/sidebar/SideBar";
-import TopBar from "./components/topbar/TopBar";
+import SideBar from "./sidebar/SideBar";
+import TopBar from "./topbar/TopBar";
 
 const sidebarWidth = 240;
 

@@ -34,7 +34,7 @@ const AddChannel = () => {
       method: "POST",
       headers: {
         //prettier-ignore
-        "Authorization": "Token 4b0d32e62fab4bf53d1907ab69cf6b3a9583eca1",
+        "Authorization": "Token 94d7a586cefcf05c8242c6bb4537c4179aa30c37",
       },
       body: formData,
     });
@@ -102,7 +102,7 @@ const AddChannel = () => {
                 sx={{ width: 100, height: 100 }}
               />
               <Typography variant="caption" color="primary">
-                اضف صورة المشروع هنا
+                اضف صورة القناة هنا
               </Typography>
             </Stack>
             {imageURl && (
@@ -148,8 +148,8 @@ const AddChannel = () => {
             >
               <TextField
                 variant="standard"
-                label="اسم المشروع"
-                placeholder="اسم المشروع"
+                label="اسم القناة"
+                placeholder="اسم القناة"
                 sx={{ maxWidth: 600 }}
                 value={name}
                 onChange={(event) => setName(event.target.value)}
@@ -162,8 +162,8 @@ const AddChannel = () => {
               >
                 <TextField
                   variant="standard"
-                  label="رابط صورة المشروع"
-                  placeholder="رابط صورة المشروع"
+                  label="رابط صورة القناة"
+                  placeholder="رابط صورة القناة"
                   sx={{ width: "100%" }}
                   value={imageLink}
                   onChange={(event) => {

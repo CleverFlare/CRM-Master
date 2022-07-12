@@ -55,10 +55,10 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
       expander: customers,
       setExpander: setCustomers,
       children: [
-        // {
-        //   text: "احصائيات العملاء",
-        //   path: "/customers/statistics",
-        // },
+        {
+          text: "احصائيات العملاء",
+          path: "/customers/statistics",
+        },
         {
           text: "جميع العملاء",
           path: "/customers/total",

@@ -133,6 +133,8 @@ const CustomersAddNew = () => {
       }));
     }
   };
+  // controls.code.replace(/\((.*?)\)\[.*?\]/gi, "$1") + controls.phone,
+  // agent: controls.saler.replace(/\d/gi, ""),
 
   useEffect(() => {
     if (isSubmit && Object.keys(errors).length === 0) {
@@ -141,22 +143,23 @@ const CustomersAddNew = () => {
           first_name: controls.name.split(" ")[0],
           last_name: controls.name.split(" ")[1],
           email: controls.email,
-          phone:
-            controls.code.replace(/\((.*?)\)\[.*?\]/gi, "$1") + controls.phone,
+          phone: controls.phone,
+          password: "0000",
         },
         organization: 1,
-        business: ["بلا بلا بلا"],
-        channel: controls.channel,
-        agent: controls.saler.replace(/\d/gi, ""),
+        bussiness: [1],
+        channel: 1,
+        agent: 3,
         min_budget: "00.00",
         max_budget: "00.00",
+        comment: "",
       };
       fetch("http://137.184.58.193:8000/aqar/api/router/Client/", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
           //prettier-ignore
-          "Authorization": "Token 4b0d32e62fab4bf53d1907ab69cf6b3a9583eca1",
+          "Authorization": "Token 94d7a586cefcf05c8242c6bb4537c4179aa30c37",
         },
         body: JSON.stringify(requestBody),
       })

@@ -1,7 +1,7 @@
 import Home from "./pages/home/Home";
 import TotalCustomers from "./pages/customers/total/TotalCustomers";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Layout from "./Layout";
+import Layout from "./components/Layout";
 import ChangePassword from "./pages/change-password/ChangePassword";
 import AddChannel from "./pages/add-channel/AddChannel";
 import CustomersAddNew from "./pages/customers/add-new/CustomersAddNew";

@@ -28,7 +28,7 @@ const Publisher = ({ name, picture, dataSetter }) => {
       headers: {
         "Content-type": "application/json",
         //prettier-ignore
-        "Authorization": "Token 4b0d32e62fab4bf53d1907ab69cf6b3a9583eca1",
+        "Authorization": "Token 94d7a586cefcf05c8242c6bb4537c4179aa30c37",
       },
       body: JSON.stringify(data),
     })

@@ -137,11 +137,12 @@ const EmployeesAddNew = () => {
           first_name: controls.name.split(" ")[0],
           last_name: controls.name.split(" ")[1],
           email: controls.email,
-          phone:
-            controls.code.replace(/\((.*?)\)\[.*?\]/gi, "$1") + controls.phone,
+          phone: controls.phone,
+          // controls.code.replace(/\((.*?)\)\[.*?\]/gi, "$1") + controls.phone,
           password: controls.password,
         },
-        job: controls.job,
+        business: [1],
+        job: 2,
         organization: 1,
       };
       fetch("http://137.184.58.193:8000/aqar/api/router/Employee/", {
@@ -149,7 +150,7 @@ const EmployeesAddNew = () => {
         headers: {
           "Content-type": "application/json",
           //prettier-ignore
-          "Authorization": "Token 4b0d32e62fab4bf53d1907ab69cf6b3a9583eca1",
+          "Authorization": "Token 94d7a586cefcf05c8242c6bb4537c4179aa30c37",
         },
         body: JSON.stringify(requestBody),
       })

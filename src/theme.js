@@ -95,6 +95,13 @@ const theme = createTheme({
         },
       },
     },
+    MuiDivider: {
+      styleOverrides: {
+        light: {
+          borderColor: "rgb(255 255 255 / 8%)",
+        },
+      },
+    },
   },
   typography: {
     fontFamily: "'Cairo', sans-serif",
