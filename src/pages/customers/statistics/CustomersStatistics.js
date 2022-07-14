@@ -198,7 +198,7 @@ const CustomersStatistics = () => {
           sx={{ width: "100%" }}
           wrap="wrap"
         >
-          <Grid item lg={3} md={12} sm={12} xs={12}>
+          <Grid item lg={3} xs={12}>
             <DataTable
               title="الموظف المتابع"
               columns={followedDummyColumns}
@@ -207,7 +207,7 @@ const CustomersStatistics = () => {
               minWidth="100px"
             />
           </Grid>
-          <Grid item lg={6} md={12} sm={12} xs={12}>
+          <Grid item lg={6} xs={12}>
             <DataTable
               title="حالة العميل"
               columns={statusDummyColumn}
@@ -216,7 +216,7 @@ const CustomersStatistics = () => {
               minWidth="100px"
             />
           </Grid>
-          <Grid item lg={3} md={12} sm={12} xs={12}>
+          <Grid item lg={3} xs={12}>
             <DataTable
               title="افضل موظف"
               columns={bestDummyColumn}

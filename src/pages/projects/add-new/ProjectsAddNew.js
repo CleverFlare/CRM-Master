@@ -13,8 +13,10 @@ import { useRef } from "react";
 import { useState } from "react";
 import { Box } from "@mui/system";
 import ErrorPrompt from "../../../components/error-prompt/ErrorPrompt";
+import { useSelector } from "react-redux";
 
 const ProjectsAddNew = () => {
+  const token = useSelector((state) => state.token.value);
   const sm = useMediaQuery("(min-width: 896px)");
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -64,7 +66,7 @@ const ProjectsAddNew = () => {
       method: "POST",
       headers: {
         //prettier-ignore
-        "Authorization": "Token 94d7a586cefcf05c8242c6bb4537c4179aa30c37",
+        "Authorization": "Token " + token,
       },
       body: formData,
     });

@@ -5,18 +5,20 @@ import { Stack, Typography } from "@mui/material";
 import Post, { PostSkeleton } from "../../components/post/Post";
 import Wrapper from "../../components/wrapper/Wrapper";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
   const [isPending, setIsPending] = useState(true);
   const skeletonNumber = Array(4).fill(0);
+  const token = useSelector((state) => state.token.value);
 
   useEffect(() => {
     fetch("http://137.184.58.193:8000/aqar/api/router/Post/", {
       method: "GET",
       headers: {
         //prettier-ignore
-        "Authorization": "Token 94d7a586cefcf05c8242c6bb4537c4179aa30c37",
+        "Authorization": "Token " + token,
       },
     })
       .then((res) => {

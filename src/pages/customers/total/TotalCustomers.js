@@ -2,6 +2,7 @@ import Parameter from "../../../components/parameter/Parameter";
 import DataGrid from "../../../components/data-grid/DataGrid";
 import Wrapper from "../../../components/wrapper/Wrapper";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const dummyColumns = [
   {
@@ -32,6 +33,7 @@ const dummyColumns = [
 
 const TotalCustomers = () => {
   const [rows, setRows] = useState(null);
+  const token = useSelector((state) => state.token.value);
   const parseToProperData = (json) => {
     let parentArray = [];
     json.map((item, index) => {
@@ -55,7 +57,7 @@ const TotalCustomers = () => {
       method: "GET",
       headers: {
         //prettier-ignore
-        "Authorization": "Token 94d7a586cefcf05c8242c6bb4537c4179aa30c37",
+        "Authorization": "Token " + token,
       },
     })
       .then((res) => {

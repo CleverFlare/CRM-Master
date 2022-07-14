@@ -15,36 +15,46 @@ import ProjectsAddNew from "./pages/projects/add-new/ProjectsAddNew";
 import Reports from "./pages/reports/Reports";
 import EmployeesData from "./pages/employees/data/EmployeesData";
 import CustomersStatistics from "./pages/customers/statistics/CustomersStatistics";
+import Login from "./pages/login/Login";
+import { useSelector } from "react-redux";
 
 function App() {
+  const token = useSelector((state) => state.token.value);
   return (
     <div className="App">
       <Router>
-        <Layout>
+        {token && (
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route
+                path="/customers/statistics"
+                element={<CustomersStatistics />}
+              />
+              <Route path="/customers/total" element={<TotalCustomers />} />
+              <Route path="/customers/deleted" element={<CustomersDeleted />} />
+              <Route path="/customers/new" element={<CustomersNew />} />
+              <Route path="/customers/import" element={<CustomersImport />} />
+              <Route path="/customers/export" element={<CustomersExport />} />
+              <Route path="/projects/display" element={<ProjectsDisplay />} />
+              <Route path="/customers/add-new" element={<CustomersAddNew />} />
+              <Route path="/projects/new" element={<ProjectsAddNew />} />
+              <Route path="/reports" element={<Reports />} />
+              <Route
+                path="/settings/change-password"
+                element={<ChangePassword />}
+              />
+              <Route path="/add-channel" element={<AddChannel />} />
+              <Route path="/employees/new" element={<EmployeesAddNew />} />
+              <Route path="/employees/data" element={<EmployeesData />} />
+            </Routes>
+          </Layout>
+        )}
+        {!token && (
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route
-              path="/customers/statistics"
-              element={<CustomersStatistics />}
-            />
-            <Route path="/customers/total" element={<TotalCustomers />} />
-            <Route path="/customers/deleted" element={<CustomersDeleted />} />
-            <Route path="/customers/new" element={<CustomersNew />} />
-            <Route path="/customers/import" element={<CustomersImport />} />
-            <Route path="/customers/export" element={<CustomersExport />} />
-            <Route path="/projects/display" element={<ProjectsDisplay />} />
-            <Route path="/customers/add-new" element={<CustomersAddNew />} />
-            <Route path="/projects/new" element={<ProjectsAddNew />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route
-              path="/settings/change-password"
-              element={<ChangePassword />}
-            />
-            <Route path="/add-channel" element={<AddChannel />} />
-            <Route path="/employees/new" element={<EmployeesAddNew />} />
-            <Route path="/employees/data" element={<EmployeesData />} />
+            <Route path="/*" element={<Login />} />
           </Routes>
-        </Layout>
+        )}
       </Router>
     </div>
   );

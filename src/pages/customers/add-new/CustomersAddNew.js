@@ -14,6 +14,11 @@ import {
   Button,
   useMediaQuery,
   Avatar,
+  IconButton,
+  List,
+  ListItem,
+  Checkbox,
+  Grid,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Parameter from "../../../components/parameter/Parameter";
@@ -22,9 +27,67 @@ import { useState } from "react";
 import countries from "./assets/CountriesMapping";
 import salers from "./assets/SalersMapping";
 import channels from "./assets/ChannelsMapping";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { Box } from "@mui/system";
+
+const projects = [
+  { value: "مشروع", id: 1 },
+  { value: "مشروع", id: 2 },
+  { value: "مشروع", id: 3 },
+  { value: "مشروع", id: 4 },
+  { value: "مشروع", id: 5 },
+  { value: "مشروع", id: 6 },
+];
+
+function not(a, b) {
+  return a.filter((value) => b.indexOf(value) === -1);
+}
+
+function intersection(a, b) {
+  return a.filter((value) => b.indexOf(value) !== -1);
+}
 
 const CustomersAddNew = () => {
+  const token = useSelector((state) => state.token.value);
+  const [checked, setChecked] = useState([]);
+  const [left, setLeft] = useState(projects);
+  const [right, setRight] = useState([]);
+
+  const leftChecked = intersection(checked, left);
+  const rightChecked = intersection(checked, right);
+
+  const handleToggle = (value) => () => {
+    const currentIndex = checked.indexOf(value);
+    const newChecked = [...checked];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    setChecked(newChecked);
+  };
+
+  const handleCheckedRight = () => {
+    setRight(right.concat(leftChecked));
+    setLeft(not(left, leftChecked));
+    setChecked(not(checked, leftChecked));
+  };
+
+  const handleCheckedLeft = () => {
+    setLeft(left.concat(rightChecked));
+    setRight(not(right, rightChecked));
+    setChecked(not(checked, rightChecked));
+  };
+
+  const [visibilities, setVisibilities] = useState({
+    password: false,
+    confirm: false,
+  });
   const sm = useMediaQuery("(max-width:912px)");
 
   const [errors, setErrors] = useState({});
@@ -39,17 +102,22 @@ const CustomersAddNew = () => {
       />
     );
 
+  const handleVisibilityToggle = (keyName) => {
+    setVisibilities({ ...visibilities, [keyName]: !visibilities[keyName] });
+  };
+
   const [controls, setControls] = useState({
     name: "",
     phone: "",
     code: countriesCodeInit,
     email: "",
-    project: "",
     saler: "",
     mediator: "",
     channel: "",
     contact: "",
     balance: "",
+    password: "",
+    confirm: "",
   });
 
   const handleControlUpdate = (controlName, value) => {
@@ -91,13 +159,6 @@ const CustomersAddNew = () => {
       }));
     }
 
-    if (!controls.project) {
-      setErrors((oldErrors) => ({
-        ...oldErrors,
-        project: "هذا الحقل إلزامي",
-      }));
-    }
-
     if (!controls.saler) {
       setErrors((oldErrors) => ({
         ...oldErrors,
@@ -132,6 +193,25 @@ const CustomersAddNew = () => {
         balance: "هذا الحقل إلزامي",
       }));
     }
+
+    if (!controls.password) {
+      setErrors((oldErrors) => ({
+        ...oldErrors,
+        password: "هذا الحقل إلزامي",
+      }));
+    }
+
+    if (!controls.confirm) {
+      setErrors((oldErrors) => ({
+        ...oldErrors,
+        confirm: "هذا الحقل إلزامي",
+      }));
+    } else if (controls.confirm !== controls.password) {
+      setErrors((oldErrors) => ({
+        ...oldErrors,
+        confirm: "الرقم السري لا يطابق",
+      }));
+    }
   };
   // controls.code.replace(/\((.*?)\)\[.*?\]/gi, "$1") + controls.phone,
   // agent: controls.saler.replace(/\d/gi, ""),
@@ -144,12 +224,12 @@ const CustomersAddNew = () => {
           last_name: controls.name.split(" ")[1],
           email: controls.email,
           phone: controls.phone,
-          password: "0000",
+          password: controls.password,
         },
         organization: 1,
-        bussiness: [1],
+        bussiness: [1, 2],
         channel: 1,
-        agent: 3,
+        agent: 1,
         min_budget: "00.00",
         max_budget: "00.00",
         comment: "",
@@ -159,7 +239,7 @@ const CustomersAddNew = () => {
         headers: {
           "Content-type": "application/json",
           //prettier-ignore
-          "Authorization": "Token 94d7a586cefcf05c8242c6bb4537c4179aa30c37",
+          "Authorization": "Token " + token,
         },
         body: JSON.stringify(requestBody),
       })
@@ -312,21 +392,6 @@ const CustomersAddNew = () => {
             >
               <TextField
                 variant="standard"
-                label="المشروع"
-                placeholder="المشروع"
-                sx={{
-                  width: sm ? "100%" : "400px",
-                }}
-                fullWidth={sm}
-                onChange={({ target: { value } }) =>
-                  handleControlUpdate("project", value)
-                }
-                value={controls.project}
-                error={Boolean(errors?.project)}
-                helperText={errors?.project}
-              />
-              <TextField
-                variant="standard"
                 label="مسؤول المبيعات"
                 select
                 SelectProps={{
@@ -382,12 +447,6 @@ const CustomersAddNew = () => {
                 error={Boolean(errors?.mediator)}
                 helperText={errors?.mediator}
               />
-            </Stack>
-            <Stack
-              direction={sm ? "column" : "row"}
-              justifyContent="space-between"
-              spacing={sm ? 2 : 1}
-            >
               <TextField
                 variant="standard"
                 label="القناة الإعلانية"
@@ -436,6 +495,12 @@ const CustomersAddNew = () => {
                   </MenuItem>
                 ))}
               </TextField>
+            </Stack>
+            <Stack
+              direction={sm ? "column" : "row"}
+              justifyContent="space-between"
+              spacing={sm ? 2 : 1}
+            >
               <TextField
                 variant="standard"
                 label="طريقة التواصل"
@@ -478,7 +543,169 @@ const CustomersAddNew = () => {
                 error={Boolean(errors?.balance)}
                 helperText={errors?.balance}
               />
+              <TextField
+                type={visibilities.password ? "text" : "password"}
+                variant="standard"
+                label="الرقم السري"
+                placeholder="الرقم السري"
+                sx={{ width: sm ? "100%" : "400px" }}
+                fullWidth={sm}
+                onChange={({ target: { value } }) =>
+                  handleControlUpdate("password", value)
+                }
+                value={controls.password}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end" sx={{ margin: 0 }}>
+                      <IconButton
+                        onClick={() => handleVisibilityToggle("password")}
+                      >
+                        {visibilities.password ? (
+                          <VisibilityIcon />
+                        ) : (
+                          <VisibilityOffIcon />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                error={Boolean(errors?.password)}
+                helperText={errors?.password}
+              />
             </Stack>
+            <Stack
+              direction={sm ? "column" : "row"}
+              justifyContent="space-between"
+              spacing={sm ? 2 : 1}
+            >
+              <TextField
+                type={visibilities.confirm ? "text" : "password"}
+                variant="standard"
+                label="تأكيد الرقم السري"
+                placeholder="تأكيد الرقم السري"
+                sx={{ width: sm ? "100%" : "400px" }}
+                fullWidth={sm}
+                onChange={({ target: { value } }) =>
+                  handleControlUpdate("confirm", value)
+                }
+                value={controls.confirm}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end" sx={{ margin: 0 }}>
+                      <IconButton
+                        onClick={() => handleVisibilityToggle("confirm")}
+                      >
+                        {visibilities.confirm ? (
+                          <VisibilityIcon />
+                        ) : (
+                          <VisibilityOffIcon />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                error={Boolean(errors?.confirm)}
+                helperText={errors?.confirm}
+              />
+              <Box
+                sx={{
+                  width: sm ? "100%" : "400px",
+                }}
+              ></Box>
+              <Box
+                sx={{
+                  width: sm ? "100%" : "400px",
+                }}
+              ></Box>
+            </Stack>
+          </Stack>
+          <Stack
+            justifyContent="center"
+            alignItems="center"
+            sx={{ marginBlock: "20px" }}
+          >
+            <Stack sx={{ width: "max-content" }}>
+              <InputLabel>المشاريع</InputLabel>
+            </Stack>
+            <Paper variant="outlined">
+              <Stack direction="row">
+                <List
+                  sx={{
+                    width: 200,
+                    height: 230,
+                    overflow: "auto",
+                  }}
+                >
+                  {right &&
+                    right.map((project, index) => (
+                      <ListItem
+                        button
+                        role="listitem"
+                        key={index}
+                        onClick={handleToggle(project)}
+                      >
+                        <ListItemIcon>
+                          <Checkbox
+                            checked={checked.indexOf(project) !== -1}
+                            tabIndex={-1}
+                            disableRipple
+                          />
+                        </ListItemIcon>
+                        <ListItemText primary={project.value} />
+                      </ListItem>
+                    ))}
+                </List>
+                <Paper sx={{ flex: 1 }} variant="outlined">
+                  <Stack
+                    sx={{ height: "100%", marginInline: "20px" }}
+                    justifyContent="center"
+                    alignItems="center"
+                    spacing={2}
+                  >
+                    <Button
+                      variant="outlined"
+                      disabled={!left.length}
+                      onClick={handleCheckedRight}
+                    >
+                      &lt;
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      disabled={!right.length}
+                      onClick={handleCheckedLeft}
+                    >
+                      &gt;
+                    </Button>
+                  </Stack>
+                </Paper>
+                <List
+                  sx={{
+                    width: 200,
+                    height: 230,
+                    overflow: "auto",
+                  }}
+                >
+                  {left &&
+                    left.map((project, index) => (
+                      <ListItem
+                        button
+                        role="listitem"
+                        key={index}
+                        onClick={handleToggle(project)}
+                      >
+                        <ListItemIcon>
+                          <Checkbox
+                            checked={checked.indexOf(project) !== -1}
+                            tabIndex={-1}
+                            disableRipple
+                          />
+                        </ListItemIcon>
+                        <ListItemText primary={project.value} />
+                      </ListItem>
+                    ))}
+                </List>
+              </Stack>
+            </Paper>
           </Stack>
           <Stack
             direction="row"

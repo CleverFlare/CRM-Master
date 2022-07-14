@@ -21,6 +21,7 @@ import Parameter from "../../../components/parameter/Parameter";
 import Wrapper from "../../../components/wrapper/Wrapper";
 import { useState } from "react";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const countries = [
   {
@@ -45,6 +46,8 @@ const countries = [
 
 const EmployeesAddNew = () => {
   const sm = useMediaQuery("(max-width:912px)");
+
+  const token = useSelector((state) => state.token.value);
 
   const [errors, setErrors] = useState({});
 
@@ -150,7 +153,7 @@ const EmployeesAddNew = () => {
         headers: {
           "Content-type": "application/json",
           //prettier-ignore
-          "Authorization": "Token 94d7a586cefcf05c8242c6bb4537c4179aa30c37",
+          "Authorization": "Token " + token,
         },
         body: JSON.stringify(requestBody),
       })

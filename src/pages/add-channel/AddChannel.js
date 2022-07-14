@@ -1,9 +1,6 @@
 import {
   Button,
   Collapse,
-  Grid,
-  IconButton,
-  InputAdornment,
   Paper,
   Stack,
   TextField,
@@ -14,10 +11,12 @@ import Parameter from "../../components/parameter/Parameter";
 import Wrapper from "../../components/wrapper/Wrapper";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { Box } from "@mui/system";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { useSelector } from "react-redux";
 
 const AddChannel = () => {
   const sm = useMediaQuery("(min-width: 896px)");
+  const token = useSelector((state) => state.token.value);
   const [name, setName] = useState("");
   const [imageLink, setImageLink] = useState("");
   const [imageURl, setImageURL] = useState("");
@@ -34,7 +33,7 @@ const AddChannel = () => {
       method: "POST",
       headers: {
         //prettier-ignore
-        "Authorization": "Token 94d7a586cefcf05c8242c6bb4537c4179aa30c37",
+        "Authorization": "Token " + token,
       },
       body: formData,
     });

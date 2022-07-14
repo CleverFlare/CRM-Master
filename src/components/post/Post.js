@@ -33,6 +33,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useState } from "react";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow direction="up" ref={ref} {...props} />;
@@ -80,6 +81,7 @@ export const PostSkeleton = () => {
 
 const EditPostDialog = ({ open, onClose, id, init, originalSetter }) => {
   const [editedContent, setEditedContent] = useState(init);
+  const token = useSelector((state) => state.token.value);
 
   const handleSubmit = () => {
     if (!editedContent) return;
@@ -91,7 +93,7 @@ const EditPostDialog = ({ open, onClose, id, init, originalSetter }) => {
       headers: {
         "Content-type": "application/json",
         //prettier-ignore
-        "Authorization": "Token 94d7a586cefcf05c8242c6bb4537c4179aa30c37",
+        "Authorization": "Token " + token,
       },
       body: JSON.stringify(data),
     })
@@ -163,6 +165,7 @@ const Post = ({ name, picture, date, children, id }) => {
   const open = Boolean(anchorEl);
   const [isDeleted, setIsDeleted] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
+  const token = useSelector((state) => state.token.value);
 
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -177,7 +180,7 @@ const Post = ({ name, picture, date, children, id }) => {
       method: "DELETE",
       headers: {
         //prettier-ignore
-        "Authorization": "Token 94d7a586cefcf05c8242c6bb4537c4179aa30c37",
+        "Authorization": "Token " + token,
       },
     })
       .then((res) => {

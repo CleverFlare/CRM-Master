@@ -27,18 +27,20 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Box } from "@mui/system";
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 const SideBar = ({ width, name, role, permanent, open, onClose }) => {
   const [customers, setCustomers] = useState(false);
   const [projects, setProjects] = useState(false);
   const [employees, setEmployees] = useState(false);
   const [settings, setSettings] = useState(false);
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleLogout = () => {
-    console.log("logout");
+    dispatch({ type: "token/remove" });
   };
 
   const menuItems = [

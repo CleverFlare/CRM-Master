@@ -12,9 +12,11 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const Publisher = ({ name, picture, dataSetter }) => {
   const [content, setContent] = useState("");
+  const token = useSelector((state) => state.token.value);
 
   const handleSubmit = () => {
     if (!content) return;
@@ -28,7 +30,7 @@ const Publisher = ({ name, picture, dataSetter }) => {
       headers: {
         "Content-type": "application/json",
         //prettier-ignore
-        "Authorization": "Token 94d7a586cefcf05c8242c6bb4537c4179aa30c37",
+        "Authorization": "Token " + token,
       },
       body: JSON.stringify(data),
     })

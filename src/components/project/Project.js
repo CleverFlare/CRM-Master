@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 export const ProjectSkeleton = () => {
   return (
@@ -48,6 +49,7 @@ export const ProjectSkeleton = () => {
 };
 
 const Project = ({ picture, title, address, id }) => {
+  const token = useSelector((state) => state.token.value);
   const [isDeleted, setIsDeleted] = useState(false);
 
   const handleDelete = () => {
@@ -55,7 +57,7 @@ const Project = ({ picture, title, address, id }) => {
       method: "DELETE",
       headers: {
         //prettier-ignore
-        "Authorization": "Token 4b0d32e62fab4bf53d1907ab69cf6b3a9583eca1",
+        "Authorization": "Token " + token,
       },
     }).then(() => {
       setIsDeleted(true);

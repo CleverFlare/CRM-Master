@@ -8,6 +8,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import BlockIcon from "@mui/icons-material/Block";
 import { useState } from "react";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const dummyColumns = [
   {
@@ -138,13 +139,14 @@ const dummyRows = [
 
 const EmployeesData = () => {
   const [employeesData, setEmployeesData] = useState(null);
+  const token = useSelector((state) => state.token.value);
   useEffect(() => {
     let convertToProperData = [];
     fetch("http://137.184.58.193:8000/aqar/api/router/Employee/", {
       method: "GET",
       headers: {
         //prettier-ignore
-        "Authorization": "Token 94d7a586cefcf05c8242c6bb4537c4179aa30c37",
+        "Authorization": "Token " + token,
       },
     })
       .then((res) => {

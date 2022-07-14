@@ -2,6 +2,7 @@ import { Paper, Stack, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import Parameter from "../../../components/parameter/Parameter";
 import Project, { ProjectSkeleton } from "../../../components/project/Project";
 import Wrapper from "../../../components/wrapper/Wrapper";
@@ -19,6 +20,7 @@ const ProjectSkeletonsStack = () => {
 };
 
 const ProjectsDisplay = () => {
+  const token = useSelector((state) => state.token.value);
   const [projects, setProjects] = useState([]);
   const [isPending, setIsPending] = useState(true);
   useEffect(() => {
@@ -26,7 +28,7 @@ const ProjectsDisplay = () => {
       method: "GET",
       headers: {
         //prettier-ignore
-        "Authorization": "Token 94d7a586cefcf05c8242c6bb4537c4179aa30c37",
+        "Authorization": "Token " + token,
       },
     })
       .then((res) => {
