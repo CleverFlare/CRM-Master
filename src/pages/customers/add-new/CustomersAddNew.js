@@ -619,20 +619,22 @@ const CustomersAddNew = () => {
               ></Box>
             </Stack>
           </Stack>
-          <Stack
-            justifyContent="center"
-            alignItems="center"
-            sx={{ marginBlock: "20px" }}
-          >
-            <Stack sx={{ width: "max-content" }}>
-              <InputLabel>المشاريع</InputLabel>
-            </Stack>
-            <Paper variant="outlined">
-              <Stack direction="row">
+          <Paper variant="outlined" sx={{ marginBlock: "20px", width: "100%" }}>
+            <Stack
+              direction={sm ? "column" : "row"}
+              sx={{ flex: 1, width: "100%" }}
+            >
+              <Stack sx={{ flex: 1, order: 1 }}>
+                <Typography sx={{ p: 2, bgcolor: "#f8f8f9" }}>
+                  المشاريع العميل
+                </Typography>
+                <Divider />
                 <List
                   sx={{
-                    width: 200,
-                    height: 230,
+                    flex: 1,
+                    height: "100%",
+                    maxHeight: 350,
+                    minHeight: 350,
                     overflow: "auto",
                   }}
                 >
@@ -655,33 +657,47 @@ const CustomersAddNew = () => {
                       </ListItem>
                     ))}
                 </List>
-                <Paper sx={{ flex: 1 }} variant="outlined">
-                  <Stack
-                    sx={{ height: "100%", marginInline: "20px" }}
-                    justifyContent="center"
-                    alignItems="center"
-                    spacing={2}
-                  >
-                    <Button
-                      variant="outlined"
-                      disabled={!left.length}
-                      onClick={handleCheckedRight}
-                    >
-                      &lt;
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      disabled={!right.length}
-                      onClick={handleCheckedLeft}
-                    >
-                      &gt;
-                    </Button>
-                  </Stack>
-                </Paper>
+              </Stack>
+              <Divider orientation={sm ? "horizontal" : "vertical"} flexItem />
+              <Stack
+                direction={sm ? "row" : "column"}
+                sx={{
+                  flex: 1,
+                  width: sm ? "100%" : "max-content",
+                  flex: 0,
+                  p: 1,
+                }}
+                justifyContent="center"
+                alignItems="center"
+                spacing={2}
+              >
+                <Button
+                  variant="outlined"
+                  disabled={!left.length}
+                  onClick={handleCheckedRight}
+                >
+                  {sm ? "⤋" : "⟸"}
+                </Button>
+                <Button
+                  variant="outlined"
+                  disabled={!right.length}
+                  onClick={handleCheckedLeft}
+                >
+                  {sm ? "⤊" : "⟹"}
+                </Button>
+              </Stack>
+              <Divider orientation={sm ? "horizontal" : "vertical"} flexItem />
+              <Stack sx={{ flex: 1, order: -1 }}>
+                <Typography sx={{ p: 2, bgcolor: "#f8f8f9" }}>
+                  جميع المشاريع
+                </Typography>
+                <Divider />
                 <List
                   sx={{
-                    width: 200,
-                    height: 230,
+                    flex: 1,
+                    height: "100%",
+                    maxHeight: 350,
+                    minHeight: 350,
                     overflow: "auto",
                   }}
                 >
@@ -705,8 +721,8 @@ const CustomersAddNew = () => {
                     ))}
                 </List>
               </Stack>
-            </Paper>
-          </Stack>
+            </Stack>
+          </Paper>
           <Stack
             direction="row"
             justifyContent="center"
