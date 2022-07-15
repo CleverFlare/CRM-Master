@@ -20,6 +20,7 @@ const Publisher = ({ name, picture, dataSetter }) => {
   const [content, setContent] = useState("");
   const token = useSelector((state) => state.token.value);
   const userId = useSelector((state) => state.id.value);
+  const domain = useSelector((state) => state.domain.value);
   const inputFile = useRef();
 
   const handleSubmit = () => {
@@ -30,7 +31,7 @@ const Publisher = ({ name, picture, dataSetter }) => {
     formData.set("user", userId);
     inputFile.current.files[0] &&
       formData.set("media", inputFile.current.files[0]);
-    fetch("http://161.35.60.195:8080/aqar/api/router/Post/", {
+    fetch(domain + "aqar/api/router/Post/", {
       method: "POST",
       headers: {
         //prettier-ignore

@@ -33,7 +33,6 @@ import NotificationsOffIcon from "@mui/icons-material/NotificationsOff";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useState } from "react";
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -290,7 +289,7 @@ const Post = ({ name, picture, date, children, id, imgs = null }) => {
             </Typography>
           </Box>
         </CardContent>
-        {imgs[0] && (
+        {/* {imgs[0] && (
           <CardMedia
             component="img"
             image={imgs[0]}
@@ -301,7 +300,7 @@ const Post = ({ name, picture, date, children, id, imgs = null }) => {
               aspectRatio: "2 / 1",
             }}
           />
-        )}
+        )} */}
         <CardActions sx={{ justifyContent: "space-between" }}>
           <Tooltip title="likes">
             <Button endIcon={<FavoriteIcon />}>أعجبني</Button>

@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import allCustomersSlice from "./store/allCustomersSlice";
 import channelsSlice from "./store/channelsSlice";
+import domainSlice from "./store/domainSlice";
 import employeesSlice from "./store/employeesSlice";
 import postsSlice from "./store/postsSlice";
 import projectsSlice from "./store/projectsSlice";
@@ -16,5 +17,6 @@ export default configureStore({
     posts: postsSlice,
     allCustomers: allCustomersSlice,
     id: userIdSlice,
+    domain: domainSlice,
   },
 });

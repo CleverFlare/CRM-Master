@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 const AddChannel = () => {
   const sm = useMediaQuery("(min-width: 896px)");
   const token = useSelector((state) => state.token.value);
+  const domain = useSelector((state) => state.domain.value);
   const [name, setName] = useState("");
   const [imageLink, setImageLink] = useState("");
   const [imageURl, setImageURL] = useState("");
@@ -29,7 +30,7 @@ const AddChannel = () => {
     formData.append("logo", fileRef.current.files[0]);
     formData.append("organization", "1");
 
-    fetch("http://137.184.58.193:8000/aqar/api/router/Channel/", {
+    fetch(domain + "aqar/api/router/Channel/", {
       method: "POST",
       headers: {
         //prettier-ignore

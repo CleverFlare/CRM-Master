@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 
 const ProjectsAddNew = () => {
   const token = useSelector((state) => state.token.value);
+  const domain = useSelector((state) => state.domain.value);
   const sm = useMediaQuery("(min-width: 896px)");
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -62,7 +63,7 @@ const ProjectsAddNew = () => {
     formData.append("logo", fileRef.current.files[0]);
     formData.append("organization", "1");
 
-    fetch("http://137.184.58.193:8000/aqar/api/router/Project/", {
+    fetch(domain + "aqar/api/router/Project/", {
       method: "POST",
       headers: {
         //prettier-ignore

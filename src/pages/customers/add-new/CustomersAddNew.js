@@ -40,6 +40,7 @@ function intersection(a, b) {
 }
 
 const CustomersAddNew = () => {
+  const domain = useSelector((state) => state.domain.value);
   const token = useSelector((state) => state.token.value);
   const projects = useSelector((state) => state.projects.value);
   const channels = useSelector((state) => state.channels.value);
@@ -237,7 +238,7 @@ const CustomersAddNew = () => {
         fav_contacts: controls.contact.value,
         comment: "",
       };
-      fetch("http://161.35.60.195:8080/aqar/api/router/Client/", {
+      fetch(domain + "aqar/api/router/Client/", {
         method: "POST",
         headers: {
           "Content-type": "application/json",

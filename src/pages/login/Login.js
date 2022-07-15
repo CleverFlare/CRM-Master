@@ -11,10 +11,11 @@ import { Box } from "@mui/system";
 import { useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Login = () => {
   const sm = useMediaQuery(`(max-width: 740px)`);
+  const domain = useSelector((state) => state.domain.value);
   const dispatch = useDispatch();
   const [visibilities, setVisibilities] = useState({
     password: false,
@@ -31,7 +32,7 @@ const Login = () => {
       username: controls.username,
       password: controls.password,
     };
-    fetch("http://161.35.60.195:8080/api/login/", {
+    fetch(domain + "api/login/", {
       method: "POST",
       headers: {
         "Content-type": "application/json",

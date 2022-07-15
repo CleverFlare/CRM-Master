@@ -21,10 +21,11 @@ const ProjectSkeletonsStack = () => {
 
 const ProjectsDisplay = () => {
   const token = useSelector((state) => state.token.value);
+  const domain = useSelector((state) => state.domain.value);
   const [projects, setProjects] = useState([]);
   const [isPending, setIsPending] = useState(true);
   useEffect(() => {
-    fetch("http://137.184.58.193:8000/aqar/api/router/Project/", {
+    fetch(domain + "aqar/api/router/Project/", {
       method: "GET",
       headers: {
         //prettier-ignore

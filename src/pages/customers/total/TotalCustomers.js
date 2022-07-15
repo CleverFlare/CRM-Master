@@ -32,10 +32,13 @@ const dummyColumns = [
 ];
 
 const TotalCustomers = () => {
+  const domain = useSelector((state) => state.domain.value);
   const token = useSelector((state) => state.token.value);
   const allCustomers = useSelector((state) => state.allCustomers.value);
   const dispatch = useDispatch();
+
   const [rows, setRows] = useState(allCustomers.length ? allCustomers : null);
+
   const parseToProperData = (json) => {
     let parentArray = [];
     json.map((item, index) => {
@@ -56,7 +59,7 @@ const TotalCustomers = () => {
 
   useEffect(() => {
     if (allCustomers.length) return;
-    fetch("http://161.35.60.195:8080/aqar/api/router/Client/", {
+    fetch(domain + "aqar/api/router/Client/", {
       method: "GET",
       headers: {
         //prettier-ignore

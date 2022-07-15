@@ -21,9 +21,10 @@ import { useEffect } from "react";
 
 function App() {
   const token = useSelector((state) => state.token.value);
+  const domain = useSelector((state) => state.domain.value);
   const dispatch = useDispatch();
   useEffect(() => {
-    fetch("http://161.35.60.195:8080/aqar/api/router/Project/", {
+    fetch(domain + "aqar/api/router/Project/", {
       method: "GET",
       headers: {
         //prettier-ignore
@@ -37,7 +38,7 @@ function App() {
       .then((json) => {
         dispatch({ type: "projects/set", payload: json });
       });
-    fetch("http://161.35.60.195:8080/aqar/api/router/Channel/", {
+    fetch(domain + "aqar/api/router/Channel/", {
       method: "GET",
       headers: {
         //prettier-ignore
@@ -51,7 +52,7 @@ function App() {
       .then((json) => {
         dispatch({ type: "channels/set", payload: json });
       });
-    fetch("http://161.35.60.195:8080/aqar/api/router/Employee/", {
+    fetch(domain + "aqar/api/router/Employee/", {
       method: "GET",
       headers: {
         //prettier-ignore

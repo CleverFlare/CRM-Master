@@ -140,9 +140,10 @@ const dummyRows = [
 const EmployeesData = () => {
   const [employeesData, setEmployeesData] = useState(null);
   const token = useSelector((state) => state.token.value);
+  const domain = useSelector((state) => state.domain.value);
   useEffect(() => {
     let convertToProperData = [];
-    fetch("http://137.184.58.193:8000/aqar/api/router/Employee/", {
+    fetch(domain + "aqar/api/router/Employee/", {
       method: "GET",
       headers: {
         //prettier-ignore

@@ -49,6 +49,8 @@ const EmployeesAddNew = () => {
 
   const token = useSelector((state) => state.token.value);
 
+  const domain = useSelector((state) => state.domain.value);
+
   const [errors, setErrors] = useState({});
 
   const [isSubmit, setIsSubmit] = useState(false);
@@ -148,7 +150,7 @@ const EmployeesAddNew = () => {
         job: 2,
         organization: 1,
       };
-      fetch("http://137.184.58.193:8000/aqar/api/router/Employee/", {
+      fetch(domain + "aqar/api/router/Employee/", {
         method: "POST",
         headers: {
           "Content-type": "application/json",

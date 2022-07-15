@@ -6,9 +6,11 @@ import Post, { PostSkeleton } from "../../components/post/Post";
 import Wrapper from "../../components/wrapper/Wrapper";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import useFetch from "../../hooks/useFetch";
 
 const Home = () => {
   const postsStore = useSelector((state) => state.posts.value);
+  const domain = useSelector((state) => state.domain.value);
   const dispatch = useDispatch();
   const [posts, setPosts] = useState([...postsStore]);
   const [isPending, setIsPending] = useState(false);
@@ -18,7 +20,7 @@ const Home = () => {
   useEffect(() => {
     if (postsStore.length) return;
     setIsPending(true);
-    fetch("http://161.35.60.195:8080/aqar/api/router/Post/", {
+    fetch(domain + "aqar/api/router/Post/", {
       method: "GET",
       headers: {
         //prettier-ignore
