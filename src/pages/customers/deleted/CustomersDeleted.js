@@ -134,7 +134,7 @@ const dummyRows = [
 const CustomersDeleted = () => {
   const token = useSelector((state) => state.token.value);
   useEffect(() => {
-    fetch("http://137.184.58.193:8000/aqar/api/router/RestoreClient/", {
+    fetch("http://161.35.60.195:8080/aqar/api/router/RestoreClient/", {
       method: "GET",
       headers: {
         //prettier-ignore

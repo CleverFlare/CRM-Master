@@ -16,10 +16,56 @@ import Reports from "./pages/reports/Reports";
 import EmployeesData from "./pages/employees/data/EmployeesData";
 import CustomersStatistics from "./pages/customers/statistics/CustomersStatistics";
 import Login from "./pages/login/Login";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
 
 function App() {
   const token = useSelector((state) => state.token.value);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    fetch("http://161.35.60.195:8080/aqar/api/router/Project/", {
+      method: "GET",
+      headers: {
+        //prettier-ignore
+        "Authorization": "Token " + token,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw Error("couldn't fetch the data of that resource");
+        return res.json();
+      })
+      .then((json) => {
+        dispatch({ type: "projects/set", payload: json });
+      });
+    fetch("http://161.35.60.195:8080/aqar/api/router/Channel/", {
+      method: "GET",
+      headers: {
+        //prettier-ignore
+        "Authorization": "Token " + token,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw Error("couldn't fetch the data of that resource");
+        return res.json();
+      })
+      .then((json) => {
+        dispatch({ type: "channels/set", payload: json });
+      });
+    fetch("http://161.35.60.195:8080/aqar/api/router/Employee/", {
+      method: "GET",
+      headers: {
+        //prettier-ignore
+        "Authorization": "Token " + token,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw Error("couldn't fetch the data of that resource");
+        return res.json();
+      })
+      .then((json) => {
+        dispatch({ type: "employees/set", payload: json });
+      });
+  }, []);
   return (
     <div className="App">
       <Router>

@@ -7,32 +7,36 @@ import {
   Card,
   CardActions,
   CardHeader,
+  Chip,
   IconButton,
   Tooltip,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useRef } from "react";
 
 const Publisher = ({ name, picture, dataSetter }) => {
   const [content, setContent] = useState("");
   const token = useSelector((state) => state.token.value);
+  const userId = useSelector((state) => state.id.value);
+  const inputFile = useRef();
 
   const handleSubmit = () => {
     if (!content) return;
-    const data = {
-      content: content,
-      organization: 1,
-      user: 1,
-    };
-    fetch("http://137.184.58.193:8000/aqar/api/router/Post/", {
+    const formData = new FormData();
+    formData.set("organization", 1);
+    formData.set("content", content);
+    formData.set("user", userId);
+    inputFile.current.files[0] &&
+      formData.set("media", inputFile.current.files[0]);
+    fetch("http://161.35.60.195:8080/aqar/api/router/Post/", {
       method: "POST",
       headers: {
-        "Content-type": "application/json",
         //prettier-ignore
         "Authorization": "Token " + token,
       },
-      body: JSON.stringify(data),
+      body: formData,
     })
       .then((res) => {
         if (!res.ok) throw Error("couldn't fetch the data for that resource");
@@ -72,7 +76,7 @@ const Publisher = ({ name, picture, dataSetter }) => {
       >
         <Box sx={{ minWidth: "max-content" }}>
           <Tooltip title="add picture">
-            <IconButton>
+            <IconButton onClick={() => inputFile.current.click()}>
               <AddAPhotoIcon
                 color="primary"
                 style={{ transform: "scaleX(-1)" }}
@@ -93,6 +97,12 @@ const Publisher = ({ name, picture, dataSetter }) => {
         >
           إضافة
         </Button>
+        <input
+          type="file"
+          ref={inputFile}
+          style={{ display: "none" }}
+          onChange={(event) => console.log(event.target.files)}
+        />
       </CardActions>
     </Card>
   );

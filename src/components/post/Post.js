@@ -24,6 +24,7 @@ import {
   Grow,
   Stack,
   TextField,
+  CardMedia,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Box } from "@mui/system";
@@ -160,7 +161,7 @@ const EditPostDialog = ({ open, onClose, id, init, originalSetter }) => {
   );
 };
 
-const Post = ({ name, picture, date, children, id }) => {
+const Post = ({ name, picture, date, children, id, imgs = null }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [isDeleted, setIsDeleted] = useState(false);
@@ -208,6 +209,7 @@ const Post = ({ name, picture, date, children, id }) => {
           open={openEdit}
           onClose={handleCloseEditPostDialog}
           init={children}
+          id={id}
         />
         <CardHeader
           avatar={
@@ -288,6 +290,18 @@ const Post = ({ name, picture, date, children, id }) => {
             </Typography>
           </Box>
         </CardContent>
+        {imgs[0] && (
+          <CardMedia
+            component="img"
+            image={imgs[0]}
+            alt="posts image"
+            sx={{
+              bgcolor: "black",
+              objectFit: "contain",
+              aspectRatio: "2 / 1",
+            }}
+          />
+        )}
         <CardActions sx={{ justifyContent: "space-between" }}>
           <Tooltip title="likes">
             <Button endIcon={<FavoriteIcon />}>أعجبني</Button>

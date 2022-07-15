@@ -31,7 +31,7 @@ const Login = () => {
       username: controls.username,
       password: controls.password,
     };
-    fetch("http://137.184.58.193:8000/api/login/", {
+    fetch("http://161.35.60.195:8080/api/login/", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -45,6 +45,7 @@ const Login = () => {
       .then((json) => {
         console.log(json);
         dispatch({ type: "token/set", payload: json.token });
+        dispatch({ type: "id/set", payload: json.id });
       })
       .catch((err) => {
         console.log(err.message);

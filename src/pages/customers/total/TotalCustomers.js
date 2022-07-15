@@ -2,7 +2,7 @@ import Parameter from "../../../components/parameter/Parameter";
 import DataGrid from "../../../components/data-grid/DataGrid";
 import Wrapper from "../../../components/wrapper/Wrapper";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const dummyColumns = [
   {
@@ -32,8 +32,10 @@ const dummyColumns = [
 ];
 
 const TotalCustomers = () => {
-  const [rows, setRows] = useState(null);
   const token = useSelector((state) => state.token.value);
+  const allCustomers = useSelector((state) => state.allCustomers.value);
+  const dispatch = useDispatch();
+  const [rows, setRows] = useState(allCustomers.length ? allCustomers : null);
   const parseToProperData = (json) => {
     let parentArray = [];
     json.map((item, index) => {
@@ -53,7 +55,8 @@ const TotalCustomers = () => {
   };
 
   useEffect(() => {
-    fetch("http://137.184.58.193:8000/aqar/api/router/Client/", {
+    if (allCustomers.length) return;
+    fetch("http://161.35.60.195:8080/aqar/api/router/Client/", {
       method: "GET",
       headers: {
         //prettier-ignore
@@ -64,11 +67,18 @@ const TotalCustomers = () => {
         return res.json();
       })
       .then((json) => {
-        console.log(json);
-        setRows(parseToProperData(json));
-        console.log(parseToProperData(json));
+        const parsedData = parseToProperData(json);
+        setRows(parsedData);
+        dispatch({
+          type: "allCustomers/set",
+          payload: parsedData,
+        });
+      })
+      .catch((err) => {
+        console.log(err.message);
       });
   }, []);
+
   return (
     <div style={{ height: 697 }}>
       <Wrapper sx={{ height: "100%" }}>

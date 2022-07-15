@@ -25,22 +25,11 @@ import Parameter from "../../../components/parameter/Parameter";
 import Wrapper from "../../../components/wrapper/Wrapper";
 import { useState } from "react";
 import countries from "./assets/CountriesMapping";
-import salers from "./assets/SalersMapping";
-import channels from "./assets/ChannelsMapping";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Box } from "@mui/system";
-
-const projects = [
-  { value: "مشروع", id: 1 },
-  { value: "مشروع", id: 2 },
-  { value: "مشروع", id: 3 },
-  { value: "مشروع", id: 4 },
-  { value: "مشروع", id: 5 },
-  { value: "مشروع", id: 6 },
-];
 
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
@@ -52,8 +41,11 @@ function intersection(a, b) {
 
 const CustomersAddNew = () => {
   const token = useSelector((state) => state.token.value);
+  const projects = useSelector((state) => state.projects.value);
+  const channels = useSelector((state) => state.channels.value);
+  const employees = useSelector((state) => state.employees.value);
   const [checked, setChecked] = useState([]);
-  const [left, setLeft] = useState(projects);
+  const [left, setLeft] = useState([...projects]);
   const [right, setRight] = useState([]);
 
   const leftChecked = intersection(checked, left);
@@ -111,10 +103,19 @@ const CustomersAddNew = () => {
     phone: "",
     code: countriesCodeInit,
     email: "",
-    saler: "",
+    saler: {
+      name: "",
+      id: "",
+    },
     mediator: "",
-    channel: "",
-    contact: "",
+    channel: {
+      name: "",
+      id: "",
+    },
+    contact: {
+      name: "",
+      value: "",
+    },
     balance: "",
     password: "",
     confirm: "",
@@ -225,16 +226,18 @@ const CustomersAddNew = () => {
           email: controls.email,
           phone: controls.phone,
           password: controls.password,
+          permissions: [],
         },
         organization: 1,
-        bussiness: [1, 2],
-        channel: 1,
-        agent: 1,
+        bussiness: right.map((item) => item.id),
+        channel: controls.channel.id,
+        agent: controls.saler.id,
         min_budget: "00.00",
         max_budget: "00.00",
+        fav_contacts: controls.contact.value,
         comment: "",
       };
-      fetch("http://137.184.58.193:8000/aqar/api/router/Client/", {
+      fetch("http://161.35.60.195:8080/aqar/api/router/Client/", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -406,8 +409,7 @@ const CustomersAddNew = () => {
                         </Typography>
                       );
                     } else {
-                      console.log(selected.length);
-                      return selected.replace(/\d/gi, "");
+                      return selected;
                     }
                   },
                   MenuProps: { PaperProps: { style: { maxHeight: "250px" } } },
@@ -416,18 +418,29 @@ const CustomersAddNew = () => {
                 sx={{
                   width: sm ? "100%" : "400px",
                 }}
-                onChange={({ target: { value } }) =>
-                  handleControlUpdate("saler", value)
-                }
-                value={controls.saler}
+                onChange={({ target: { value } }) => {
+                  handleControlUpdate("saler", value);
+                }}
+                value={controls.saler?.name}
                 error={Boolean(errors?.saler)}
                 helperText={errors?.saler}
               >
-                {salers.map((saler, index) => (
-                  <MenuItem value={saler + index} key={index}>
-                    {saler}
-                  </MenuItem>
-                ))}
+                {employees
+                  .filter((employee) => employee.job === "Agent")
+                  .map((employee, index) => (
+                    <MenuItem
+                      value={{
+                        name:
+                          employee.user.first_name +
+                          " " +
+                          employee.user.last_name,
+                        id: employee.id,
+                      }}
+                      key={index}
+                    >
+                      {employee.user.first_name} {employee.user.last_name}
+                    </MenuItem>
+                  ))}
               </TextField>
               <TextField
                 variant="standard"
@@ -467,24 +480,28 @@ const CustomersAddNew = () => {
                         </Typography>
                       );
                     } else {
+                      console.log(selected);
                       return selected;
                     }
                   },
                   MenuProps: { PaperProps: { style: { maxHeight: "250px" } } },
                   IconComponent: KeyboardArrowDownIcon,
                 }}
-                onChange={({ target: { value } }) =>
-                  handleControlUpdate("channel", value)
-                }
-                value={controls.channel}
+                onChange={({ target: { value } }) => {
+                  handleControlUpdate("channel", value);
+                }}
+                value={controls.channel?.name}
                 fullWidth={sm}
                 error={Boolean(errors?.channel)}
                 helperText={errors?.channel}
               >
                 {channels.map((channel, index) => (
-                  <MenuItem value={channel.name} key={index}>
+                  <MenuItem
+                    value={{ name: channel.name, id: channel.id }}
+                    key={index}
+                  >
                     <ListItemIcon sx={{ paddingRight: "10px" }}>
-                      <Avatar src={channel.picture} sx={{ bgcolor: "orange" }}>
+                      <Avatar src={channel.logo} sx={{ bgcolor: "orange" }}>
                         {channel.name[0].toUpperCase()}
                       </Avatar>
                     </ListItemIcon>
@@ -504,18 +521,45 @@ const CustomersAddNew = () => {
               <TextField
                 variant="standard"
                 label="طريقة التواصل"
-                placeholder="طريقة التواصل"
+                select
+                SelectProps={{
+                  displayEmpty: true,
+                  renderValue: (selected) => {
+                    if (!selected) {
+                      return (
+                        <Typography
+                          sx={{ color: "currentColor", opacity: "0.42" }}
+                        >
+                          طريقة التواصل
+                        </Typography>
+                      );
+                    } else {
+                      return selected;
+                    }
+                  },
+                  MenuProps: { PaperProps: { style: { maxHeight: "250px" } } },
+                  IconComponent: KeyboardArrowDownIcon,
+                }}
                 sx={{
                   width: sm ? "100%" : "400px",
                 }}
-                fullWidth={sm}
-                onChange={({ target: { value } }) =>
-                  handleControlUpdate("contact", value)
-                }
-                value={controls.contact}
+                onChange={({ target: { value } }) => {
+                  handleControlUpdate("contact", value);
+                }}
+                value={controls.contact?.name}
                 error={Boolean(errors?.contact)}
                 helperText={errors?.contact}
-              />
+              >
+                <MenuItem value={{ name: "هاتف", value: "phone" }}>
+                  هاتف
+                </MenuItem>
+                <MenuItem value={{ name: "البريد", value: "email" }}>
+                  البريد
+                </MenuItem>
+                <MenuItem value={{ name: "واتساب", value: "whats app" }}>
+                  واتساب
+                </MenuItem>
+              </TextField>
               <TextField
                 type="number"
                 variant="standard"
@@ -653,7 +697,7 @@ const CustomersAddNew = () => {
                             disableRipple
                           />
                         </ListItemIcon>
-                        <ListItemText primary={project.value} />
+                        <ListItemText primary={project.name} />
                       </ListItem>
                     ))}
                 </List>
@@ -716,7 +760,7 @@ const CustomersAddNew = () => {
                             disableRipple
                           />
                         </ListItemIcon>
-                        <ListItemText primary={project.value} />
+                        <ListItemText primary={project.name} />
                       </ListItem>
                     ))}
                 </List>

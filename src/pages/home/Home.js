@@ -5,16 +5,20 @@ import { Stack, Typography } from "@mui/material";
 import Post, { PostSkeleton } from "../../components/post/Post";
 import Wrapper from "../../components/wrapper/Wrapper";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Home = () => {
-  const [posts, setPosts] = useState([]);
-  const [isPending, setIsPending] = useState(true);
+  const postsStore = useSelector((state) => state.posts.value);
+  const dispatch = useDispatch();
+  const [posts, setPosts] = useState([...postsStore]);
+  const [isPending, setIsPending] = useState(false);
   const skeletonNumber = Array(4).fill(0);
   const token = useSelector((state) => state.token.value);
 
   useEffect(() => {
-    fetch("http://137.184.58.193:8000/aqar/api/router/Post/", {
+    if (postsStore.length) return;
+    setIsPending(true);
+    fetch("http://161.35.60.195:8080/aqar/api/router/Post/", {
       method: "GET",
       headers: {
         //prettier-ignore
@@ -27,8 +31,8 @@ const Home = () => {
         return res.json();
       })
       .then((json) => {
-        console.log(json);
         setPosts([...json]);
+        dispatch({ type: "posts/set", payload: json });
         setIsPending(false);
       })
       .catch((err) => {
@@ -67,6 +71,7 @@ const Home = () => {
                 key={post.id}
                 date={post.created_at}
                 id={post.id}
+                imgs={post.medias}
               >
                 {post.content}
               </Post>
