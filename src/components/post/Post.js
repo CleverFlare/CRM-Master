@@ -177,7 +177,7 @@ const Post = ({ name, picture, date, children, id, imgs = null }) => {
   };
 
   const handleDeletion = () => {
-    fetch("http://137.184.58.193:8000/aqar/api/router/Post/" + id + "/", {
+    fetch("http://161.35.60.195:8080/aqar/api/router/Post/" + id + "/", {
       method: "DELETE",
       headers: {
         //prettier-ignore
