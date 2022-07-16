@@ -19,6 +19,7 @@ import Login from "./pages/login/Login";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import AddJob from "./pages/employees/add-job/AddJob";
+import Jobs from "./pages/employees/jobs/Jobs";
 
 function App() {
   const token = useSelector((state) => state.token.value);
@@ -96,6 +97,7 @@ function App() {
               <Route path="/employees/new" element={<EmployeesAddNew />} />
               <Route path="/employees/data" element={<EmployeesData />} />
               <Route path="/employees/add-job" element={<AddJob />} />
+              <Route path="/employees/jobs" element={<Jobs />} />
             </Routes>
           </Layout>
         )}

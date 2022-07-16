@@ -254,6 +254,28 @@ const CustomersAddNew = () => {
         })
         .then((json) => {
           console.log(json);
+          setControls({
+            name: "",
+            phone: "",
+            code: countriesCodeInit,
+            email: "",
+            saler: {
+              name: "",
+              id: "",
+            },
+            mediator: "",
+            channel: {
+              name: "",
+              id: "",
+            },
+            contact: {
+              name: "",
+              value: "",
+            },
+            balance: "",
+            password: "",
+            confirm: "",
+          });
         })
         .catch((err) => {
           console.log(err.message);
