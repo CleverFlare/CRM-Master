@@ -3,7 +3,9 @@ import { createSlice } from "@reduxjs/toolkit";
 export const userIdSlice = createSlice({
   name: "id",
   initialState: {
-    value: localStorage.getItem("userId") ? localStorage.getItem("userId") : "",
+    value: localStorage.getItem("userId")
+      ? localStorage.getItem("userId")
+      : "1",
   },
   reducers: {
     set: (state, action) => {

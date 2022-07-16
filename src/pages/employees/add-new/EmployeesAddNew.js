@@ -348,6 +348,12 @@ const EmployeesAddNew = () => {
                     </InputAdornment>
                   ),
                 }}
+                inputProps={{
+                  autoComplete: "new-password",
+                  form: {
+                    autoComplete: "off",
+                  },
+                }}
                 error={Boolean(errors?.password)}
                 helperText={errors?.password}
               />

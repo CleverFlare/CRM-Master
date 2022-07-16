@@ -23,52 +23,6 @@ import Jobs from "./pages/employees/jobs/Jobs";
 
 function App() {
   const token = useSelector((state) => state.token.value);
-  const domain = useSelector((state) => state.domain.value);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    fetch(domain + "aqar/api/router/Project/", {
-      method: "GET",
-      headers: {
-        //prettier-ignore
-        "Authorization": "Token " + token,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw Error("couldn't fetch the data of that resource");
-        return res.json();
-      })
-      .then((json) => {
-        dispatch({ type: "projects/set", payload: json });
-      });
-    fetch(domain + "aqar/api/router/Channel/", {
-      method: "GET",
-      headers: {
-        //prettier-ignore
-        "Authorization": "Token " + token,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw Error("couldn't fetch the data of that resource");
-        return res.json();
-      })
-      .then((json) => {
-        dispatch({ type: "channels/set", payload: json });
-      });
-    fetch(domain + "aqar/api/router/Employee/", {
-      method: "GET",
-      headers: {
-        //prettier-ignore
-        "Authorization": "Token " + token,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw Error("couldn't fetch the data of that resource");
-        return res.json();
-      })
-      .then((json) => {
-        dispatch({ type: "employees/set", payload: json });
-      });
-  }, []);
   return (
     <div className="App">
       <Router>

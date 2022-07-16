@@ -79,16 +79,20 @@ export const PostSkeleton = () => {
   );
 };
 
-const EditPostDialog = ({ open, onClose, id, init, originalSetter }) => {
+const EditPostDialog = ({ open, onClose, id, init, originalContentSetter }) => {
   const [editedContent, setEditedContent] = useState(init);
   const token = useSelector((state) => state.token.value);
+  const domain = useSelector((state) => state.domain.value);
+  const userId = useSelector((state) => state.id.value);
 
   const handleSubmit = () => {
     if (!editedContent) return;
     const data = {
       content: editedContent,
+      organization: 1,
+      user: userId,
     };
-    fetch("http://137.184.58.193:8000/aqar/api/router/Post/" + id + "/", {
+    fetch(domain + "aqar/api/router/Post/" + id + "/", {
       method: "PUT",
       headers: {
         "Content-type": "application/json",
@@ -100,7 +104,8 @@ const EditPostDialog = ({ open, onClose, id, init, originalSetter }) => {
       .then((res) => {
         if (!res.ok) throw Error("couldn't fetch the data for that resource");
 
-        originalSetter(editedContent);
+        originalContentSetter(editedContent);
+        onClose();
         return res.json();
       })
       .catch((err) => {
@@ -165,7 +170,9 @@ const Post = ({ name, picture, date, children, id, imgs = null }) => {
   const open = Boolean(anchorEl);
   const [isDeleted, setIsDeleted] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
+  const [content, setContent] = useState(children);
   const token = useSelector((state) => state.token.value);
+  const domain = useSelector((state) => state.domain.value);
 
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -176,7 +183,7 @@ const Post = ({ name, picture, date, children, id, imgs = null }) => {
   };
 
   const handleDeletion = () => {
-    fetch("http://161.35.60.195:8080/aqar/api/router/Post/" + id + "/", {
+    fetch(domain + "aqar/api/router/Post/" + id + "/", {
       method: "DELETE",
       headers: {
         //prettier-ignore
@@ -208,6 +215,7 @@ const Post = ({ name, picture, date, children, id, imgs = null }) => {
           open={openEdit}
           onClose={handleCloseEditPostDialog}
           init={children}
+          originalContentSetter={setContent}
           id={id}
         />
         <CardHeader
@@ -285,7 +293,7 @@ const Post = ({ name, picture, date, children, id, imgs = null }) => {
             }}
           >
             <Typography variant="body2" color="primary">
-              {children}
+              {content}
             </Typography>
           </Box>
         </CardContent>
@@ -307,11 +315,6 @@ const Post = ({ name, picture, date, children, id, imgs = null }) => {
           </Tooltip>
           <Tooltip title="comments">
             <Button endIcon={<ChatBubbleIcon />}>تعليقات</Button>
-          </Tooltip>
-          <Tooltip title="share">
-            <IconButton color="primary">
-              <ReplyIcon color="primary" sx={{ transform: "scaleX(-1)" }} />
-            </IconButton>
           </Tooltip>
         </CardActions>
         <Divider />

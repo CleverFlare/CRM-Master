@@ -8,146 +8,78 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import BlockIcon from "@mui/icons-material/Block";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 const dummyColumns = [
   {
     field: "name",
-    headerName: "الأسم",
+    headerName: "اسم الوظيفة",
   },
   {
-    field: "email",
-    headerName: "البريد الإلكتروني",
+    field: "createdAt",
+    headerName: "تاريخ الإنشاء",
   },
   {
-    field: "job",
-    headerName: "الوظيفة",
+    field: "employees",
+    headerName: "عدد الموظفين",
   },
   {
-    field: "edit",
-    headerName: "تعديل",
-    customeContent: (params, editInfoSetter, editPassSetter, onEdit) => (
-      <>
-        <Stack direction="row" sx={{ width: 300 }} spacing={2}>
-          <IconButton
-            size="small"
-            sx={{
-              bgcolor: "#495f9b",
-              color: "white",
-              borderRadius: 2,
-              "&:hover": {
-                backgroundColor: "#5c77c1",
-              },
-            }}
-            onClick={() => {
-              editPassSetter(true);
-            }}
-          >
-            <KeyIcon />
-          </IconButton>
-          <IconButton
-            size="small"
-            sx={{
-              bgcolor: "#96ee9d",
-              color: "white",
-              borderRadius: 2,
-              "&:hover": {
-                backgroundColor: "#b2f1b7",
-              },
-            }}
-            onClick={() => {
-              editInfoSetter(true);
-              onEdit({ ...params });
-            }}
-          >
-            <EditIcon />
-          </IconButton>
-          <IconButton
-            size="small"
-            sx={{
-              bgcolor: "#f8c6c6",
-              color: "#ff3c3c",
-              borderRadius: 2,
-              "&:hover": {
-                backgroundColor: "#ffe9e9",
-              },
-            }}
-          >
-            <DeleteIcon />
-          </IconButton>
-          <IconButton
-            size="small"
-            sx={{
-              bgcolor: "#ff3c3c",
-              color: "white",
-              borderRadius: 2,
-              "&:hover": {
-                backgroundColor: "#ff8080",
-              },
-            }}
-          >
-            <BlockIcon />
-          </IconButton>
-        </Stack>
-      </>
-    ),
+    field: "createdBy",
+    headerName: "تمت الإضافة بواسطة",
   },
 ];
 
 const dummyRows = [
   {
-    name: "احمد علي",
-    email: "mohammadali@gmail.com",
-    job: "مندوب مبيعات",
-  },
-  {
-    name: "محمد علي",
-    email: "mohammadali@gmail.com",
-    job: "مندوب مبيعات",
-  },
-  {
-    name: "محمد علي",
-    email: "mohammadali@gmail.com",
-    job: "مندوب مبيعات",
-  },
-  {
-    name: "محمد علي",
-    email: "mohammadali@gmail.com",
-    job: "مندوب مبيعات",
-  },
-  {
-    name: "محمد علي",
-    email: "mohammadali@gmail.com",
-    job: "مندوب مبيعات",
-  },
-  {
-    name: "محمد علي",
-    email: "mohammadali@gmail.com",
-    job: "مندوب مبيعات",
-  },
-  {
-    name: "محمد علي",
-    email: "mohammadali@gmail.com",
-    job: "مندوب مبيعات",
-  },
-  {
-    name: "محمد علي",
-    email: "mohammadali@gmail.com",
-    job: "مندوب مبيعات",
+    name: "وظيفة",
+    createdAt: "2/2/2022",
+    employees: "4",
+    createdBy: "محمد ماهر",
   },
 ];
 
 const Jobs = () => {
+  const [jobsData, setJobsData] = useState(null);
   const token = useSelector((state) => state.token.value);
   const domain = useSelector((state) => state.domain.value);
+  const jobs = useSelector((state) => state.jobs.value);
+  const dispatch = useDispatch();
+
+  const convertIntoProperObject = (json) => {
+    const arrayOfData = [];
+    json.map((item, index) => {
+      arrayOfData.push({
+        name: item.title,
+        createdAt: item.created_at,
+      });
+    });
+  };
+
+  useEffect(() => {
+    if (jobs.length) return;
+    fetch(domain + "aqar/api/router/Job/", {
+      method: "GET",
+      headers: {
+        //prettier-ignore
+        "Authorization": "Token " + token,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw Error("couldn't fetch data of that resource");
+
+        return res.json();
+      })
+      .then((json) => {
+        setJobsData(json);
+        dispatch({ type: "jobs/set", payload: json });
+      });
+  }, []);
   return (
     <>
       <Wrapper>
-        <Parameter
-          links={[{ text: "الموظفين" }, { text: "بيانات الموظفين" }]}
-        />
+        <Parameter links={[{ text: "الموظفين" }, { text: "الوظائف" }]} />
         <DataGrid
-          rows={dummyRows}
+          rows={jobsData}
           columns={dummyColumns}
           nameWithSearch
           maxRowsPerPage={5}

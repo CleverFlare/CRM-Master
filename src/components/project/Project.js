@@ -50,10 +50,11 @@ export const ProjectSkeleton = () => {
 
 const Project = ({ picture, title, address, id }) => {
   const token = useSelector((state) => state.token.value);
+  const domain = useSelector((state) => state.domain.value);
   const [isDeleted, setIsDeleted] = useState(false);
 
   const handleDelete = () => {
-    fetch("http://137.184.58.193:8000/aqar/api/router/Project/" + id + "/", {
+    fetch(domain + "aqar/api/router/Project/" + id + "/", {
       method: "DELETE",
       headers: {
         //prettier-ignore

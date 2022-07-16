@@ -9,18 +9,23 @@ import {
   CardHeader,
   Chip,
   IconButton,
+  Menu,
+  MenuItem,
   Tooltip,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useRef } from "react";
+import Picker, { SKIN_TONE_MEDIUM_DARK } from "emoji-picker-react";
 
 const Publisher = ({ name, picture, dataSetter }) => {
   const [content, setContent] = useState("");
   const token = useSelector((state) => state.token.value);
   const userId = useSelector((state) => state.id.value);
   const domain = useSelector((state) => state.domain.value);
+  const [emojisAnchorEl, setEmojisAnchorEl] = useState(null);
+  const openEmojisList = Boolean(emojisAnchorEl);
   const inputFile = useRef();
 
   const handleSubmit = () => {
@@ -54,6 +59,11 @@ const Publisher = ({ name, picture, dataSetter }) => {
       });
   };
 
+  const handleAddEmoji = (e, selectedEmoji) => {
+    setContent((old) => old + selectedEmoji.emoji);
+    console.log(selectedEmoji);
+  };
+
   return (
     <Card sx={{ maxWidth: "766px" }}>
       <CardHeader
@@ -84,11 +94,32 @@ const Publisher = ({ name, picture, dataSetter }) => {
               />
             </IconButton>
           </Tooltip>
-          <Tooltip title="add reaction">
-            <IconButton>
+          <div style={{ display: "inline-block" }}>
+            <IconButton onClick={(e) => setEmojisAnchorEl(e.currentTarget)}>
               <AddReactionIcon color="primary" />
             </IconButton>
-          </Tooltip>
+            <Menu
+              anchorEl={emojisAnchorEl}
+              open={openEmojisList}
+              onClose={(e) => setEmojisAnchorEl(null)}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "center",
+              }}
+              sx={{ direction: "rtl" }}
+            >
+              <Picker
+                onEmojiClick={handleAddEmoji}
+                disableAutoFocus={true}
+                skinTone={SKIN_TONE_MEDIUM_DARK}
+                groupNames={{ smileys_people: "PEOPLE" }}
+              />
+            </Menu>
+          </div>
         </Box>
         <Button
           variant="contained"

@@ -28,7 +28,7 @@ import countries from "./assets/CountriesMapping";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Box } from "@mui/system";
 
 function not(a, b) {
@@ -45,8 +45,9 @@ const CustomersAddNew = () => {
   const projects = useSelector((state) => state.projects.value);
   const channels = useSelector((state) => state.channels.value);
   const employees = useSelector((state) => state.employees.value);
+  const dispatch = useDispatch();
   const [checked, setChecked] = useState([]);
-  const [left, setLeft] = useState([...projects]);
+  const [left, setLeft] = useState(projects ? projects : []);
   const [right, setRight] = useState([]);
 
   const leftChecked = intersection(checked, left);
@@ -161,7 +162,7 @@ const CustomersAddNew = () => {
       }));
     }
 
-    if (!controls.saler) {
+    if (!controls.saler.name) {
       setErrors((oldErrors) => ({
         ...oldErrors,
         saler: "هذا الحقل إلزامي",
@@ -175,14 +176,14 @@ const CustomersAddNew = () => {
       }));
     }
 
-    if (!controls.channel) {
+    if (!controls.channel.name) {
       setErrors((oldErrors) => ({
         ...oldErrors,
         channel: "هذا الحقل إلزامي",
       }));
     }
 
-    if (!controls.contact) {
+    if (!controls.contact.name) {
       setErrors((oldErrors) => ({
         ...oldErrors,
         contact: "هذا الحقل إلزامي",
@@ -282,6 +283,55 @@ const CustomersAddNew = () => {
         });
     }
   }, [errors]);
+
+  useEffect(() => {
+    if (projects.length) return;
+    fetch(domain + "aqar/api/router/Project/", {
+      method: "GET",
+      headers: {
+        //prettier-ignore
+        "Authorization": "Token " + token,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw Error("couldn't fetch the data of that resource");
+        return res.json();
+      })
+      .then((json) => {
+        dispatch({ type: "projects/set", payload: json });
+        setLeft(json);
+      });
+    if (channels.length) return;
+    fetch(domain + "aqar/api/router/Channel/", {
+      method: "GET",
+      headers: {
+        //prettier-ignore
+        "Authorization": "Token " + token,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw Error("couldn't fetch the data of that resource");
+        return res.json();
+      })
+      .then((json) => {
+        dispatch({ type: "channels/set", payload: json });
+      });
+    if (employees.length) return;
+    fetch(domain + "aqar/api/router/Employee/", {
+      method: "GET",
+      headers: {
+        //prettier-ignore
+        "Authorization": "Token " + token,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw Error("couldn't fetch the data of that resource");
+        return res.json();
+      })
+      .then((json) => {
+        dispatch({ type: "employees/set", payload: json });
+      });
+  });
 
   return (
     <>
@@ -448,22 +498,26 @@ const CustomersAddNew = () => {
                 error={Boolean(errors?.saler)}
                 helperText={errors?.saler}
               >
-                {employees
-                  .filter((employee) => employee.job === "Agent")
-                  .map((employee, index) => (
-                    <MenuItem
-                      value={{
-                        name:
-                          employee.user.first_name +
-                          " " +
-                          employee.user.last_name,
-                        id: employee.id,
-                      }}
-                      key={index}
-                    >
-                      {employee.user.first_name} {employee.user.last_name}
-                    </MenuItem>
-                  ))}
+                {employees ? (
+                  employees
+                    .filter((employee) => employee.job === "Agent")
+                    .map((employee, index) => (
+                      <MenuItem
+                        value={{
+                          name:
+                            employee.user.first_name +
+                            " " +
+                            employee.user.last_name,
+                          id: employee.id,
+                        }}
+                        key={index}
+                      >
+                        {employee.user.first_name} {employee.user.last_name}
+                      </MenuItem>
+                    ))
+                ) : (
+                  <MenuItem disabled>empty</MenuItem>
+                )}
               </TextField>
               <TextField
                 variant="standard"
@@ -518,22 +572,26 @@ const CustomersAddNew = () => {
                 error={Boolean(errors?.channel)}
                 helperText={errors?.channel}
               >
-                {channels.map((channel, index) => (
-                  <MenuItem
-                    value={{ name: channel.name, id: channel.id }}
-                    key={index}
-                  >
-                    <ListItemIcon sx={{ paddingRight: "10px" }}>
-                      <Avatar src={channel.logo} sx={{ bgcolor: "orange" }}>
-                        {channel.name[0].toUpperCase()}
-                      </Avatar>
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"قناة " + channel.name}
-                      sx={{ color: (theme) => theme.palette.primary.main }}
-                    />
-                  </MenuItem>
-                ))}
+                {projects ? (
+                  projects.map((channel, index) => (
+                    <MenuItem
+                      value={{ name: channel.name, id: channel.id }}
+                      key={index}
+                    >
+                      <ListItemIcon sx={{ paddingRight: "10px" }}>
+                        <Avatar src={channel.logo} sx={{ bgcolor: "orange" }}>
+                          {channel.name[0].toUpperCase()}
+                        </Avatar>
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={"قناة " + channel.name}
+                        sx={{ color: (theme) => theme.palette.primary.main }}
+                      />
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem disabled>empty</MenuItem>
+                )}
               </TextField>
             </Stack>
             <Stack
@@ -670,6 +728,13 @@ const CustomersAddNew = () => {
                       </IconButton>
                     </InputAdornment>
                   ),
+                }}
+                autoComplete="off"
+                inputProps={{
+                  autoComplete: "new-password",
+                  form: {
+                    autoComplete: "off",
+                  },
                 }}
                 error={Boolean(errors?.confirm)}
                 helperText={errors?.confirm}

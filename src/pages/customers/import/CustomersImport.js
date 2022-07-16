@@ -20,7 +20,7 @@ const CustomersImport = () => {
           ]}
         />
         <Stack alignItems="center">
-          <DropBox variant="download" />
+          <DropBox variant="download" path="aqar/api/import/" />
         </Stack>
       </Wrapper>
     </>

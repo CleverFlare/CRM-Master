@@ -33,6 +33,10 @@ const AddJob = () => {
 
   useEffect(() => {
     if (proceed) {
+      const requestBody = {
+        title: name,
+        organization: 1,
+      };
       fetch(domain + "aqar/api/router/Job/", {
         method: "POST",
         headers: {
@@ -40,6 +44,7 @@ const AddJob = () => {
           //prettier-ignore
           "Authorization": "Token " + token,
         },
+        body: JSON.stringify(requestBody),
       })
         .then((res) => {
           setName("");

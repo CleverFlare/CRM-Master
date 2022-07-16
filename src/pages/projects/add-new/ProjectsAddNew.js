@@ -1,6 +1,8 @@
 import {
+  Alert,
   Button,
   Paper,
+  Snackbar,
   Stack,
   TextField,
   Typography,
@@ -14,6 +16,7 @@ import { useState } from "react";
 import { Box } from "@mui/system";
 import ErrorPrompt from "../../../components/error-prompt/ErrorPrompt";
 import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 const ProjectsAddNew = () => {
   const token = useSelector((state) => state.token.value);
@@ -29,6 +32,7 @@ const ProjectsAddNew = () => {
     address: false,
     image: false,
   });
+  const [requestStatus, setRequestStatus] = useState({});
   const openPrompt = Boolean(errorMessage);
 
   const handleCheckForErrors = () => {
@@ -50,27 +54,49 @@ const ProjectsAddNew = () => {
     if (!fileRef.current.files[0]) {
       setErrors((oldObject) => ({ ...oldObject, image: true }));
     }
-    return;
+    if (
+      Object.keys(errors).filter((item) => errors[item] === true).length > 0
+    ) {
+      return true;
+    } else {
+      return false;
+    }
   };
 
   const handlePost = (event) => {
-    handleCheckForErrors();
-    if (errorMessage) return;
-    const formData = new FormData();
+    if (handleCheckForErrors() === false) {
+      const formData = new FormData();
 
-    formData.append("name", name);
-    formData.append("address", address);
-    formData.append("logo", fileRef.current.files[0]);
-    formData.append("organization", "1");
+      formData.append("name", name);
+      formData.append("address", address);
+      formData.append("logo", fileRef.current.files[0]);
+      formData.append("organization", "1");
 
-    fetch(domain + "aqar/api/router/Project/", {
-      method: "POST",
-      headers: {
-        //prettier-ignore
-        "Authorization": "Token " + token,
-      },
-      body: formData,
-    });
+      fetch(domain + "aqar/api/router/Project/", {
+        method: "POST",
+        headers: {
+          //prettier-ignore
+          "Authorization": "Token " + token,
+        },
+        body: formData,
+      })
+        .then((res) => {
+          setRequestStatus({ fail: true });
+          if (!res.ok) throw Error("couldn't add the project");
+
+          return res.json();
+        })
+        .then((json) => {
+          console.log(json);
+          setRequestStatus({ success: true });
+          setName("");
+          setAddress("");
+          setImageURL("");
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    }
   };
 
   const handleSetPicture = () => {
@@ -211,6 +237,25 @@ const ProjectsAddNew = () => {
             </Stack>
           </Paper>
         </Stack>
+        <Snackbar
+          open={requestStatus?.success || requestStatus?.fail}
+          autoHideDuration={1000}
+          onClose={() => setRequestStatus({})}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right",
+          }}
+        >
+          <Alert
+            onClose={() => setRequestStatus({})}
+            severity={requestStatus?.success ? "success" : "error"}
+            sx={{ width: "100%" }}
+            variant="filled"
+          >
+            {requestStatus?.success && "تمت الإضافة بنجاح!"}
+            {requestStatus?.fail && "حدث خطأ!"}
+          </Alert>
+        </Snackbar>
         <Button
           variant="contained"
           sx={{ minWidth: "max-content", width: sm ? 130 : "100%" }}

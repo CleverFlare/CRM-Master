@@ -78,6 +78,14 @@ const Home = () => {
                 {post.content}
               </Post>
             ))}
+          {!isPending && !posts.length && (
+            <Typography
+              variant="h5"
+              sx={{ color: "gray", fontWeight: "bold", pointerEvents: "none" }}
+            >
+              لا يوجد منشورات
+            </Typography>
+          )}
         </Stack>
       </Wrapper>
     </div>

@@ -73,7 +73,10 @@ const ProjectsDisplay = () => {
             alignItems="center"
             sx={{ width: "100%", flex: 1 }}
           >
-            <Typography variant="h5" sx={{ color: "gray", fontWeight: "bold" }}>
+            <Typography
+              variant="h5"
+              sx={{ color: "gray", fontWeight: "bold", pointerEvents: "none" }}
+            >
               لا يوجد مشاريع
             </Typography>
           </Stack>

@@ -13,8 +13,12 @@ import BackupOutlinedIcon from "@mui/icons-material/BackupOutlined";
 import { useRef, useState } from "react";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
-const DropBox = ({ variant }) => {
+const DropBox = ({ variant, path }) => {
+  const token = useSelector((state) => state.token.value);
+  const domain = useSelector((state) => state.domain.value);
   const [files, setFiles] = useState([
     {
       picture: "",
@@ -22,7 +26,7 @@ const DropBox = ({ variant }) => {
     },
     {
       picture: "",
-      progress: 0,
+      progress: 50,
     },
   ]);
 
@@ -32,9 +36,41 @@ const DropBox = ({ variant }) => {
     fileRef.current.click();
   };
 
+  const handleUpload = () => {
+    const formData = new FormData();
+    formData.append("organization", 1);
+    const file = fileRef.current.files[0];
+    formData.append("file", file);
+    setFiles([...files, { picture: "", progress: 0 }]);
+    setTimeout(() => {
+      const allFiles = files;
+      allFiles[allFiles.length - 1].progress = 100;
+      setFiles(allFiles);
+    }, 1000);
+    // axios.post(domain + path, formData, {
+    //   headers: {
+    //     //prettier-ignore
+    //     "Authorization": "Token " + token,
+    //   },
+    //   onUploadProgress: (progress) => {
+    //     const { loaded, total } = progress;
+    //     const percentage = Math.floor((loaded * 100) / total);
+    //     const allFiles = files;
+    //     const uploadingFile = (allFiles[allFiles.length].percentage =
+    //       percentage);
+    //     setFiles((old) => allFiles);
+    //   },
+    // });
+  };
+
   return (
     <Paper sx={{ bgcolor: "#f5f6fa", maxWidth: 600, width: "100%" }}>
-      <input type="file" style={{ display: "none" }} ref={fileRef} />
+      <input
+        type="file"
+        style={{ display: "none" }}
+        ref={fileRef}
+        onChange={handleUpload}
+      />
       <Stack spacing={2}>
         <Paper
           variant="outlined"
@@ -130,6 +166,8 @@ const DropBox = ({ variant }) => {
               />
               {file.progress !== 100 && (
                 <LinearProgress
+                  variant="determinate"
+                  value={file.progress}
                   sx={{
                     position: "absolute",
                     top: 0,
@@ -137,10 +175,10 @@ const DropBox = ({ variant }) => {
                     right: 0,
                     height: "100%",
                     backgroundColor: "transparent",
-                    "& .MuiLinearProgress-bar1Indeterminate": {
+                    "& .MuiLinearProgress-bar1Determinate": {
                       bgcolor: "#23397542",
                     },
-                    "& .MuiLinearProgress-bar2Indeterminate": {
+                    "& .MuiLinearProgress-bar1Determinate": {
                       bgcolor: "#23397542",
                     },
                   }}
