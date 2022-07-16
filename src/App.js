@@ -18,6 +18,7 @@ import CustomersStatistics from "./pages/customers/statistics/CustomersStatistic
 import Login from "./pages/login/Login";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
+import AddJob from "./pages/employees/add-job/AddJob";
 
 function App() {
   const token = useSelector((state) => state.token.value);
@@ -94,6 +95,7 @@ function App() {
               <Route path="/add-channel" element={<AddChannel />} />
               <Route path="/employees/new" element={<EmployeesAddNew />} />
               <Route path="/employees/data" element={<EmployeesData />} />
+              <Route path="/employees/add-job" element={<AddJob />} />
             </Routes>
           </Layout>
         )}

@@ -125,6 +125,10 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
           text: "بيانات الموظفين",
           path: "/employees/data",
         },
+        {
+          text: "إضافة وظيفة",
+          path: "/employees/add-job",
+        },
       ],
     },
     {
