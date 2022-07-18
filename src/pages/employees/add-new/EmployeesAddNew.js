@@ -154,9 +154,10 @@ const EmployeesAddNew = () => {
           phone: controls.phone,
           // controls.code.replace(/\((.*?)\)\[.*?\]/gi, "$1") + controls.phone,
           password: controls.password,
+          permissions: [],
         },
+        job: controls.job.id,
         business: [1],
-        job: 2,
         organization: 1,
       };
       fetch(domain + "aqar/api/router/Employee/", {
@@ -352,8 +353,8 @@ const EmployeesAddNew = () => {
                   jobs.map((job, index) => (
                     <MenuItem
                       value={{
-                        name: job.title,
-                        id: job.id,
+                        name: job?.title,
+                        id: job?.id,
                       }}
                       key={index}
                     >

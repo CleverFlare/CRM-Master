@@ -12,36 +12,29 @@ import Parameter from "../../../components/parameter/Parameter";
 import Wrapper from "../../../components/wrapper/Wrapper";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
+import useValidate from "../../../hooks/useValidate";
 
 const AddJob = () => {
   const sm = useMediaQuery("(min-width: 896px)");
   const token = useSelector((state) => state.token.value);
   const domain = useSelector((state) => state.domain.value);
   const [name, setName] = useState("");
+  const validate = useValidate();
   const [errors, setErrors] = useState({
     name: "",
   });
-  const [proceed, setProceed] = useState(false);
   const [error, setErorr] = useState("");
-
-  const handleCheckForErrors = () => {
-    setErrors({
-      name: "",
-    });
-    if (!name) {
-      setErrors((oldObject) => ({ ...oldObject, name: "هذا الحقل إلزامي" }));
-    } else {
-      setProceed(true);
-    }
-    return;
-  };
+  const validation = [
+    {
+      name: "name",
+      value: name,
+      isRequired: true,
+    },
+  ];
 
   const handleSubmit = () => {
-    handleCheckForErrors();
-  };
-
-  useEffect(() => {
-    if (proceed) {
+    validate(validation).then((output) => {
+      if (!output.ok) return setErrors(output.errors);
       const requestBody = {
         title: name,
         organization: 1,
@@ -56,7 +49,6 @@ const AddJob = () => {
         body: JSON.stringify(requestBody),
       })
         .then((res) => {
-          setErorr("an error occurred");
           if (!res.ok) throw Error("couldn't set the job for some reason");
 
           return res.json();
@@ -69,8 +61,8 @@ const AddJob = () => {
           setErorr(err.message);
           console.log(err.message);
         });
-    }
-  }, [proceed]);
+    });
+  };
   return (
     <Wrapper>
       <Parameter links={[{ text: "الموظفين" }, { text: "إضافة وظيفة" }]} />
