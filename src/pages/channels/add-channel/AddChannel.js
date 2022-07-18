@@ -57,11 +57,11 @@ const AddChannel = () => {
       <Parameter
         links={[
           {
-            text: "المشاريع",
+            text: "القنوات",
             path: "/",
           },
           {
-            text: "إضافة مشروع جديد",
+            text: "إضافة قناة",
             path: "/",
           },
         ]}
