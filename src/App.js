@@ -3,7 +3,7 @@ import TotalCustomers from "./pages/customers/total/TotalCustomers";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import ChangePassword from "./pages/change-password/ChangePassword";
-import AddChannel from "./pages/add-channel/AddChannel";
+import AddChannel from "./pages/channels/add-channel/AddChannel";
 import CustomersAddNew from "./pages/customers/add-new/CustomersAddNew";
 import EmployeesAddNew from "./pages/employees/add-new/EmployeesAddNew";
 import CustomersDeleted from "./pages/customers/deleted/CustomersDeleted";
@@ -22,7 +22,7 @@ import AddJob from "./pages/employees/add-job/AddJob";
 import Jobs from "./pages/employees/jobs/Jobs";
 import AddStatus from "./pages/customers/add-status/AddStatus";
 import Statuses from "./pages/customers/statuses/Statuses";
-import DisplayChannels from "./pages/channels/display/displayChannels";
+import DisplayChannels from "./pages/channels/display/DisplayChannels";
 
 function App() {
   const token = useSelector((state) => state.token.value);
