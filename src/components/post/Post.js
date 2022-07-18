@@ -69,7 +69,6 @@ export const PostSkeleton = () => {
       <CardActions sx={{ justifyContent: "space-between" }}>
         <Skeleton variant="rectangular" width={80} height={36} />
         <Skeleton variant="rectangular" width={80} height={36} />
-        <Skeleton variant="circular" width={30} height={30} />
       </CardActions>
       <Divider />
       <Box>
