@@ -1,4 +1,12 @@
-import { Stack, Paper, TextField, useMediaQuery, Button } from "@mui/material";
+import {
+  Stack,
+  Paper,
+  TextField,
+  useMediaQuery,
+  Button,
+  Alert,
+  Snackbar,
+} from "@mui/material";
 import { useState } from "react";
 import Parameter from "../../../components/parameter/Parameter";
 import Wrapper from "../../../components/wrapper/Wrapper";
@@ -14,6 +22,7 @@ const AddJob = () => {
     name: "",
   });
   const [proceed, setProceed] = useState(false);
+  const [error, setErorr] = useState("");
 
   const handleCheckForErrors = () => {
     setErrors({
@@ -47,15 +56,17 @@ const AddJob = () => {
         body: JSON.stringify(requestBody),
       })
         .then((res) => {
-          setName("");
+          setErorr("an error occurred");
           if (!res.ok) throw Error("couldn't set the job for some reason");
 
           return res.json();
         })
         .then((json) => {
+          setName("");
           console.log(json);
         })
         .catch((err) => {
+          setErorr(err.message);
           console.log(err.message);
         });
     }
@@ -101,6 +112,19 @@ const AddJob = () => {
           حفظ
         </Button>
       </Stack>
+      <Snackbar
+        open={Boolean(error)}
+        autoHideDuration={1000}
+        onClose={() => setErorr("")}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+      >
+        <Alert severity="error" variant="filled" onClose={() => setErorr("")}>
+          {error && error}
+        </Alert>
+      </Snackbar>
     </Wrapper>
   );
 };

@@ -297,7 +297,7 @@ const Post = ({ name, picture, date, children, id, imgs = null }) => {
             </Typography>
           </Box>
         </CardContent>
-        {/* {imgs[0] && (
+        {imgs[0] && (
           <CardMedia
             component="img"
             image={imgs[0]}
@@ -308,7 +308,7 @@ const Post = ({ name, picture, date, children, id, imgs = null }) => {
               aspectRatio: "2 / 1",
             }}
           />
-        )} */}
+        )}
         <CardActions sx={{ justifyContent: "space-between" }}>
           <Tooltip title="likes">
             <Button endIcon={<FavoriteIcon />}>أعجبني</Button>

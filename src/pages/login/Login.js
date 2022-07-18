@@ -1,7 +1,9 @@
 import {
+  Alert,
   Button,
   IconButton,
   InputAdornment,
+  Snackbar,
   Stack,
   TextField,
   Typography,
@@ -26,6 +28,8 @@ const Login = () => {
     password: "",
   });
 
+  const [error, setError] = useState("");
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const requestBody = {
@@ -40,6 +44,11 @@ const Login = () => {
       body: JSON.stringify(requestBody),
     })
       .then((res) => {
+        setControls({
+          username: "",
+          password: "",
+        });
+        setError("an error occured");
         if (!res.ok) throw Error("couldn't login for some reason");
         return res.json();
       })
@@ -49,6 +58,11 @@ const Login = () => {
         dispatch({ type: "id/set", payload: json.id });
       })
       .catch((err) => {
+        setControls({
+          username: "",
+          password: "",
+        });
+        setError(`${err.message}`);
         console.log(err.message);
       });
   };
@@ -172,6 +186,23 @@ const Login = () => {
               </Button>
             </Stack>
           </form>
+          <Snackbar
+            open={Boolean(error)}
+            autoHideDuration={1000}
+            onClose={() => setError("")}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+          >
+            <Alert
+              severity="error"
+              variant="filled"
+              onClose={() => setError("")}
+            >
+              {error && error}
+            </Alert>
+          </Snackbar>
         </Stack>
       </Stack>
     </Box>

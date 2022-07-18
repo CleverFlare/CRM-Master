@@ -20,6 +20,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import AddJob from "./pages/employees/add-job/AddJob";
 import Jobs from "./pages/employees/jobs/Jobs";
+import AddStatus from "./pages/customers/add-status/AddStatus";
+import Statuses from "./pages/customers/statuses/Statuses";
+import DisplayChannels from "./pages/channels/display/displayChannels";
 
 function App() {
   const token = useSelector((state) => state.token.value);
@@ -41,13 +44,16 @@ function App() {
               <Route path="/customers/export" element={<CustomersExport />} />
               <Route path="/projects/display" element={<ProjectsDisplay />} />
               <Route path="/customers/add-new" element={<CustomersAddNew />} />
+              <Route path="/customers/add-status" element={<AddStatus />} />
+              <Route path="/customers/statuses" element={<Statuses />} />
               <Route path="/projects/new" element={<ProjectsAddNew />} />
               <Route path="/reports" element={<Reports />} />
               <Route
                 path="/settings/change-password"
                 element={<ChangePassword />}
               />
-              <Route path="/add-channel" element={<AddChannel />} />
+              <Route path="/channels/add-new" element={<AddChannel />} />
+              <Route path="/channels/display" element={<DisplayChannels />} />
               <Route path="/employees/new" element={<EmployeesAddNew />} />
               <Route path="/employees/data" element={<EmployeesData />} />
               <Route path="/employees/add-job" element={<AddJob />} />

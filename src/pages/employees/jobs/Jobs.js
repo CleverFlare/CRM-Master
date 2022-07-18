@@ -53,6 +53,7 @@ const Jobs = () => {
         createdAt: item.created_at,
       });
     });
+    return arrayOfData;
   };
 
   useEffect(() => {
@@ -70,8 +71,8 @@ const Jobs = () => {
         return res.json();
       })
       .then((json) => {
-        setJobsData(json);
-        dispatch({ type: "jobs/set", payload: json });
+        setJobsData(convertIntoProperObject(json));
+        dispatch({ type: "jobs/set", payload: convertIntoProperObject(json) });
       });
   }, []);
   return (
