@@ -12,29 +12,19 @@ import { useSelector, useDispatch } from "react-redux";
 
 const dummyColumns = [
   {
-    field: "name",
+    field: "title",
     headerName: "اسم الوظيفة",
   },
   {
     field: "createdAt",
     headerName: "تاريخ الإنشاء",
   },
-  {
-    field: "employees",
-    headerName: "عدد الموظفين",
-  },
-  {
-    field: "createdBy",
-    headerName: "تمت الإضافة بواسطة",
-  },
 ];
 
 const dummyRows = [
   {
     name: "وظيفة",
-    createdAt: "2/2/2022",
-    employees: "4",
-    createdBy: "محمد ماهر",
+    created_at: "2/2/2022",
   },
 ];
 
@@ -49,7 +39,7 @@ const Jobs = () => {
     const arrayOfData = [];
     json.map((item, index) => {
       arrayOfData.push({
-        name: item.title,
+        title: item.title,
         createdAt: item.created_at,
       });
     });

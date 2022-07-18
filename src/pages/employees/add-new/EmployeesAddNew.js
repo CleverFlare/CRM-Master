@@ -21,7 +21,7 @@ import Parameter from "../../../components/parameter/Parameter";
 import Wrapper from "../../../components/wrapper/Wrapper";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 const countries = [
   {
@@ -51,6 +51,12 @@ const EmployeesAddNew = () => {
 
   const domain = useSelector((state) => state.domain.value);
 
+  const jobsData = useSelector((state) => state.jobs.value);
+
+  const dispatch = useDispatch();
+
+  const [jobs, setJobs] = useState(jobsData.length ? jobsData : null);
+
   const [errors, setErrors] = useState({});
 
   const [isSubmit, setIsSubmit] = useState(false);
@@ -71,7 +77,10 @@ const EmployeesAddNew = () => {
         />
       ),
     phone: "",
-    job: "",
+    job: {
+      name: "",
+      id: "",
+    },
     email: "",
     password: "",
     confirm: "",
@@ -172,6 +181,26 @@ const EmployeesAddNew = () => {
         });
     }
   }, [errors]);
+
+  useEffect(() => {
+    if (jobsData.length) return;
+    fetch(domain + "aqar/api/router/Job/", {
+      method: "GET",
+      headers: {
+        //prettier-ignore
+        "Authorization": "Token " + token,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw Error("couldn't fetch the data for that resource");
+
+        return res.json();
+      })
+      .then((json) => {
+        dispatch({ type: "projects/set", payload: json });
+        setJobs(json);
+      });
+  }, []);
 
   return (
     <>
@@ -292,16 +321,49 @@ const EmployeesAddNew = () => {
               <TextField
                 variant="standard"
                 label="الوظيفة"
-                placeholder="الوظيفة"
+                select
                 sx={{ width: sm ? "100%" : "770px" }}
-                fullWidth={sm}
-                onChange={({ target: { value } }) =>
-                  handleControlUpdate("job", value)
-                }
-                value={controls.job}
+                SelectProps={{
+                  displayEmpty: true,
+                  renderValue: (selected) => {
+                    if (!selected) {
+                      return (
+                        <Typography
+                          sx={{ color: "currentColor", opacity: "0.42" }}
+                        >
+                          الوظيفة
+                        </Typography>
+                      );
+                    } else {
+                      return selected;
+                    }
+                  },
+                  MenuProps: { PaperProps: { style: { maxHeight: "250px" } } },
+                  IconComponent: KeyboardArrowDownIcon,
+                }}
+                onChange={({ target: { value } }) => {
+                  handleControlUpdate("job", value);
+                }}
+                value={controls.job?.name}
                 error={Boolean(errors?.job)}
                 helperText={errors?.job}
-              />
+              >
+                {jobs ? (
+                  jobs.map((job, index) => (
+                    <MenuItem
+                      value={{
+                        name: job.title,
+                        id: job.id,
+                      }}
+                      key={index}
+                    >
+                      {job.title}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem disabled>empty</MenuItem>
+                )}
+              </TextField>
               <TextField
                 variant="standard"
                 label="البريد الإلكتروني"
