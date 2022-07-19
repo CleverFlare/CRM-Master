@@ -31,6 +31,7 @@ import { useDispatch } from "react-redux";
 
 const SideBar = ({ width, name, role, permanent, open, onClose }) => {
   const [customers, setCustomers] = useState(false);
+  const [channels, setChannels] = useState(false);
   const [projects, setProjects] = useState(false);
   const [employees, setEmployees] = useState(false);
   const [settings, setSettings] = useState(false);
@@ -76,6 +77,14 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
         {
           text: "إضافة عميل جديد",
           path: "/customers/add-new",
+        },
+        {
+          text: "إضافة حالة عميل",
+          path: "/customers/add-status",
+        },
+        {
+          text: "حالات العميل",
+          path: "/customers/statuses",
         },
         {
           text: "إستيراد عملاء",
@@ -136,10 +145,21 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
       ],
     },
     {
-      type: "normal",
-      text: "إضافة قناة",
+      type: "parent",
+      text: "القنوات",
       icon: <AddCircleIcon sx={{ color: "white" }} />,
-      path: "/add-channel",
+      expander: channels,
+      setExpander: setChannels,
+      children: [
+        {
+          text: "إضافة قناة",
+          path: "/channels/add-new",
+        },
+        {
+          text: "عرض القنوات",
+          path: "/channels/display",
+        },
+      ],
     },
     "divider",
     {
@@ -200,7 +220,7 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
           padding: "20px 0",
         }}
       >
-        <Badge
+        {/* <Badge
           overlap="circular"
           badgeContent={
             <IconButton
@@ -221,9 +241,9 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
             vertical: "bottom",
             horizontal: "left",
           }}
-        >
-          <Avatar sx={{ width: 60, height: 60 }} />
-        </Badge>
+        > */}
+        <Avatar sx={{ width: 60, height: 60 }} />
+        {/* </Badge> */}
         <Box
           sx={{
             display: "flex",
@@ -237,7 +257,7 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
             justifyContent="center"
             sx={{ position: "relative" }}
           >
-            <IconButton
+            {/* <IconButton
               sx={{
                 color: "white",
                 position: "absolute",
@@ -249,7 +269,7 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
                 fontSize="small"
                 sx={{ fontSize: "15px" }}
               />
-            </IconButton>
+            </IconButton> */}
             <Typography>{name}</Typography>
           </Stack>
           <Typography variant="caption">{role}</Typography>

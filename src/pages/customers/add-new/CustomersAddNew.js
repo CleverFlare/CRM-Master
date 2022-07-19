@@ -2,7 +2,6 @@ import {
   Divider,
   FormControl,
   MenuItem,
-  InputLabel,
   Paper,
   Select,
   Stack,
@@ -18,7 +17,6 @@ import {
   List,
   ListItem,
   Checkbox,
-  Grid,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Parameter from "../../../components/parameter/Parameter";
@@ -30,6 +28,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Box } from "@mui/system";
+import useValidate from "../../../hooks/useValidate";
 
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
@@ -49,6 +48,7 @@ const CustomersAddNew = () => {
   const [checked, setChecked] = useState([]);
   const [left, setLeft] = useState(projects ? projects : []);
   const [right, setRight] = useState([]);
+  const validate = useValidate();
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
@@ -85,7 +85,6 @@ const CustomersAddNew = () => {
   const sm = useMediaQuery("(max-width:912px)");
 
   const [errors, setErrors] = useState({});
-  const [isSubmit, setIsSubmit] = useState(false);
 
   const countriesCodeInit =
     "(+20)" +
@@ -123,104 +122,78 @@ const CustomersAddNew = () => {
     confirm: "",
   });
 
+  const validationOperands = [
+    {
+      name: "name",
+      value: controls.name,
+      isRequired: true,
+    },
+    {
+      name: "phone",
+      value: controls.phone,
+      isRequired: true,
+    },
+    {
+      name: "email",
+      value: controls.email,
+      isRequired: true,
+      validation: [
+        {
+          regex: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+          value: "هذا البريد غير صالح",
+        },
+      ],
+    },
+    {
+      name: "saler",
+      value: controls.saler.name,
+      isRequired: true,
+    },
+    {
+      name: "mediator",
+      value: controls.mediator,
+      isRequired: true,
+    },
+    {
+      name: "channel",
+      value: controls.channel.name,
+      isRequired: true,
+    },
+    {
+      name: "contact",
+      value: controls.contact.name,
+      isRequired: true,
+    },
+    {
+      name: "balance",
+      value: controls.balance,
+      isRequired: true,
+    },
+    {
+      name: "password",
+      value: controls.password,
+      isRequired: true,
+    },
+    {
+      name: "confirm",
+      value: controls.confirm,
+      isRequired: true,
+      validation: [
+        {
+          regex: new RegExp(`${controls.password}`, ""),
+          value: "الرقم السري لا يطابق",
+        },
+      ],
+    },
+  ];
+
   const handleControlUpdate = (controlName, value) => {
     setControls({ ...controls, [controlName]: value });
   };
 
   const handleSubmit = () => {
-    handleValidation();
-    setIsSubmit(true);
-  };
-
-  const handleValidation = () => {
-    setErrors({});
-    if (!controls.name) {
-      setErrors((oldErrors) => ({
-        ...oldErrors,
-        name: "هذا الحقل إلزامي",
-      }));
-    }
-
-    if (!controls.phone) {
-      setErrors((oldErrors) => ({
-        ...oldErrors,
-        phone: "هذا الحقل إلزامي",
-      }));
-    }
-
-    if (!controls.email) {
-      setErrors((oldErrors) => ({
-        ...oldErrors,
-        email: "هذا الحقل إلزامي",
-      }));
-    } else if (
-      !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(controls.email)
-    ) {
-      setErrors((oldErrors) => ({
-        ...oldErrors,
-        email: "هذا البريد غير صالح",
-      }));
-    }
-
-    if (!controls.saler.name) {
-      setErrors((oldErrors) => ({
-        ...oldErrors,
-        saler: "هذا الحقل إلزامي",
-      }));
-    }
-
-    if (!controls.mediator) {
-      setErrors((oldErrors) => ({
-        ...oldErrors,
-        mediator: "هذا الحقل إلزامي",
-      }));
-    }
-
-    if (!controls.channel.name) {
-      setErrors((oldErrors) => ({
-        ...oldErrors,
-        channel: "هذا الحقل إلزامي",
-      }));
-    }
-
-    if (!controls.contact.name) {
-      setErrors((oldErrors) => ({
-        ...oldErrors,
-        contact: "هذا الحقل إلزامي",
-      }));
-    }
-
-    if (!controls.balance) {
-      setErrors((oldErrors) => ({
-        ...oldErrors,
-        balance: "هذا الحقل إلزامي",
-      }));
-    }
-
-    if (!controls.password) {
-      setErrors((oldErrors) => ({
-        ...oldErrors,
-        password: "هذا الحقل إلزامي",
-      }));
-    }
-
-    if (!controls.confirm) {
-      setErrors((oldErrors) => ({
-        ...oldErrors,
-        confirm: "هذا الحقل إلزامي",
-      }));
-    } else if (controls.confirm !== controls.password) {
-      setErrors((oldErrors) => ({
-        ...oldErrors,
-        confirm: "الرقم السري لا يطابق",
-      }));
-    }
-  };
-  // controls.code.replace(/\((.*?)\)\[.*?\]/gi, "$1") + controls.phone,
-  // agent: controls.saler.replace(/\d/gi, ""),
-
-  useEffect(() => {
-    if (isSubmit && Object.keys(errors).length === 0) {
+    validate(validationOperands).then((output) => {
+      if (!output.ok) return setErrors(output.errors);
       const requestBody = {
         user: {
           first_name: controls.name.split(" ")[0],
@@ -281,8 +254,8 @@ const CustomersAddNew = () => {
         .catch((err) => {
           console.log(err.message);
         });
-    }
-  }, [errors]);
+    });
+  };
 
   useEffect(() => {
     if (projects.length) return;
@@ -572,8 +545,8 @@ const CustomersAddNew = () => {
                 error={Boolean(errors?.channel)}
                 helperText={errors?.channel}
               >
-                {projects ? (
-                  projects.map((channel, index) => (
+                {channels ? (
+                  channels.map((channel, index) => (
                     <MenuItem
                       value={{ name: channel.name, id: channel.id }}
                       key={index}

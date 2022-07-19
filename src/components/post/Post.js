@@ -69,7 +69,6 @@ export const PostSkeleton = () => {
       <CardActions sx={{ justifyContent: "space-between" }}>
         <Skeleton variant="rectangular" width={80} height={36} />
         <Skeleton variant="rectangular" width={80} height={36} />
-        <Skeleton variant="circular" width={30} height={30} />
       </CardActions>
       <Divider />
       <Box>
@@ -297,7 +296,7 @@ const Post = ({ name, picture, date, children, id, imgs = null }) => {
             </Typography>
           </Box>
         </CardContent>
-        {/* {imgs[0] && (
+        {imgs[0] && (
           <CardMedia
             component="img"
             image={imgs[0]}
@@ -308,7 +307,7 @@ const Post = ({ name, picture, date, children, id, imgs = null }) => {
               aspectRatio: "2 / 1",
             }}
           />
-        )} */}
+        )}
         <CardActions sx={{ justifyContent: "space-between" }}>
           <Tooltip title="likes">
             <Button endIcon={<FavoriteIcon />}>أعجبني</Button>

@@ -7,12 +7,12 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import Parameter from "../../components/parameter/Parameter";
-import Wrapper from "../../components/wrapper/Wrapper";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { Box } from "@mui/system";
 import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import Parameter from "../../../components/parameter/Parameter";
+import Wrapper from "../../../components/wrapper/Wrapper";
 
 const AddChannel = () => {
   const sm = useMediaQuery("(min-width: 896px)");
@@ -57,11 +57,11 @@ const AddChannel = () => {
       <Parameter
         links={[
           {
-            text: "المشاريع",
+            text: "القنوات",
             path: "/",
           },
           {
-            text: "إضافة مشروع جديد",
+            text: "إضافة قناة",
             path: "/",
           },
         ]}

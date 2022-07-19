@@ -1,71 +1,42 @@
 import {
-  Stack,
+  Alert,
+  Button,
   Paper,
+  Snackbar,
+  Stack,
   TextField,
   useMediaQuery,
-  Button,
-  Alert,
-  Snackbar,
 } from "@mui/material";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import Parameter from "../../../components/parameter/Parameter";
 import Wrapper from "../../../components/wrapper/Wrapper";
-import { useSelector } from "react-redux";
-import { useEffect } from "react";
-import useValidate from "../../../hooks/useValidate";
 
-const AddJob = () => {
+const AddStatus = () => {
   const sm = useMediaQuery("(min-width: 896px)");
-  const token = useSelector((state) => state.token.value);
   const domain = useSelector((state) => state.domain.value);
+  const token = useSelector((state) => state.token.value);
   const [name, setName] = useState("");
-  const validate = useValidate();
-  const [errors, setErrors] = useState({
-    name: "",
-  });
-  const [error, setErorr] = useState("");
-  const validation = [
-    {
-      name: "name",
-      value: name,
-      isRequired: true,
-    },
-  ];
+  const [errors, setErrors] = useState({});
+  const [error, setError] = useState("");
 
   const handleSubmit = () => {
-    validate(validation).then((output) => {
-      if (!output.ok) return setErrors(output.errors);
-      const requestBody = {
-        title: name,
+    fetch(domain + "aqar/api/router/Status/", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        //prettier-ignore
+        "Authorization": "Token " + token,
+      },
+      body: JSON.stringify({
+        name,
         organization: 1,
-      };
-      fetch(domain + "aqar/api/router/Job/", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-          //prettier-ignore
-          "Authorization": "Token " + token,
-        },
-        body: JSON.stringify(requestBody),
-      })
-        .then((res) => {
-          if (!res.ok) throw Error("couldn't set the job for some reason");
-
-          return res.json();
-        })
-        .then((json) => {
-          setName("");
-          console.log(json);
-        })
-        .catch((err) => {
-          setErorr(err.message);
-          console.log(err.message);
-        });
+      }),
     });
   };
   return (
     <Wrapper>
-      <Parameter links={[{ text: "الموظفين" }, { text: "إضافة وظيفة" }]} />
+      <Parameter links={[{ text: "العملاء" }, { text: "إضافة حالة عميل" }]} />
       <Stack
         sx={{
           maxWidth: "766px",
@@ -84,8 +55,8 @@ const AddJob = () => {
         >
           <TextField
             variant="standard"
-            label="الوظيفة"
-            placeholder="الوظيفة"
+            label="الحالة"
+            placeholder="الحالة"
             sx={{
               width: "100%",
               maxWidth: 600,
@@ -107,13 +78,13 @@ const AddJob = () => {
       <Snackbar
         open={Boolean(error)}
         autoHideDuration={1000}
-        onClose={() => setErorr("")}
+        onClose={() => setError("")}
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "right",
         }}
       >
-        <Alert severity="error" variant="filled" onClose={() => setErorr("")}>
+        <Alert severity="error" variant="filled" onClose={() => setError("")}>
           {error && error}
         </Alert>
       </Snackbar>
@@ -121,4 +92,4 @@ const AddJob = () => {
   );
 };
 
-export default AddJob;
+export default AddStatus;
