@@ -32,14 +32,8 @@ import useValidate from "../../../hooks/useValidate";
 import useControls from "../../../hooks/useControls";
 import useGet from "../../../hooks/useGet";
 import usePost from "../../../hooks/usePost";
-
-function not(a, b) {
-  return a.filter((value) => b.indexOf(value) === -1);
-}
-
-function intersection(a, b) {
-  return a.filter((value) => b.indexOf(value) !== -1);
-}
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 const CustomersAddNew = () => {
   const domain = useSelector((state) => state.domain.value);
@@ -65,38 +59,7 @@ const CustomersAddNew = () => {
   const channels = useSelector((state) => state.channels.value);
   const employees = useSelector((state) => state.employees.value);
   const dispatch = useDispatch();
-  const [checked, setChecked] = useState([]);
-  const [left, setLeft] = useState(projects ? projects : []);
-  const [right, setRight] = useState([]);
   const validate = useValidate();
-
-  const leftChecked = intersection(checked, left);
-  const rightChecked = intersection(checked, right);
-
-  const handleToggle = (value) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setChecked(newChecked);
-  };
-
-  const handleCheckedRight = () => {
-    setRight(right.concat(leftChecked));
-    setLeft(not(left, leftChecked));
-    setChecked(not(checked, leftChecked));
-  };
-
-  const handleCheckedLeft = () => {
-    setLeft(left.concat(rightChecked));
-    setRight(not(right, rightChecked));
-    setChecked(not(checked, rightChecked));
-  };
 
   const [visibilities, setVisibilities] = useState({
     password: false,
@@ -123,22 +86,14 @@ const CustomersAddNew = () => {
     phone: "",
     code: countriesCodeInit,
     email: "",
-    saler: {
-      name: "",
-      id: "",
-    },
+    saler: "",
     mediator: "",
-    channel: {
-      name: "",
-      id: "",
-    },
-    contact: {
-      name: "",
-      value: "",
-    },
+    channel: "",
+    contact: "",
     balance: "",
     password: "",
     confirm: "",
+    projects: [],
   });
 
   // const [controls, setControls] = useState({
@@ -227,6 +182,11 @@ const CustomersAddNew = () => {
         },
       ],
     },
+    {
+      name: "projects",
+      value: controls.projects,
+      isRequired: true,
+    },
   ];
 
   const handleSubmit = () => {
@@ -242,7 +202,7 @@ const CustomersAddNew = () => {
           permissions: [],
         },
         organization: 1,
-        bussiness: right.map((item) => item.id),
+        bussiness: controls.projects.map((item) => item.id),
         channel: controls.channel.id,
         agent: controls.saler.id,
         min_budget: "00.00",
@@ -258,7 +218,6 @@ const CustomersAddNew = () => {
     if (projects.length) return;
     projectsGetRequest().then((res) => {
       dispatch({ type: "projects/set", payload: res });
-      setLeft(res);
     });
     if (channels.length) return;
     channelsGetRequest().then((res) => {
@@ -399,9 +358,78 @@ const CustomersAddNew = () => {
             >
               <TextField
                 variant="standard"
+                label="المشروع"
+                select
+                SelectProps={{
+                  defaultValue: "",
+                  displayEmpty: true,
+                  multiple: true,
+                  renderValue: (selected) => {
+                    if (!selected.length) {
+                      return (
+                        <Typography
+                          sx={{ color: "currentColor", opacity: "0.42" }}
+                        >
+                          المشروع
+                        </Typography>
+                      );
+                    } else {
+                      let displayedArray = [];
+                      selected.forEach((id, index) => {
+                        displayedArray.push(
+                          projects.filter((project) => project.id === id)[0]
+                            .name
+                        );
+                      });
+                      return displayedArray.join(" ، ");
+                    }
+                  },
+                  MenuProps: { PaperProps: { style: { maxHeight: "250px" } } },
+                  IconComponent: KeyboardArrowDownIcon,
+                }}
+                sx={{
+                  width: sm ? "100%" : "400px",
+                }}
+                onChange={({ target: { value } }) => {
+                  setControl("projects", value);
+                }}
+                value={controls.projects}
+                error={Boolean(errors?.projects)}
+                helperText={errors?.projects}
+              >
+                {projects ? (
+                  projects.map((project, index) => (
+                    <MenuItem value={project.id} key={index}>
+                      {project.name}
+                      <Box
+                        sx={{
+                          width: "100%",
+                          display: "flex",
+                          justifyContent: "flex-end",
+                        }}
+                      >
+                        {controls.projects.indexOf(project.id) > -1 ? (
+                          <CancelIcon sx={{ color: "#f54242" }} />
+                        ) : (
+                          <AddCircleIcon
+                            sx={{
+                              color: (theme) => theme.palette.primary.main,
+                            }}
+                          />
+                        )}
+                      </Box>
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem disabled>empty</MenuItem>
+                )}
+              </TextField>
+              <TextField
+                variant="standard"
                 label="مسؤول المبيعات"
                 select
                 SelectProps={{
+                  defaultValue: "",
                   displayEmpty: true,
                   renderValue: (selected) => {
                     if (!selected) {
@@ -413,7 +441,15 @@ const CustomersAddNew = () => {
                         </Typography>
                       );
                     } else {
-                      return selected;
+                      let displayedValue =
+                        employees.filter(
+                          (employee) => employee.id === selected
+                        )[0].user.first_name +
+                        " " +
+                        employees.filter(
+                          (employee) => employee.id === selected
+                        )[0].user.last_name;
+                      return displayedValue;
                     }
                   },
                   MenuProps: { PaperProps: { style: { maxHeight: "250px" } } },
@@ -425,7 +461,7 @@ const CustomersAddNew = () => {
                 onChange={({ target: { value } }) => {
                   setControl("saler", value);
                 }}
-                value={controls.saler?.name}
+                value={controls.saler}
                 error={Boolean(errors?.saler)}
                 helperText={errors?.saler}
               >
@@ -433,17 +469,10 @@ const CustomersAddNew = () => {
                   employees
                     .filter((employee) => employee.job === "Agent")
                     .map((employee, index) => (
-                      <MenuItem
-                        value={{
-                          name:
-                            employee.user.first_name +
-                            " " +
-                            employee.user.last_name,
-                          id: employee.id,
-                        }}
-                        key={index}
-                      >
-                        {employee.user.first_name} {employee.user.last_name}
+                      <MenuItem value={employee.id} key={index}>
+                        {employee.user.first_name +
+                          " " +
+                          employee.user.last_name}
                       </MenuItem>
                     ))
                 ) : (
@@ -463,6 +492,12 @@ const CustomersAddNew = () => {
                 error={Boolean(errors?.mediator)}
                 helperText={errors?.mediator}
               />
+            </Stack>
+            <Stack
+              direction={sm ? "column" : "row"}
+              justifyContent="space-between"
+              spacing={sm ? 2 : 1}
+            >
               <TextField
                 variant="standard"
                 label="القناة الإعلانية"
@@ -472,6 +507,7 @@ const CustomersAddNew = () => {
                   width: sm ? "100%" : "400px",
                 }}
                 SelectProps={{
+                  defaultValue: "",
                   displayEmpty: true,
                   renderValue: (selected) => {
                     if (!selected) {
@@ -483,8 +519,10 @@ const CustomersAddNew = () => {
                         </Typography>
                       );
                     } else {
-                      console.log(selected);
-                      return selected;
+                      let displayedValue = channels.filter(
+                        (channel) => channel.id === selected
+                      )[0].name;
+                      return displayedValue;
                     }
                   },
                   MenuProps: { PaperProps: { style: { maxHeight: "250px" } } },
@@ -493,17 +531,14 @@ const CustomersAddNew = () => {
                 onChange={({ target: { value } }) => {
                   setControl("channel", value);
                 }}
-                value={controls.channel?.name}
+                value={controls.channel}
                 fullWidth={sm}
                 error={Boolean(errors?.channel)}
                 helperText={errors?.channel}
               >
                 {channels ? (
                   channels.map((channel, index) => (
-                    <MenuItem
-                      value={{ name: channel.name, id: channel.id }}
-                      key={index}
-                    >
+                    <MenuItem value={channel.id} key={index}>
                       <ListItemIcon sx={{ paddingRight: "10px" }}>
                         <Avatar src={channel.logo} sx={{ bgcolor: "orange" }}>
                           {channel.name[0].toUpperCase()}
@@ -519,17 +554,12 @@ const CustomersAddNew = () => {
                   <MenuItem disabled>empty</MenuItem>
                 )}
               </TextField>
-            </Stack>
-            <Stack
-              direction={sm ? "column" : "row"}
-              justifyContent="space-between"
-              spacing={sm ? 2 : 1}
-            >
               <TextField
                 variant="standard"
                 label="طريقة التواصل"
                 select
                 SelectProps={{
+                  defaultValue: "",
                   displayEmpty: true,
                   renderValue: (selected) => {
                     if (!selected) {
@@ -541,6 +571,14 @@ const CustomersAddNew = () => {
                         </Typography>
                       );
                     } else {
+                      switch (selected) {
+                        case "phone":
+                          return "هاتف";
+                        case "email":
+                          return "البريد";
+                        case "whats app":
+                          return "واتساب";
+                      }
                       return selected;
                     }
                   },
@@ -553,19 +591,13 @@ const CustomersAddNew = () => {
                 onChange={({ target: { value } }) => {
                   setControl("contact", value);
                 }}
-                value={controls.contact?.name}
+                value={controls.contact.name}
                 error={Boolean(errors?.contact)}
                 helperText={errors?.contact}
               >
-                <MenuItem value={{ name: "هاتف", value: "phone" }}>
-                  هاتف
-                </MenuItem>
-                <MenuItem value={{ name: "البريد", value: "email" }}>
-                  البريد
-                </MenuItem>
-                <MenuItem value={{ name: "واتساب", value: "whats app" }}>
-                  واتساب
-                </MenuItem>
+                <MenuItem value={"phone"}>هاتف</MenuItem>
+                <MenuItem value={"email"}>البريد</MenuItem>
+                <MenuItem value={"whats app"}>واتساب</MenuItem>
               </TextField>
               <TextField
                 type="number"
@@ -591,196 +623,11 @@ const CustomersAddNew = () => {
                   setControl("balance", value)
                 }
                 value={controls.balance}
-                error={Boolean(errors?.balance)}
+                error={Boolean(errors.balance)}
                 helperText={errors?.balance}
               />
-              <TextField
-                type={visibilities.password ? "text" : "password"}
-                variant="standard"
-                label="الرقم السري"
-                placeholder="الرقم السري"
-                sx={{ width: sm ? "100%" : "400px" }}
-                fullWidth={sm}
-                onChange={({ target: { value } }) =>
-                  setControl("password", value)
-                }
-                value={controls.password}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end" sx={{ margin: 0 }}>
-                      <IconButton
-                        onClick={() => handleVisibilityToggle("password")}
-                      >
-                        {visibilities.password ? (
-                          <VisibilityIcon />
-                        ) : (
-                          <VisibilityOffIcon />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                error={Boolean(errors?.password)}
-                helperText={errors?.password}
-              />
-            </Stack>
-            <Stack
-              direction={sm ? "column" : "row"}
-              justifyContent="space-between"
-              spacing={sm ? 2 : 1}
-            >
-              <TextField
-                type={visibilities.confirm ? "text" : "password"}
-                variant="standard"
-                label="تأكيد الرقم السري"
-                placeholder="تأكيد الرقم السري"
-                sx={{ width: sm ? "100%" : "400px" }}
-                fullWidth={sm}
-                onChange={({ target: { value } }) =>
-                  setControl("confirm", value)
-                }
-                value={controls.confirm}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end" sx={{ margin: 0 }}>
-                      <IconButton
-                        onClick={() => handleVisibilityToggle("confirm")}
-                      >
-                        {visibilities.confirm ? (
-                          <VisibilityIcon />
-                        ) : (
-                          <VisibilityOffIcon />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                autoComplete="off"
-                inputProps={{
-                  autoComplete: "new-password",
-                  form: {
-                    autoComplete: "off",
-                  },
-                }}
-                error={Boolean(errors?.confirm)}
-                helperText={errors?.confirm}
-              />
-              <Box
-                sx={{
-                  width: sm ? "100%" : "400px",
-                }}
-              ></Box>
-              <Box
-                sx={{
-                  width: sm ? "100%" : "400px",
-                }}
-              ></Box>
             </Stack>
           </Stack>
-          <Paper variant="outlined" sx={{ marginBlock: "20px", width: "100%" }}>
-            <Stack
-              direction={sm ? "column" : "row"}
-              sx={{ flex: 1, width: "100%" }}
-            >
-              <Stack sx={{ flex: 1, order: 1 }}>
-                <Typography sx={{ p: 2, bgcolor: "#f8f8f9" }}>
-                  المشاريع العميل
-                </Typography>
-                <Divider />
-                <List
-                  sx={{
-                    flex: 1,
-                    height: "100%",
-                    maxHeight: 350,
-                    minHeight: 350,
-                    overflow: "auto",
-                  }}
-                >
-                  {right &&
-                    right.map((project, index) => (
-                      <ListItem
-                        button
-                        role="listitem"
-                        key={index}
-                        onClick={handleToggle(project)}
-                      >
-                        <ListItemIcon>
-                          <Checkbox
-                            checked={checked.indexOf(project) !== -1}
-                            tabIndex={-1}
-                            disableRipple
-                          />
-                        </ListItemIcon>
-                        <ListItemText primary={project.name} />
-                      </ListItem>
-                    ))}
-                </List>
-              </Stack>
-              <Divider orientation={sm ? "horizontal" : "vertical"} flexItem />
-              <Stack
-                direction={sm ? "row" : "column"}
-                sx={{
-                  flex: 1,
-                  width: sm ? "100%" : "max-content",
-                  flex: 0,
-                  p: 1,
-                }}
-                justifyContent="center"
-                alignItems="center"
-                spacing={2}
-              >
-                <Button
-                  variant="outlined"
-                  disabled={!left.length}
-                  onClick={handleCheckedRight}
-                >
-                  {sm ? "⤋" : "⟸"}
-                </Button>
-                <Button
-                  variant="outlined"
-                  disabled={!right.length}
-                  onClick={handleCheckedLeft}
-                >
-                  {sm ? "⤊" : "⟹"}
-                </Button>
-              </Stack>
-              <Divider orientation={sm ? "horizontal" : "vertical"} flexItem />
-              <Stack sx={{ flex: 1, order: -1 }}>
-                <Typography sx={{ p: 2, bgcolor: "#f8f8f9" }}>
-                  جميع المشاريع
-                </Typography>
-                <Divider />
-                <List
-                  sx={{
-                    flex: 1,
-                    height: "100%",
-                    maxHeight: 350,
-                    minHeight: 350,
-                    overflow: "auto",
-                  }}
-                >
-                  {left &&
-                    left.map((project, index) => (
-                      <ListItem
-                        button
-                        role="listitem"
-                        key={index}
-                        onClick={handleToggle(project)}
-                      >
-                        <ListItemIcon>
-                          <Checkbox
-                            checked={checked.indexOf(project) !== -1}
-                            tabIndex={-1}
-                            disableRipple
-                          />
-                        </ListItemIcon>
-                        <ListItemText primary={project.name} />
-                      </ListItem>
-                    ))}
-                </List>
-              </Stack>
-            </Stack>
-          </Paper>
           <Stack
             direction="row"
             justifyContent="center"

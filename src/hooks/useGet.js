@@ -27,7 +27,6 @@ const useGet = (path) => {
         },
       })
       .then((res) => {
-        console.log(res.data);
         return res.data;
       })
       .catch((err) => {
