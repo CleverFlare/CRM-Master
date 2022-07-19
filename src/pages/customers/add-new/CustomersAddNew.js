@@ -29,6 +29,9 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Box } from "@mui/system";
 import useValidate from "../../../hooks/useValidate";
+import useControls from "../../../hooks/useControls";
+import useGet from "../../../hooks/useGet";
+import usePost from "../../../hooks/usePost";
 
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
@@ -41,6 +44,23 @@ function intersection(a, b) {
 const CustomersAddNew = () => {
   const domain = useSelector((state) => state.domain.value);
   const token = useSelector((state) => state.token.value);
+  const [projectsGetRequest, projectsGetRequestError] = useGet(
+    "aqar/api/router/Project/"
+  );
+  const [channelsGetRequest, channelsGetRequestError] = useGet(
+    "aqar/api/router/Channel/"
+  );
+  const [employeesGetRequest, employeesGetRequestError] = useGet(
+    "aqar/api/router/Employee/"
+  );
+  const handleSuccess = () => {
+    resetControls();
+  };
+  const [postRequest, errorAlert, sucessAlert] = usePost(
+    "aqar/api/router/Client/",
+    "تم إضافة عميل بنجاح!",
+    handleSuccess
+  );
   const projects = useSelector((state) => state.projects.value);
   const channels = useSelector((state) => state.channels.value);
   const employees = useSelector((state) => state.employees.value);
@@ -98,8 +118,7 @@ const CustomersAddNew = () => {
   const handleVisibilityToggle = (keyName) => {
     setVisibilities({ ...visibilities, [keyName]: !visibilities[keyName] });
   };
-
-  const [controls, setControls] = useState({
+  const [controls, setControl, resetControls] = useControls({
     name: "",
     phone: "",
     code: countriesCodeInit,
@@ -121,6 +140,29 @@ const CustomersAddNew = () => {
     password: "",
     confirm: "",
   });
+
+  // const [controls, setControls] = useState({
+  //   name: "",
+  //   phone: "",
+  //   code: countriesCodeInit,
+  //   email: "",
+  //   saler: {
+  //     name: "",
+  //     id: "",
+  //   },
+  //   mediator: "",
+  //   channel: {
+  //     name: "",
+  //     id: "",
+  //   },
+  //   contact: {
+  //     name: "",
+  //     value: "",
+  //   },
+  //   balance: "",
+  //   password: "",
+  //   confirm: "",
+  // });
 
   const validationOperands = [
     {
@@ -187,10 +229,6 @@ const CustomersAddNew = () => {
     },
   ];
 
-  const handleControlUpdate = (controlName, value) => {
-    setControls({ ...controls, [controlName]: value });
-  };
-
   const handleSubmit = () => {
     validate(validationOperands).then((output) => {
       if (!output.ok) return setErrors(output.errors);
@@ -212,98 +250,24 @@ const CustomersAddNew = () => {
         fav_contacts: controls.contact.value,
         comment: "",
       };
-      fetch(domain + "aqar/api/router/Client/", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-          //prettier-ignore
-          "Authorization": "Token " + token,
-        },
-        body: JSON.stringify(requestBody),
-      })
-        .then((res) => {
-          if (!res.ok) throw Error("couldn't fetch the data for that resource");
-
-          return res.json();
-        })
-        .then((json) => {
-          console.log(json);
-          setControls({
-            name: "",
-            phone: "",
-            code: countriesCodeInit,
-            email: "",
-            saler: {
-              name: "",
-              id: "",
-            },
-            mediator: "",
-            channel: {
-              name: "",
-              id: "",
-            },
-            contact: {
-              name: "",
-              value: "",
-            },
-            balance: "",
-            password: "",
-            confirm: "",
-          });
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
+      postRequest(requestBody, true, "customers");
     });
   };
 
   useEffect(() => {
     if (projects.length) return;
-    fetch(domain + "aqar/api/router/Project/", {
-      method: "GET",
-      headers: {
-        //prettier-ignore
-        "Authorization": "Token " + token,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw Error("couldn't fetch the data of that resource");
-        return res.json();
-      })
-      .then((json) => {
-        dispatch({ type: "projects/set", payload: json });
-        setLeft(json);
-      });
+    projectsGetRequest().then((res) => {
+      dispatch({ type: "projects/set", payload: res });
+      setLeft(res);
+    });
     if (channels.length) return;
-    fetch(domain + "aqar/api/router/Channel/", {
-      method: "GET",
-      headers: {
-        //prettier-ignore
-        "Authorization": "Token " + token,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw Error("couldn't fetch the data of that resource");
-        return res.json();
-      })
-      .then((json) => {
-        dispatch({ type: "channels/set", payload: json });
-      });
+    channelsGetRequest().then((res) => {
+      dispatch({ type: "channels/set", payload: res });
+    });
     if (employees.length) return;
-    fetch(domain + "aqar/api/router/Employee/", {
-      method: "GET",
-      headers: {
-        //prettier-ignore
-        "Authorization": "Token " + token,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw Error("couldn't fetch the data of that resource");
-        return res.json();
-      })
-      .then((json) => {
-        dispatch({ type: "employees/set", payload: json });
-      });
+    employeesGetRequest().then((res) => {
+      dispatch({ type: "employees/set", payload: res });
+    });
   }, []);
 
   return (
@@ -343,9 +307,7 @@ const CustomersAddNew = () => {
                   width: sm ? "100%" : "400px",
                 }}
                 fullWidth={sm}
-                onChange={({ target: { value } }) =>
-                  handleControlUpdate("name", value)
-                }
+                onChange={({ target: { value } }) => setControl("name", value)}
                 value={controls.name}
                 error={Boolean(errors?.name)}
                 helperText={errors?.name}
@@ -372,9 +334,7 @@ const CustomersAddNew = () => {
                 fullWidth={sm}
                 pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
                 autoComplete="off"
-                onChange={({ target: { value } }) =>
-                  handleControlUpdate("phone", value)
-                }
+                onChange={({ target: { value } }) => setControl("phone", value)}
                 value={controls.phone}
                 inputProps={{ min: 0 }}
                 InputProps={{
@@ -393,7 +353,7 @@ const CustomersAddNew = () => {
                             },
                           }}
                           onChange={({ target: { value } }) =>
-                            handleControlUpdate("code", value)
+                            setControl("code", value)
                           }
                           value={controls.code}
                         >
@@ -426,9 +386,7 @@ const CustomersAddNew = () => {
                   width: sm ? "100%" : "400px",
                 }}
                 fullWidth={sm}
-                onChange={({ target: { value } }) =>
-                  handleControlUpdate("email", value)
-                }
+                onChange={({ target: { value } }) => setControl("email", value)}
                 value={controls.email}
                 error={Boolean(errors?.email)}
                 helperText={errors?.email}
@@ -465,7 +423,7 @@ const CustomersAddNew = () => {
                   width: sm ? "100%" : "400px",
                 }}
                 onChange={({ target: { value } }) => {
-                  handleControlUpdate("saler", value);
+                  setControl("saler", value);
                 }}
                 value={controls.saler?.name}
                 error={Boolean(errors?.saler)}
@@ -500,12 +458,7 @@ const CustomersAddNew = () => {
                   width: sm ? "100%" : "400px",
                 }}
                 value={controls.mediator}
-                onChange={(event) =>
-                  setControls((oldObject) => ({
-                    ...oldObject,
-                    mediator: event.target.value,
-                  }))
-                }
+                onChange={(event) => setControl("mediator", event.target.value)}
                 fullWidth={sm}
                 error={Boolean(errors?.mediator)}
                 helperText={errors?.mediator}
@@ -538,7 +491,7 @@ const CustomersAddNew = () => {
                   IconComponent: KeyboardArrowDownIcon,
                 }}
                 onChange={({ target: { value } }) => {
-                  handleControlUpdate("channel", value);
+                  setControl("channel", value);
                 }}
                 value={controls.channel?.name}
                 fullWidth={sm}
@@ -598,7 +551,7 @@ const CustomersAddNew = () => {
                   width: sm ? "100%" : "400px",
                 }}
                 onChange={({ target: { value } }) => {
-                  handleControlUpdate("contact", value);
+                  setControl("contact", value);
                 }}
                 value={controls.contact?.name}
                 error={Boolean(errors?.contact)}
@@ -635,7 +588,7 @@ const CustomersAddNew = () => {
                 }}
                 fullWidth={sm}
                 onChange={({ target: { value } }) =>
-                  handleControlUpdate("balance", value)
+                  setControl("balance", value)
                 }
                 value={controls.balance}
                 error={Boolean(errors?.balance)}
@@ -649,7 +602,7 @@ const CustomersAddNew = () => {
                 sx={{ width: sm ? "100%" : "400px" }}
                 fullWidth={sm}
                 onChange={({ target: { value } }) =>
-                  handleControlUpdate("password", value)
+                  setControl("password", value)
                 }
                 value={controls.password}
                 InputProps={{
@@ -684,7 +637,7 @@ const CustomersAddNew = () => {
                 sx={{ width: sm ? "100%" : "400px" }}
                 fullWidth={sm}
                 onChange={({ target: { value } }) =>
-                  handleControlUpdate("confirm", value)
+                  setControl("confirm", value)
                 }
                 value={controls.confirm}
                 InputProps={{
@@ -842,6 +795,8 @@ const CustomersAddNew = () => {
             </Button>
           </Stack>
         </Paper>
+        {errorAlert}
+        {sucessAlert}
       </Wrapper>
     </>
   );

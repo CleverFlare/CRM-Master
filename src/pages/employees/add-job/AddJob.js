@@ -18,13 +18,11 @@ import useControls from "../../../hooks/useControls";
 
 const AddJob = () => {
   const sm = useMediaQuery("(min-width: 896px)");
-  const token = useSelector((state) => state.token.value);
-  const domain = useSelector((state) => state.domain.value);
+  const [errors, setErrors] = useState({});
+  const validate = useValidate();
   const [controls, setControl, resetControls] = useControls({
     name: "",
   });
-  const validate = useValidate();
-  const [errors, setErrors] = useState({});
 
   const handleSuccess = () => {
     resetControls();
@@ -51,7 +49,7 @@ const AddJob = () => {
         title: controls.name,
         organization: 1,
       };
-      postRequest(requestBody, "jobs");
+      postRequest(requestBody, true, "jobs");
     });
   };
   return (

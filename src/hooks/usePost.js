@@ -24,18 +24,28 @@ const usePost = (
   );
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [isPending, setIsPending] = useState(false);
   const [syncDataRequest, syncDataRequestError] = useGet(path);
 
-  const request = async (requestBody, requestName) =>
-    axios
-      .post(host, JSON.stringify(requestBody), {
-        headers: {
+  const request = async (requestBody, json = true, requestName) => {
+    setIsPending(true);
+    const headers = json
+      ? {
           "Content-type": "application/json",
           //prettier-ignore
           "Authorization": "Token " + token,
-        },
+        }
+      : {
+          "Content-type": "application/json",
+          //prettier-ignore
+          "Authorization": "Token " + token,
+        };
+    return axios
+      .post(host, json ? JSON.stringify(requestBody) : requestBody, {
+        headers,
       })
       .then((res) => {
+        setIsPending(false);
         setSuccess(true);
         onSuccess();
         if (requestName === null) {
@@ -44,17 +54,17 @@ const usePost = (
           );
         } else {
           syncDataRequest().then((res) => {
-            console.log(res);
             dispatch({ type: requestName + "/set", payload: res });
           });
         }
-        // syncDataRequest();
         return res.data;
       })
       .catch((err) => {
+        setIsPending(false);
         setError(err.message);
         return null;
       });
+  };
 
   return [
     request,
@@ -88,6 +98,7 @@ const usePost = (
         {successMessage && successMessage}
       </Alert>
     </Snackbar>,
+    isPending,
   ];
 };
 

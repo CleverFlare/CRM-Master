@@ -1,17 +1,21 @@
+import { useCallback, useEffect } from "react";
 import { useState } from "react";
 
 const useControls = (operands) => {
-  const [controls, setControls] = useState(operands);
+  const [controls, setControls] = useState({ ...operands });
 
-  const handleSetControls = (key, value) => {
-    setControls((old) => ({ ...old, [key]: value }));
-  };
+  const handleSetControl = useCallback(
+    (key, value) => {
+      setControls({ ...controls, [key]: value });
+    },
+    [controls]
+  );
 
-  const handleReset = () => {
-    setControls(operands);
-  };
+  const handleReset = useCallback(() => {
+    setControls({ ...operands });
+  }, [controls]);
 
-  return [controls, handleSetControls, handleReset];
+  return [controls, handleSetControl, handleReset];
 };
 
 export default useControls;
