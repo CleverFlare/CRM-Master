@@ -50,7 +50,7 @@ const CustomersAddNew = () => {
   const handleSuccess = () => {
     resetControls();
   };
-  const [postRequest, errorAlert, sucessAlert] = usePost(
+  const [postRequest, errorAlert, sucessAlert, isPending] = usePost(
     "aqar/api/router/Client/",
     "تم إضافة عميل بنجاح!",
     handleSuccess
@@ -78,9 +78,6 @@ const CustomersAddNew = () => {
       />
     );
 
-  const handleVisibilityToggle = (keyName) => {
-    setVisibilities({ ...visibilities, [keyName]: !visibilities[keyName] });
-  };
   const [controls, setControl, resetControls] = useControls({
     name: "",
     phone: "",
@@ -96,118 +93,77 @@ const CustomersAddNew = () => {
     projects: [],
   });
 
-  // const [controls, setControls] = useState({
-  //   name: "",
-  //   phone: "",
-  //   code: countriesCodeInit,
-  //   email: "",
-  //   saler: {
-  //     name: "",
-  //     id: "",
-  //   },
-  //   mediator: "",
-  //   channel: {
-  //     name: "",
-  //     id: "",
-  //   },
-  //   contact: {
-  //     name: "",
-  //     value: "",
-  //   },
-  //   balance: "",
-  //   password: "",
-  //   confirm: "",
-  // });
-
-  const validationOperands = [
-    {
-      name: "name",
-      value: controls.name,
-      isRequired: true,
-    },
-    {
-      name: "phone",
-      value: controls.phone,
-      isRequired: true,
-    },
-    {
-      name: "email",
-      value: controls.email,
-      isRequired: true,
-      validation: [
-        {
-          regex: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-          value: "هذا البريد غير صالح",
-        },
-      ],
-    },
-    {
-      name: "saler",
-      value: controls.saler.name,
-      isRequired: true,
-    },
-    {
-      name: "mediator",
-      value: controls.mediator,
-      isRequired: true,
-    },
-    {
-      name: "channel",
-      value: controls.channel.name,
-      isRequired: true,
-    },
-    {
-      name: "contact",
-      value: controls.contact.name,
-      isRequired: true,
-    },
-    {
-      name: "balance",
-      value: controls.balance,
-      isRequired: true,
-    },
-    {
-      name: "password",
-      value: controls.password,
-      isRequired: true,
-    },
-    {
-      name: "confirm",
-      value: controls.confirm,
-      isRequired: true,
-      validation: [
-        {
-          regex: new RegExp(`${controls.password}`, ""),
-          value: "الرقم السري لا يطابق",
-        },
-      ],
-    },
-    {
-      name: "projects",
-      value: controls.projects,
-      isRequired: true,
-    },
-  ];
-
   const handleSubmit = () => {
-    validate(validationOperands).then((output) => {
+    validate([
+      {
+        name: "name",
+        value: controls.name,
+        isRequired: true,
+      },
+      {
+        name: "phone",
+        value: controls.phone,
+        isRequired: true,
+      },
+      {
+        name: "email",
+        value: controls.email,
+        isRequired: true,
+        validation: [
+          {
+            regex: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+            value: "هذا البريد غير صالح",
+          },
+        ],
+      },
+      {
+        name: "saler",
+        value: controls.saler,
+        isRequired: true,
+      },
+      {
+        name: "mediator",
+        value: controls.mediator,
+        isRequired: true,
+      },
+      {
+        name: "channel",
+        value: controls.channel,
+        isRequired: true,
+      },
+      {
+        name: "contact",
+        value: controls.contact,
+        isRequired: true,
+      },
+      {
+        name: "balance",
+        value: controls.balance,
+        isRequired: true,
+      },
+      {
+        name: "projects",
+        value: controls.projects.join(" "),
+        isRequired: true,
+      },
+    ]).then((output) => {
       if (!output.ok) return setErrors(output.errors);
+      setErrors(null);
       const requestBody = {
         user: {
           first_name: controls.name.split(" ")[0],
           last_name: controls.name.split(" ")[1],
           email: controls.email,
           phone: controls.phone,
-          password: controls.password,
           permissions: [],
         },
         organization: 1,
-        bussiness: controls.projects.map((item) => item.id),
-        channel: controls.channel.id,
-        agent: controls.saler.id,
+        bussiness: controls.projects,
+        channel: controls.channel,
+        agent: controls.saler,
         min_budget: "00.00",
         max_budget: "00.00",
-        fav_contacts: controls.contact.value,
+        fav_contacts: controls.contact,
         comment: "",
       };
       postRequest(requestBody, true, "customers");
@@ -562,7 +518,7 @@ const CustomersAddNew = () => {
                   defaultValue: "",
                   displayEmpty: true,
                   renderValue: (selected) => {
-                    if (!selected) {
+                    if (!controls.contact) {
                       return (
                         <Typography
                           sx={{ color: "currentColor", opacity: "0.42" }}
@@ -571,7 +527,7 @@ const CustomersAddNew = () => {
                         </Typography>
                       );
                     } else {
-                      switch (selected) {
+                      switch (controls.contact) {
                         case "phone":
                           return "هاتف";
                         case "email":
@@ -579,7 +535,6 @@ const CustomersAddNew = () => {
                         case "whats app":
                           return "واتساب";
                       }
-                      return selected;
                     }
                   },
                   MenuProps: { PaperProps: { style: { maxHeight: "250px" } } },
@@ -623,7 +578,7 @@ const CustomersAddNew = () => {
                   setControl("balance", value)
                 }
                 value={controls.balance}
-                error={Boolean(errors.balance)}
+                error={Boolean(errors?.balance)}
                 helperText={errors?.balance}
               />
             </Stack>
@@ -634,10 +589,20 @@ const CustomersAddNew = () => {
             spacing={1}
             sx={{ padding: 2, bgcolor: "#fffaf3" }}
           >
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+              disabled={isPending}
+            >
               حفظ
             </Button>
-            <Button variant="contained" color="error">
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => resetControls()}
+              disabled={isPending}
+            >
               الغاء
             </Button>
           </Stack>
