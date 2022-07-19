@@ -153,8 +153,8 @@ const CustomersStatistics = () => {
     <Wrapper>
       <Parameter links={[{ text: "عملاء" }, { text: "احصائيات العملاء" }]} />
       <Stack spacing={5}>
-        <Grid container justifyContent="center" spacing={2} wrap="wrap">
-          <Grid item lg={3} justifyContent="center" alignItems="center">
+        <Grid container justifyContent="center" spacing={2}>
+          <Grid item lg={3}>
             <StatisticalCard
               title="جميع العملاء"
               since="منذ يوم"
@@ -163,7 +163,7 @@ const CustomersStatistics = () => {
               profit={100}
             />
           </Grid>
-          <Grid item lg={3} justifyContent="center" alignItems="center">
+          <Grid item lg={3}>
             <StatisticalCard
               title="العملاء المؤجله"
               since="منذ شهر"
@@ -172,7 +172,7 @@ const CustomersStatistics = () => {
               bars={[5, 4, 2, 4, 2, 3, 5, 1, 3]}
             />
           </Grid>
-          <Grid item lg={3} justifyContent="center" alignItems="center">
+          <Grid item lg={3}>
             <StatisticalCard
               title="العملاء الجدد"
               since="اكتساب"

@@ -133,7 +133,8 @@ const CustomersDeleted = () => {
       })
       .then((json) => {
         console.log(json);
-        dispatch({ type: "deletedCustomers/set", payload: json });
+        dispatch({ type: "deletedCustomers/set", payload: [...json] });
+        setRows([...json]);
       });
   }, []);
 
@@ -245,7 +246,11 @@ const CustomersDeleted = () => {
           justifyContent="center"
           alignItems="center"
         >
-          <Button variant="contained" sx={{ marginBlock: 2 }}>
+          <Button
+            variant="contained"
+            sx={{ marginBlock: 2 }}
+            onClick={handleRestore}
+          >
             إسترجاع
           </Button>
         </Stack>

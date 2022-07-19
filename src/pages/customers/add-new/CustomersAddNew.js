@@ -331,7 +331,7 @@ const CustomersAddNew = () => {
       .then((json) => {
         dispatch({ type: "employees/set", payload: json });
       });
-  });
+  }, []);
 
   return (
     <>

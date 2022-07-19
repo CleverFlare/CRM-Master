@@ -36,32 +36,32 @@ const DropBox = ({ variant, path }) => {
     fileRef.current.click();
   };
 
-  const handleUpload = () => {
-    const formData = new FormData();
-    formData.append("organization", 1);
-    const file = fileRef.current.files[0];
-    formData.append("file", file);
-    setFiles([...files, { picture: "", progress: 0 }]);
-    setTimeout(() => {
-      const allFiles = files;
-      allFiles[allFiles.length - 1].progress = 100;
-      setFiles(allFiles);
-    }, 1000);
-    // axios.post(domain + path, formData, {
-    //   headers: {
-    //     //prettier-ignore
-    //     "Authorization": "Token " + token,
-    //   },
-    //   onUploadProgress: (progress) => {
-    //     const { loaded, total } = progress;
-    //     const percentage = Math.floor((loaded * 100) / total);
-    //     const allFiles = files;
-    //     const uploadingFile = (allFiles[allFiles.length].percentage =
-    //       percentage);
-    //     setFiles((old) => allFiles);
-    //   },
-    // });
-  };
+  // const handleUpload = () => {
+  //   const formData = new FormData();
+  //   formData.append("organization", 1);
+  //   const file = fileRef.current.files[0];
+  //   formData.append("file", file);
+  //   setFiles([...files, { picture: "", progress: 0 }]);
+  //   setTimeout(() => {
+  //     const allFiles = files;
+  //     allFiles[allFiles.length - 1].progress = 100;
+  //     setFiles(allFiles);
+  //   }, 1000);
+  //   // axios.post(domain + path, formData, {
+  //   //   headers: {
+  //   //     //prettier-ignore
+  //   //     "Authorization": "Token " + token,
+  //   //   },
+  //   //   onUploadProgress: (progress) => {
+  //   //     const { loaded, total } = progress;
+  //   //     const percentage = Math.floor((loaded * 100) / total);
+  //   //     const allFiles = files;
+  //   //     const uploadingFile = (allFiles[allFiles.length].percentage =
+  //   //       percentage);
+  //   //     setFiles((old) => allFiles);
+  //   //   },
+  //   // });
+  // };
 
   return (
     <Paper sx={{ bgcolor: "#f5f6fa", maxWidth: 600, width: "100%" }}>
@@ -69,7 +69,7 @@ const DropBox = ({ variant, path }) => {
         type="file"
         style={{ display: "none" }}
         ref={fileRef}
-        onChange={handleUpload}
+        // onChange={handleUpload}
       />
       <Stack spacing={2}>
         <Paper
