@@ -14,27 +14,20 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import useValidate from "../../../hooks/useValidate";
 import usePost from "../../../hooks/usePost";
+import useControls from "../../../hooks/useControls";
 
 const AddJob = () => {
   const sm = useMediaQuery("(min-width: 896px)");
   const token = useSelector((state) => state.token.value);
   const domain = useSelector((state) => state.domain.value);
-  const [name, setName] = useState("");
-  const validate = useValidate();
-  const [errors, setErrors] = useState({
+  const [controls, setControl, resetControls] = useControls({
     name: "",
   });
-  const [error, setErorr] = useState("");
-  const validation = [
-    {
-      name: "name",
-      value: name,
-      isRequired: true,
-    },
-  ];
+  const validate = useValidate();
+  const [errors, setErrors] = useState({});
 
   const handleSuccess = () => {
-    setName("");
+    resetControls();
   };
 
   const [postRequest, errorAlert, successAlert] = usePost(
@@ -43,11 +36,19 @@ const AddJob = () => {
     handleSuccess
   );
 
+  const validation = [
+    {
+      name: "name",
+      value: controls.name,
+      isRequired: true,
+    },
+  ];
+
   const handleSubmit = () => {
     validate(validation).then((output) => {
       if (!output.ok) return setErrors(output.errors);
       const requestBody = {
-        title: name,
+        title: controls.name,
         organization: 1,
       };
       postRequest(requestBody, "jobs");
@@ -82,8 +83,8 @@ const AddJob = () => {
             }}
             error={Boolean(errors?.name)}
             helperText={errors?.name}
-            value={name}
-            onChange={(event) => setName(event.target.value)}
+            value={controls.name}
+            onChange={(event) => setControl("name", event.target.value)}
           />
         </Paper>
         <Button
@@ -96,19 +97,6 @@ const AddJob = () => {
       </Stack>
       {errorAlert}
       {successAlert}
-      {/* <Snackbar
-        open={Boolean(error)}
-        autoHideDuration={1000}
-        onClose={() => setErorr("")}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
-        }}
-      >
-        <Alert severity="error" variant="filled" onClose={() => setErorr("")}>
-          {error && error}
-        </Alert>
-      </Snackbar> */}
     </Wrapper>
   );
 };
