@@ -6,7 +6,6 @@ import Post, { PostSkeleton } from "../../components/post/Post";
 import Wrapper from "../../components/wrapper/Wrapper";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import useFetch from "../../hooks/useFetch";
 
 const Home = () => {
   const postsStore = useSelector((state) => state.posts.value);

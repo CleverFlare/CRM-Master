@@ -73,7 +73,7 @@ const Jobs = () => {
           rows={jobsData}
           columns={dummyColumns}
           nameWithSearch
-          maxRowsPerPage={5}
+          maxRowsPerPage={10}
         />
       </Wrapper>
     </>

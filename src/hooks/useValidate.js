@@ -1,27 +1,29 @@
-export default function useValidate() {
-  return async (operands) => {
-    const output = {};
-    if (!Array.isArray(operands))
-      return console.error("invalid operands in useValidate hook");
-    operands.forEach((operand) => {
-      if (operand?.isRequired && !operand.value)
-        return (output[operand.name] = "هذا الحقل إلزامي");
-      if (!operand?.validation) return;
-      operand.validation.forEach((test) => {
-        if (!test.regex.test(operand.value))
-          return (output[operand.name] = test.value);
-      });
+const validate = async (operands) => {
+  const output = {};
+  if (!Array.isArray(operands))
+    return console.error("invalid operands in useValidate hook");
+  operands.forEach((operand) => {
+    if (operand?.isRequired && !operand.value)
+      return (output[operand.name] = "هذا الحقل إلزامي");
+    if (!operand?.validation) return;
+    operand.validation.forEach((test) => {
+      if (!test.regex.test(operand.value))
+        return (output[operand.name] = test.value);
     });
-    return Object.keys(output).length === 0
-      ? {
-          ok: true,
-          errors: null,
-        }
-      : {
-          ok: false,
-          errors: output,
-        };
-  };
+  });
+  return Object.keys(output).length === 0
+    ? {
+        ok: true,
+        errors: null,
+      }
+    : {
+        ok: false,
+        errors: output,
+      };
+};
+
+export default function useValidate() {
+  return validate;
 }
 
 // template

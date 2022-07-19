@@ -153,7 +153,18 @@ const CustomersStatistics = () => {
     <Wrapper>
       <Parameter links={[{ text: "عملاء" }, { text: "احصائيات العملاء" }]} />
       <Stack spacing={5}>
-        <Grid container justifyContent="center" spacing={2}>
+        <Grid
+          container
+          justifyContent="center"
+          spacing={2}
+          sx={{
+            "& .MuiGrid-item": {
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            },
+          }}
+        >
           <Grid item lg={3}>
             <StatisticalCard
               title="جميع العملاء"
@@ -195,8 +206,14 @@ const CustomersStatistics = () => {
           container
           spacing={3}
           justifyContent="center"
-          sx={{ width: "100%" }}
-          wrap="wrap"
+          sx={{
+            width: "100%",
+            gap: 3,
+            "& .MuiGrid-item": {
+              paddingInline: "0",
+            },
+          }}
+          wrap="nowrap"
         >
           <Grid item lg={3} xs={12}>
             <DataTable

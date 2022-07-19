@@ -7,12 +7,14 @@ import employeesSlice from "./store/employeesSlice";
 import jobsSlice from "./store/jobsSlice";
 import postsSlice from "./store/postsSlice";
 import projectsSlice from "./store/projectsSlice";
+import requestInfoSlice from "./store/requestInfoSlice";
 import statusSlice from "./store/statusSlice";
 import tokenSlice from "./store/tokenSlice";
 import userIdSlice from "./store/userIdSlice";
 
 export default configureStore({
   reducer: {
+    requestInfo: requestInfoSlice,
     token: tokenSlice,
     projects: projectsSlice,
     channels: channelsSlice,

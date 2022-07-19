@@ -13,6 +13,7 @@ import Wrapper from "../../../components/wrapper/Wrapper";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import useValidate from "../../../hooks/useValidate";
+import usePost from "../../../hooks/usePost";
 
 const AddJob = () => {
   const sm = useMediaQuery("(min-width: 896px)");
@@ -32,6 +33,16 @@ const AddJob = () => {
     },
   ];
 
+  const handleSuccess = () => {
+    setName("");
+  };
+
+  const [postRequest, errorAlert, successAlert] = usePost(
+    "aqar/api/router/Job/",
+    "وظيفة جديد تم إضافتها!",
+    handleSuccess
+  );
+
   const handleSubmit = () => {
     validate(validation).then((output) => {
       if (!output.ok) return setErrors(output.errors);
@@ -39,28 +50,7 @@ const AddJob = () => {
         title: name,
         organization: 1,
       };
-      fetch(domain + "aqar/api/router/Job/", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-          //prettier-ignore
-          "Authorization": "Token " + token,
-        },
-        body: JSON.stringify(requestBody),
-      })
-        .then((res) => {
-          if (!res.ok) throw Error("couldn't set the job for some reason");
-
-          return res.json();
-        })
-        .then((json) => {
-          setName("");
-          console.log(json);
-        })
-        .catch((err) => {
-          setErorr(err.message);
-          console.log(err.message);
-        });
+      postRequest(requestBody, "jobs");
     });
   };
   return (
@@ -104,7 +94,9 @@ const AddJob = () => {
           حفظ
         </Button>
       </Stack>
-      <Snackbar
+      {errorAlert}
+      {successAlert}
+      {/* <Snackbar
         open={Boolean(error)}
         autoHideDuration={1000}
         onClose={() => setErorr("")}
@@ -116,7 +108,7 @@ const AddJob = () => {
         <Alert severity="error" variant="filled" onClose={() => setErorr("")}>
           {error && error}
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
     </Wrapper>
   );
 };

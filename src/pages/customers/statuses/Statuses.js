@@ -60,7 +60,7 @@ const Statuses = () => {
         rows={statusData}
         columns={dummyColumns}
         nameWithSearch
-        maxRowsPerPage={5}
+        maxRowsPerPage={10}
       />
     </Wrapper>
   );
