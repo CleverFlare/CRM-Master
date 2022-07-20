@@ -22,13 +22,28 @@ import SearchIcon from "@mui/icons-material/Search";
 import CustomersEditDialog from "../../components/customers-edit-dialog/CustomersEditDialog";
 import { useState, useEffect } from "react";
 import EditCustomerPassword from "../edit-customer-password/EditCustomerPassword";
+import ArchiveIcon from "@mui/icons-material/Archive";
+import KeyIcon from "@mui/icons-material/Key";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import BlockIcon from "@mui/icons-material/Block";
 import areaMenu from "./assets/AreaMenuMapping";
 import code from "./assets/CountryCodeMapping";
 import projectsMenu from "./assets/ProjectsMenuMapping";
 
 const balance = "filter";
 
-const DataGrid = ({ rows, columns, nameWithSearch, maxRowsPerPage }) => {
+const DataGrid = ({
+  rows,
+  columns,
+  nameWithSearch,
+  maxRowsPerPage,
+  onDelete = null,
+  onArchive = null,
+  onChangePassword = null,
+  onBlock = null,
+  onEdit = null,
+}) => {
   const [rowsCopy, setRowsCopy] = useState(null);
   const [openEditInfo, setOpenEditInfo] = useState(false);
   const [openEditPass, setOpenEditPass] = useState(false);
@@ -190,6 +205,11 @@ const DataGrid = ({ rows, columns, nameWithSearch, maxRowsPerPage }) => {
                           {column.headerName ? column.headerName : column.field}
                         </TableCell>
                       ))}
+                      {(onDelete ||
+                        onArchive ||
+                        onChangePassword ||
+                        onBlock ||
+                        onEdit) && <TableCell>إجرائات</TableCell>}
                     </TableRow>
                   </TableHead>
                   <TableBody sx={{ height: "max-content" }}>
@@ -234,6 +254,84 @@ const DataGrid = ({ rows, columns, nameWithSearch, maxRowsPerPage }) => {
                                     );
                                   }
                                 })}
+                              {(onDelete ||
+                                onArchive ||
+                                onChangePassword ||
+                                onBlock ||
+                                onEdit) && (
+                                <TableCell>
+                                  <Stack direction="row" spacing={2}>
+                                    {onChangePassword && (
+                                      <IconButton
+                                        size="small"
+                                        sx={{
+                                          bgcolor: "#495f9b",
+                                          color: "white",
+                                          borderRadius: 2,
+                                          "&:hover": {
+                                            backgroundColor: "#5c77c1",
+                                          },
+                                        }}
+                                        onClick={(event) =>
+                                          onChangePassword(event, row)
+                                        }
+                                      >
+                                        <KeyIcon />
+                                      </IconButton>
+                                    )}
+                                    {onEdit && (
+                                      <IconButton
+                                        size="small"
+                                        sx={{
+                                          bgcolor: "#96ee9d",
+                                          color: "white",
+                                          borderRadius: 2,
+                                          "&:hover": {
+                                            backgroundColor: "#b2f1b7",
+                                          },
+                                        }}
+                                        onClick={(event) => onEdit(event, row)}
+                                      >
+                                        <EditIcon />
+                                      </IconButton>
+                                    )}
+                                    {onDelete && (
+                                      <IconButton
+                                        size="small"
+                                        sx={{
+                                          bgcolor: "#f8c6c6",
+                                          color: "#ff3c3c",
+                                          borderRadius: 2,
+                                          "&:hover": {
+                                            backgroundColor: "#ffe9e9",
+                                          },
+                                        }}
+                                        onClick={(event) =>
+                                          onDelete(event, row)
+                                        }
+                                      >
+                                        <DeleteIcon />
+                                      </IconButton>
+                                    )}
+                                    {onBlock && (
+                                      <IconButton
+                                        size="small"
+                                        sx={{
+                                          bgcolor: "#ff3c3c",
+                                          color: "white",
+                                          borderRadius: 2,
+                                          "&:hover": {
+                                            backgroundColor: "#ff8080",
+                                          },
+                                        }}
+                                        onClick={(event) => onBlock(event, row)}
+                                      >
+                                        <BlockIcon />
+                                      </IconButton>
+                                    )}
+                                  </Stack>
+                                </TableCell>
+                              )}
                             </TableRow>
                           );
                         })}

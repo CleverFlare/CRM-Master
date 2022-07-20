@@ -25,6 +25,7 @@ import { useSelector, useDispatch } from "react-redux";
 import useControls from "../../../hooks/useControls";
 import useValidate from "../../../hooks/useValidate";
 import usePost from "../../../hooks/usePost";
+import useGet from "../../../hooks/useGet";
 
 const countries = [
   {
@@ -50,9 +51,7 @@ const countries = [
 const EmployeesAddNew = () => {
   const sm = useMediaQuery("(max-width:912px)");
 
-  const token = useSelector((state) => state.token.value);
-
-  const domain = useSelector((state) => state.domain.value);
+  const [jobsGetRequest, jobsGetRequestError] = useGet("aqar/api/router/Job/");
 
   const [controls, setControl, resetControls] = useControls({
     name: "",
@@ -168,22 +167,10 @@ const EmployeesAddNew = () => {
 
   useEffect(() => {
     if (jobsData.length) return;
-    fetch(domain + "aqar/api/router/Job/", {
-      method: "GET",
-      headers: {
-        //prettier-ignore
-        "Authorization": "Token " + token,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw Error("couldn't fetch the data for that resource");
-
-        return res.json();
-      })
-      .then((json) => {
-        dispatch({ type: "projects/set", payload: json });
-        setJobs(json);
-      });
+    jobsGetRequest().then((res) => {
+      dispatch({ type: "jobs/set", payload: res });
+      setJobs(res);
+    });
   }, []);
 
   return (

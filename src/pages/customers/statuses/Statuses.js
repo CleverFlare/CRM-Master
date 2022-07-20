@@ -3,6 +3,7 @@ import Wrapper from "../../../components/wrapper/Wrapper";
 import DataGrid from "../../../components/data-grid/DataGrid";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import useDelete from "../../../hooks/useDelete";
 
 const dummyColumns = [
   {
@@ -28,8 +29,15 @@ const Statuses = () => {
   const token = useSelector((state) => state.token.value);
   const domain = useSelector((state) => state.domain.value);
   const status = useSelector((state) => state.status.value);
-  const [statusData, setStatusData] = useState(status ? status : null);
+  const [deleteRequest, deleteSuccessAlert, deleteErrorAlert] = useDelete(
+    "aqar/api/router/Status/",
+    "تم محو الحالة بنجاح!"
+  );
   const dispatch = useDispatch();
+
+  const handleDelete = (e, rowData) => {
+    deleteRequest("status", rowData.id);
+  };
 
   useEffect(() => {
     if (status.length) return;
@@ -46,7 +54,6 @@ const Statuses = () => {
         return res.json();
       })
       .then((json) => {
-        setStatusData(json);
         dispatch({
           type: "status/set",
           payload: json,
@@ -57,11 +64,14 @@ const Statuses = () => {
     <Wrapper>
       <Parameter links={[{ text: "العملاء" }, { text: "حالات العميل" }]} />
       <DataGrid
-        rows={statusData}
+        rows={status ? status : []}
         columns={dummyColumns}
         nameWithSearch
-        maxRowsPerPage={10}
+        maxRowsPerPage={8}
+        onDelete={handleDelete}
       />
+      {deleteSuccessAlert}
+      {deleteErrorAlert}
     </Wrapper>
   );
 };

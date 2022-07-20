@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 
 const useGet = (path) => {
-  const [output, setOputput] = useState(null);
   const token = useSelector((state) => state.requestInfo.value.token);
   const host = useSelector(
     ({ requestInfo }) =>

@@ -3,6 +3,8 @@ import DataGrid from "../../../components/data-grid/DataGrid";
 import Wrapper from "../../../components/wrapper/Wrapper";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import useGet from "../../../hooks/useGet";
+import useDelete from "../../../hooks/useDelete";
 
 const dummyColumns = [
   {
@@ -32,12 +34,11 @@ const dummyColumns = [
 ];
 
 const TotalCustomers = () => {
-  const domain = useSelector((state) => state.domain.value);
-  const token = useSelector((state) => state.token.value);
+  const [customersGetRequest, customersGetRequestError] = useGet(
+    "aqar/api/router/Client/"
+  );
   const allCustomers = useSelector((state) => state.allCustomers.value);
   const dispatch = useDispatch();
-
-  const [rows, setRows] = useState(allCustomers.length ? allCustomers : null);
 
   const parseToProperData = (json) => {
     let parentArray = [];
@@ -52,36 +53,31 @@ const TotalCustomers = () => {
         comment: "لايوجد",
         saler: item.agent,
         channel: item.channel,
+        id: item.id,
       };
       parentArray.push(customer);
     });
     return parentArray;
   };
 
+  const [deleteRequest, successAlert, errorAlert] = useDelete(
+    "aqar/api/router/Client/",
+    "تم نقل العميل إلى العملاء المحذوفة"
+  );
+
   useEffect(() => {
-    if (allCustomers.length) return;
-    fetch(domain + "aqar/api/router/Client/", {
-      method: "GET",
-      headers: {
-        //prettier-ignore
-        "Authorization": "Token " + token,
-      },
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((json) => {
-        const parsedData = parseToProperData(json);
-        setRows(parsedData);
-        dispatch({
-          type: "allCustomers/set",
-          payload: parsedData,
-        });
-      })
-      .catch((err) => {
-        console.log(err.message);
+    if (Boolean(allCustomers.length)) return;
+    customersGetRequest().then((res) => {
+      dispatch({
+        type: "allCustomers/set",
+        payload: res,
       });
+    });
   }, []);
+
+  const handleDelete = (e, rowData) => {
+    deleteRequest("allCustomers", rowData.id);
+  };
 
   return (
     <div style={{ height: 697 }}>
@@ -98,7 +94,16 @@ const TotalCustomers = () => {
             },
           ]}
         />
-        <DataGrid rows={rows} columns={dummyColumns} maxRowsPerPage={10} />
+        <DataGrid
+          rows={
+            Boolean(allCustomers.length) ? parseToProperData(allCustomers) : []
+          }
+          columns={dummyColumns}
+          maxRowsPerPage={8}
+          onDelete={handleDelete}
+        />
+        {successAlert}
+        {errorAlert}
       </Wrapper>
     </div>
   );

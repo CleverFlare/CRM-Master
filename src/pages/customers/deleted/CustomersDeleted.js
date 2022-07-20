@@ -8,6 +8,8 @@ import Wrapper from "../../../components/wrapper/Wrapper";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
+import usePost from "../../../hooks/usePost";
+import useDelete from "../../../hooks/useDelete";
 
 const dummyRows = [
   {
@@ -114,10 +116,34 @@ const dummyRows = [
 const CustomersDeleted = () => {
   const token = useSelector((state) => state.token.value);
   const domain = useSelector((state) => state.domain.value);
-  const deletedCustomers = useSelector((state) => state.deletedCustomers.value);
-  const [rows, setRows] = useState(
-    deletedCustomers.length ? deletedCustomers : null
+  const [restoreRequest, restoreSuccessAlert, restoreErrorAlert] = usePost(
+    "aqar/api/router/RestoreClient/",
+    "تم إسترجاع العملاء بنجاح"
   );
+  // const [deleteRequest, deleteSuccessAlert, deleteErrorAlert] = useDelete(
+  //   "aqar/api/router/RestoreClient/",
+  //   "تم حذف العملاء بنجاح"
+  // );
+  const deletedCustomers = useSelector((state) => state.deletedCustomers.value);
+
+  const parseToProperData = (json) => {
+    let parentArray = [];
+    json.map((item, index) => {
+      const customer = {
+        name: item.user.first_name + " " + item.user.last_name,
+        phone: item.user.phone,
+        project: Boolean(item.bussiness.length)
+          ? item.bussiness.join(", ")
+          : "لا يوجد",
+        comment: "لايوجد",
+        saler: item.agent,
+        channel: item.channel,
+        id: item.id,
+      };
+      parentArray.push(customer);
+    });
+    return parentArray;
+  };
   const dispatch = useDispatch();
   const [selected, setSelected] = useState([]);
   useEffect(() => {
@@ -134,7 +160,6 @@ const CustomersDeleted = () => {
       .then((json) => {
         console.log(json);
         dispatch({ type: "deletedCustomers/set", payload: [...json] });
-        setRows([...json]);
       });
   }, []);
 
@@ -143,25 +168,7 @@ const CustomersDeleted = () => {
       organization: 1,
       id: selected,
     };
-    fetch(domain + "qar/api/router/RestoreClient/", {
-      method: "DELETE",
-      headers: {
-        //prettier-ignore
-        "Authorization": "Token " + token,
-      },
-      body: JSON.stringify(requestBody),
-    })
-      .then((res) => {
-        if (!res.ok) throw Error("couldn't delete these customers");
-
-        return res.json();
-      })
-      .then((json) => {
-        console.log(json);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+    restoreRequest(requestBody);
   };
 
   const handleCheckboxChange = (e, id) => {
@@ -202,7 +209,7 @@ const CustomersDeleted = () => {
     },
     {
       field: "name",
-      headerName: "الأسم",
+      headerName: "الاسم",
     },
     {
       field: "phone",
@@ -225,6 +232,7 @@ const CustomersDeleted = () => {
       headerName: "القناة",
     },
   ];
+
   return (
     <div style={{ height: 697 }}>
       <Wrapper sx={{ height: "100%" }}>
@@ -240,7 +248,15 @@ const CustomersDeleted = () => {
             },
           ]}
         />
-        <DataGrid rows={rows} columns={dummyColumns} maxRowsPerPage={10} />
+        <DataGrid
+          rows={
+            Boolean(deletedCustomers.length)
+              ? parseToProperData(deletedCustomers)
+              : []
+          }
+          columns={dummyColumns}
+          maxRowsPerPage={10}
+        />
         <Stack
           sx={{ width: "100%", marginTop: "20px" }}
           justifyContent="center"
@@ -254,6 +270,8 @@ const CustomersDeleted = () => {
             إسترجاع
           </Button>
         </Stack>
+        {restoreSuccessAlert}
+        {restoreErrorAlert}
       </Wrapper>
     </div>
   );

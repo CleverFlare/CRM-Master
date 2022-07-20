@@ -30,8 +30,6 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 
 const CustomersAddNew = () => {
-  const domain = useSelector((state) => state.domain.value);
-  const token = useSelector((state) => state.token.value);
   const [projectsGetRequest, projectsGetRequestError] = useGet(
     "aqar/api/router/Project/"
   );

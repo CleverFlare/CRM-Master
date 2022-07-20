@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import useGet from "./useGet";
 
-const usePost = (
+const useDelete = (
   path,
   successMessage = "sent successfully!",
   onSuccess = () => {}
@@ -27,22 +27,14 @@ const usePost = (
   const [isPending, setIsPending] = useState(false);
   const [syncDataRequest, syncDataRequestError] = useGet(path);
 
-  const request = async (requestBody, json = true, requestName) => {
+  const request = async (requestName, id = null) => {
     setIsPending(true);
-    const headers = json
-      ? {
-          "Content-type": "application/json",
-          //prettier-ignore
-          "Authorization": "Token " + token,
-        }
-      : {
-          "Content-type": "application/json",
-          //prettier-ignore
-          "Authorization": "Token " + token,
-        };
     return axios
-      .post(host, json ? JSON.stringify(requestBody) : requestBody, {
-        headers,
+      .delete(host + (id ? id : ""), {
+        headers: {
+          //prettier-ignore
+          "Authorization": "Token " + token,
+        },
       })
       .then((res) => {
         setIsPending(false);
@@ -102,4 +94,4 @@ const usePost = (
   ];
 };
 
-export default usePost;
+export default useDelete;

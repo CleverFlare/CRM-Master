@@ -9,6 +9,8 @@ import BlockIcon from "@mui/icons-material/Block";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import useGet from "../../../hooks/useGet";
+import useDelete from "../../../hooks/useDelete";
 
 const dummyColumns = [
   {
@@ -29,10 +31,12 @@ const dummyRows = [
 ];
 
 const Jobs = () => {
-  const [jobsData, setJobsData] = useState(null);
-  const token = useSelector((state) => state.token.value);
-  const domain = useSelector((state) => state.domain.value);
   const jobs = useSelector((state) => state.jobs.value);
+  const [jobsGetRequest, jobsGetRequestError] = useGet("aqar/api/router/Job/");
+  const [deleteRequest, successAlert, errorAlert] = useDelete(
+    "aqar/api/router/Job/",
+    "تم حذف الوظيفة بنجاح"
+  );
   const dispatch = useDispatch();
 
   const convertIntoProperObject = (json) => {
@@ -41,40 +45,36 @@ const Jobs = () => {
       arrayOfData.push({
         title: item.title,
         createdAt: item.created_at,
+        id: item.id,
       });
     });
     return arrayOfData;
   };
 
   useEffect(() => {
-    if (jobs.length) return;
-    fetch(domain + "aqar/api/router/Job/", {
-      method: "GET",
-      headers: {
-        //prettier-ignore
-        "Authorization": "Token " + token,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw Error("couldn't fetch data of that resource");
-
-        return res.json();
-      })
-      .then((json) => {
-        setJobsData(convertIntoProperObject(json));
-        dispatch({ type: "jobs/set", payload: convertIntoProperObject(json) });
-      });
+    if (Boolean(jobs.length)) return;
+    jobsGetRequest().then((res) => {
+      dispatch({ type: "jobs/set", payload: res });
+    });
   }, []);
+
+  const handleDelete = (e, rowData) => {
+    deleteRequest("jobs", rowData.id);
+  };
+
   return (
     <>
       <Wrapper>
         <Parameter links={[{ text: "الموظفين" }, { text: "الوظائف" }]} />
         <DataGrid
-          rows={jobsData}
+          rows={Boolean(jobs.length) ? convertIntoProperObject(jobs) : []}
           columns={dummyColumns}
           nameWithSearch
-          maxRowsPerPage={10}
+          maxRowsPerPage={8}
+          onDelete={handleDelete}
         />
+        {successAlert}
+        {errorAlert}
       </Wrapper>
     </>
   );
