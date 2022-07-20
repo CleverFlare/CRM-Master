@@ -1,11 +1,11 @@
-import { Paper, Stack, Typography } from "@mui/material";
-import { Box } from "@mui/system";
+import { Stack, Typography } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import Parameter from "../../../components/parameter/Parameter";
 import Project, { ProjectSkeleton } from "../../../components/project/Project";
 import Wrapper from "../../../components/wrapper/Wrapper";
+import useGet from "../../../hooks/useGet";
 
 const ProjectSkeletonsStack = () => {
   return (
@@ -22,24 +22,16 @@ const ProjectSkeletonsStack = () => {
 const ProjectsDisplay = () => {
   const token = useSelector((state) => state.token.value);
   const domain = useSelector((state) => state.domain.value);
+  const [projectsGetRequest, projectsGetRequestError] = useGet(
+    "aqar/api/router/Project/"
+  );
   const [projects, setProjects] = useState([]);
   const [isPending, setIsPending] = useState(true);
   useEffect(() => {
-    fetch(domain + "aqar/api/router/Project/", {
-      method: "GET",
-      headers: {
-        //prettier-ignore
-        "Authorization": "Token " + token,
-      },
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((json) => {
-        console.log(json);
-        setProjects(json);
-        setIsPending(false);
-      });
+    projectsGetRequest().then((res) => {
+      setProjects(res);
+      setIsPending(false);
+    });
   }, []);
   return (
     <Wrapper>
@@ -64,10 +56,11 @@ const ProjectsDisplay = () => {
               picture={project.logo}
               title={project.name}
               address={project.address}
+              comment={project.comment}
               id={project.id}
             />
           ))}
-        {projects.length <= 0 && !isPending && (
+        {Boolean(!projects.length) && !isPending && (
           <Stack
             justifyContent="center"
             alignItems="center"
@@ -75,7 +68,11 @@ const ProjectsDisplay = () => {
           >
             <Typography
               variant="h5"
-              sx={{ color: "gray", fontWeight: "bold", pointerEvents: "none" }}
+              sx={{
+                color: "gray",
+                fontWeight: "bold",
+                pointerEvents: "none",
+              }}
             >
               لا يوجد مشاريع
             </Typography>

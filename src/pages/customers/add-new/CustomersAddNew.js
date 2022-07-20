@@ -13,18 +13,12 @@ import {
   Button,
   useMediaQuery,
   Avatar,
-  IconButton,
-  List,
-  ListItem,
-  Checkbox,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Parameter from "../../../components/parameter/Parameter";
 import Wrapper from "../../../components/wrapper/Wrapper";
 import { useState } from "react";
 import countries from "./assets/CountriesMapping";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Box } from "@mui/system";
@@ -165,6 +159,7 @@ const CustomersAddNew = () => {
         max_budget: "00.00",
         fav_contacts: controls.contact,
         comment: "",
+        aqar_comment_client: [],
       };
       postRequest(requestBody, true, "customers");
     });

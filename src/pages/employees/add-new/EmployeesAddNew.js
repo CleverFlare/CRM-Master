@@ -22,6 +22,9 @@ import Wrapper from "../../../components/wrapper/Wrapper";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import useControls from "../../../hooks/useControls";
+import useValidate from "../../../hooks/useValidate";
+import usePost from "../../../hooks/usePost";
 
 const countries = [
   {
@@ -51,22 +54,7 @@ const EmployeesAddNew = () => {
 
   const domain = useSelector((state) => state.domain.value);
 
-  const jobsData = useSelector((state) => state.jobs.value);
-
-  const dispatch = useDispatch();
-
-  const [jobs, setJobs] = useState(jobsData.length ? jobsData : null);
-
-  const [errors, setErrors] = useState({});
-
-  const [isSubmit, setIsSubmit] = useState(false);
-
-  const [visibilities, setVisibilities] = useState({
-    password: false,
-    confirm: false,
-  });
-
-  const [controls, setControls] = useState({
+  const [controls, setControl, resetControls] = useControls({
     name: "",
     code:
       "(+20)" +
@@ -77,75 +65,89 @@ const EmployeesAddNew = () => {
         />
       ),
     phone: "",
-    job: {
-      name: "",
-      id: "",
-    },
+    job: "",
     email: "",
     password: "",
     confirm: "",
+  });
+
+  const handleSuccess = () => {
+    resetControls();
+  };
+
+  const validate = useValidate();
+
+  const [postRequest, successAlert, errorAlert, isPending] = usePost(
+    "aqar/api/router/Employee/",
+    "تم إضافة موظف جديد بنجاح!",
+    handleSuccess
+  );
+
+  const jobsData = useSelector((state) => state.jobs.value);
+
+  const dispatch = useDispatch();
+
+  const [jobs, setJobs] = useState(jobsData.length ? jobsData : null);
+
+  const [errors, setErrors] = useState({});
+
+  const [visibilities, setVisibilities] = useState({
+    password: false,
+    confirm: false,
   });
 
   const handleVisibilityToggle = (keyName) => {
     setVisibilities({ ...visibilities, [keyName]: !visibilities[keyName] });
   };
 
-  const handleControlUpdate = (controlName, value) => {
-    setControls({ ...controls, [controlName]: value });
-  };
-
-  const handleSubmit = () => {
-    handleValidation();
-    setIsSubmit(true);
-  };
-
-  const handleValidation = () => {
-    setErrors({});
-    if (!controls.name) {
-      setErrors((oldErrors) => ({ ...oldErrors, name: "هذا الحقل إلزامي" }));
-    }
-
-    if (!controls.phone) {
-      setErrors((oldErrors) => ({ ...oldErrors, phone: "هذا الحقل إلزامي" }));
-    }
-
-    if (!controls.job) {
-      setErrors((oldErrors) => ({ ...oldErrors, job: "هذا الحقل إلزامي" }));
-    }
-
-    if (!controls.email) {
-      setErrors((oldErrors) => ({ ...oldErrors, email: "هذا الحقل إلزامي" }));
-    } else if (
-      !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(controls.email)
-    ) {
-      setErrors((oldErrors) => ({
-        ...oldErrors,
-        email: "هذا البريد غير صالح",
-      }));
-    }
-
-    if (!controls.password) {
-      setErrors((oldErrors) => ({
-        ...oldErrors,
-        password: "هذا الحقل إلزامي",
-      }));
-    }
-
-    if (!controls.confirm) {
-      setErrors((oldErrors) => ({
-        ...oldErrors,
-        confirm: "هذا الحقل إلزامي",
-      }));
-    } else if (controls.confirm !== controls.password) {
-      setErrors((oldErrors) => ({
-        ...oldErrors,
-        confirm: "رمز التأكيد لا يطابق الرمز الحماية",
-      }));
-    }
-  };
-
-  useEffect(() => {
-    if (isSubmit && Object.keys(errors).length === 0) {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    validate([
+      {
+        name: "name",
+        value: controls.name,
+        isRequired: true,
+      },
+      {
+        name: "phone",
+        value: controls.phone,
+        isRequired: true,
+      },
+      {
+        name: "job",
+        value: controls.job,
+        isRequired: true,
+      },
+      {
+        name: "email",
+        value: controls.email,
+        isRequired: true,
+        validation: [
+          {
+            regex: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+            value: "هذا البريد غير صالح",
+          },
+        ],
+      },
+      {
+        name: "password",
+        value: controls.password,
+        isRequired: true,
+      },
+      {
+        name: "confirm",
+        value: controls.confirm,
+        isRequired: true,
+        validation: [
+          {
+            regex: new RegExp(`${controls.password}`, ""),
+            value: "رمز التأكيد لا يطابق رمز الحماية",
+          },
+        ],
+      },
+    ]).then((output) => {
+      if (!output.ok) return setErrors(output.errors);
+      setErrors(output.errors);
       const requestBody = {
         user: {
           first_name: controls.name.split(" ")[0],
@@ -156,32 +158,13 @@ const EmployeesAddNew = () => {
           password: controls.password,
           permissions: [],
         },
-        job: controls.job.id,
+        job: controls.job,
         business: [1],
         organization: 1,
       };
-      fetch(domain + "aqar/api/router/Employee/", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-          //prettier-ignore
-          "Authorization": "Token " + token,
-        },
-        body: JSON.stringify(requestBody),
-      })
-        .then((res) => {
-          if (!res.ok) throw Error("couldn't fetch the data for that resource");
-
-          return res.json();
-        })
-        .then((json) => {
-          console.log(json);
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
-    }
-  }, [errors]);
+      postRequest(requestBody, true, "employees");
+    });
+  };
 
   useEffect(() => {
     if (jobsData.length) return;
@@ -218,253 +201,261 @@ const EmployeesAddNew = () => {
             },
           ]}
         />
-        <Paper>
-          <Stack sx={{ padding: 2, bgcolor: "#f8f8f9" }}>
-            <Typography sx={{ fontWeight: "bold" }}>مرحبا بك!</Typography>
-            <Typography>
-              الرجاء ملئ المعلومات الآتية لاضافة عميل جديد
-            </Typography>
-          </Stack>
-          <Divider orientation="horizontal" />
-          <Stack direction="column" spacing={sm ? 2 : 5} sx={{ padding: 2 }}>
-            <Stack
-              direction={sm ? "column" : "row"}
-              justifyContent="space-between"
-              spacing={sm ? 2 : 1}
-            >
-              <TextField
-                variant="standard"
-                label="الأسم"
-                placeholder="الأسم"
-                sx={{ width: sm ? "100%" : "770px" }}
-                fullWidth={sm}
-                onChange={({ target: { value } }) =>
-                  handleControlUpdate("name", value)
-                }
-                value={controls.name}
-                error={Boolean(errors?.name)}
-                helperText={errors?.name}
-              />
-              <TextField
-                type="number"
-                variant="standard"
-                label="الهاتف"
-                placeholder="الهاتف"
-                sx={{
-                  width: sm ? "100%" : "770px",
-                  "& .MuiInputBase-root": {
-                    overflow: "hidden",
-                  },
-                  "& .MuiInputBase-input": {
-                    appearance: "textfield",
-                  },
-                  "& .MuiInputBase-input::-webkit-outer-spin-button, & .MuiInputBase-input::-webkit-inner-spin-button":
-                    {
-                      appearance: "none",
-                      margin: 0,
-                    },
-                }}
-                fullWidth={sm}
-                pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
-                autoComplete="off"
-                onChange={({ target: { value } }) =>
-                  handleControlUpdate("phone", value)
-                }
-                value={controls.phone}
-                inputProps={{ min: 0 }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start" sx={{ margin: 0 }}>
-                      <FormControl
-                        variant="standard"
-                        sx={{ width: "max-content" }}
-                      >
-                        <Select
-                          defaultValue={countries[0].code + countries[0].flag}
-                          sx={{
-                            "& .MuiSelect-standard": {
-                              display: "flex",
-                              alignItems: "center",
-                            },
-                          }}
-                          onChange={({ target: { value } }) =>
-                            handleControlUpdate("code", value)
-                          }
-                          value={controls.code}
-                        >
-                          {countries.map((item, index) => (
-                            <MenuItem key={index} value={item.code + item.flag}>
-                              <ListItemIcon
-                                sx={{
-                                  minWidth: "max-content",
-                                  marginRight: "5px",
-                                }}
-                              >
-                                {item.flag}
-                              </ListItemIcon>
-                              <ListItemText primary={item.code} />
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </InputAdornment>
-                  ),
-                }}
-                error={Boolean(errors?.phone)}
-                helperText={errors?.phone}
-              />
+        <form onSubmit={handleSubmit} autoComplete="off">
+          <Paper>
+            <Stack sx={{ padding: 2, bgcolor: "#f8f8f9" }}>
+              <Typography sx={{ fontWeight: "bold" }}>مرحبا بك!</Typography>
+              <Typography>
+                الرجاء ملئ المعلومات الآتية لاضافة عميل جديد
+              </Typography>
             </Stack>
-            <Stack
-              direction={sm ? "column" : "row"}
-              justifyContent="space-between"
-              spacing={sm ? 2 : 1}
-            >
-              <TextField
-                variant="standard"
-                label="الوظيفة"
-                select
-                sx={{ width: sm ? "100%" : "770px" }}
-                SelectProps={{
-                  displayEmpty: true,
-                  renderValue: (selected) => {
-                    if (!selected) {
-                      return (
-                        <Typography
-                          sx={{ color: "currentColor", opacity: "0.42" }}
-                        >
-                          الوظيفة
-                        </Typography>
-                      );
-                    } else {
-                      return selected;
-                    }
-                  },
-                  MenuProps: { PaperProps: { style: { maxHeight: "250px" } } },
-                  IconComponent: KeyboardArrowDownIcon,
-                }}
-                onChange={({ target: { value } }) => {
-                  handleControlUpdate("job", value);
-                }}
-                value={controls.job?.name}
-                error={Boolean(errors?.job)}
-                helperText={errors?.job}
+            <Divider orientation="horizontal" />
+            <Stack direction="column" spacing={sm ? 2 : 5} sx={{ padding: 2 }}>
+              <Stack
+                direction={sm ? "column" : "row"}
+                justifyContent="space-between"
+                spacing={sm ? 2 : 1}
               >
-                {jobs ? (
-                  jobs.map((job, index) => (
-                    <MenuItem
-                      value={{
-                        name: job?.title,
-                        id: job?.id,
-                      }}
-                      key={index}
-                    >
-                      {job.title}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <MenuItem disabled>empty</MenuItem>
-                )}
-              </TextField>
-              <TextField
-                variant="standard"
-                label="البريد الإلكتروني"
-                autoComplete="off"
-                placeholder="البريد الإلكتروني"
-                sx={{ width: sm ? "100%" : "770px" }}
-                fullWidth={sm}
-                onChange={({ target: { value } }) =>
-                  handleControlUpdate("email", value)
-                }
-                value={controls.email}
-                error={Boolean(errors?.email)}
-                helperText={errors?.email}
-              />
+                <TextField
+                  variant="standard"
+                  label="الأسم"
+                  placeholder="الأسم"
+                  sx={{ width: sm ? "100%" : "770px" }}
+                  fullWidth={sm}
+                  onChange={({ target: { value } }) =>
+                    setControl("name", value)
+                  }
+                  value={controls.name}
+                  error={Boolean(errors?.name)}
+                  helperText={errors?.name}
+                />
+                <TextField
+                  type="number"
+                  variant="standard"
+                  label="الهاتف"
+                  placeholder="الهاتف"
+                  sx={{
+                    width: sm ? "100%" : "770px",
+                    "& .MuiInputBase-root": {
+                      overflow: "hidden",
+                    },
+                    "& .MuiInputBase-input": {
+                      appearance: "textfield",
+                    },
+                    "& .MuiInputBase-input::-webkit-outer-spin-button, & .MuiInputBase-input::-webkit-inner-spin-button":
+                      {
+                        appearance: "none",
+                        margin: 0,
+                      },
+                  }}
+                  fullWidth={sm}
+                  pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
+                  onChange={({ target: { value } }) =>
+                    setControl("phone", value)
+                  }
+                  value={controls.phone}
+                  inputProps={{ min: 0 }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start" sx={{ margin: 0 }}>
+                        <FormControl
+                          variant="standard"
+                          sx={{ width: "max-content" }}
+                        >
+                          <Select
+                            defaultValue={countries[0].code + countries[0].flag}
+                            sx={{
+                              "& .MuiSelect-standard": {
+                                display: "flex",
+                                alignItems: "center",
+                              },
+                            }}
+                            onChange={({ target: { value } }) =>
+                              setControl("code", value)
+                            }
+                            value={controls.code}
+                          >
+                            {countries.map((item, index) => (
+                              <MenuItem
+                                key={index}
+                                value={item.code + item.flag}
+                              >
+                                <ListItemIcon
+                                  sx={{
+                                    minWidth: "max-content",
+                                    marginRight: "5px",
+                                  }}
+                                >
+                                  {item.flag}
+                                </ListItemIcon>
+                                <ListItemText primary={item.code} />
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </InputAdornment>
+                    ),
+                  }}
+                  error={Boolean(errors?.phone)}
+                  helperText={errors?.phone}
+                />
+              </Stack>
+              <Stack
+                direction={sm ? "column" : "row"}
+                justifyContent="space-between"
+                spacing={sm ? 2 : 1}
+              >
+                <TextField
+                  variant="standard"
+                  label="الوظيفة"
+                  select
+                  sx={{ width: sm ? "100%" : "770px" }}
+                  SelectProps={{
+                    displayEmpty: true,
+                    renderValue: (selected) => {
+                      if (!selected) {
+                        return (
+                          <Typography
+                            sx={{ color: "currentColor", opacity: "0.42" }}
+                          >
+                            الوظيفة
+                          </Typography>
+                        );
+                      } else {
+                        let displayedValue = jobs.filter(
+                          (job) => job.id === selected
+                        )[0].title;
+                        return displayedValue;
+                      }
+                    },
+                    MenuProps: {
+                      PaperProps: { style: { maxHeight: "250px" } },
+                    },
+                    IconComponent: KeyboardArrowDownIcon,
+                  }}
+                  onChange={({ target: { value } }) => {
+                    setControl("job", value);
+                  }}
+                  value={controls.job}
+                  error={Boolean(errors?.job)}
+                  helperText={errors?.job}
+                >
+                  {jobs ? (
+                    jobs.map((job, index) => (
+                      <MenuItem value={job.id} key={index}>
+                        {job.title}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <MenuItem disabled>empty</MenuItem>
+                  )}
+                </TextField>
+                <TextField
+                  variant="standard"
+                  label="البريد الإلكتروني"
+                  placeholder="البريد الإلكتروني"
+                  sx={{ width: sm ? "100%" : "770px" }}
+                  fullWidth={sm}
+                  onChange={({ target: { value } }) =>
+                    setControl("email", value)
+                  }
+                  value={controls.email}
+                  error={Boolean(errors?.email)}
+                  helperText={errors?.email}
+                />
+              </Stack>
+              <Stack
+                direction={sm ? "column" : "row"}
+                justifyContent="space-between"
+                spacing={sm ? 2 : 1}
+              >
+                <TextField
+                  variant="standard"
+                  type={visibilities.password ? "text" : "password"}
+                  autoComplete="new-password"
+                  label="الرقم السري"
+                  placeholder="الرقم السري"
+                  sx={{ width: sm ? "100%" : "770px" }}
+                  fullWidth={sm}
+                  onChange={({ target: { value } }) =>
+                    setControl("password", value)
+                  }
+                  value={controls.password}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end" sx={{ margin: 0 }}>
+                        <IconButton
+                          onClick={() => handleVisibilityToggle("password")}
+                        >
+                          {visibilities.password ? (
+                            <VisibilityIcon />
+                          ) : (
+                            <VisibilityOffIcon />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  error={Boolean(errors?.password)}
+                  helperText={errors?.password}
+                />
+                <TextField
+                  type={visibilities.confirm ? "text" : "password"}
+                  variant="standard"
+                  label="تأكيد الرقم السري"
+                  placeholder="تأكيد الرقم السري"
+                  sx={{ width: sm ? "100%" : "770px" }}
+                  fullWidth={sm}
+                  onChange={({ target: { value } }) =>
+                    setControl("confirm", value)
+                  }
+                  value={controls.confirm}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end" sx={{ margin: 0 }}>
+                        <IconButton
+                          onClick={() => handleVisibilityToggle("confirm")}
+                        >
+                          {visibilities.confirm ? (
+                            <VisibilityIcon />
+                          ) : (
+                            <VisibilityOffIcon />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  error={Boolean(errors?.confirm)}
+                  helperText={errors?.confirm}
+                />
+              </Stack>
             </Stack>
             <Stack
-              direction={sm ? "column" : "row"}
-              justifyContent="space-between"
-              spacing={sm ? 2 : 1}
+              direction="row"
+              justifyContent="center"
+              spacing={1}
+              sx={{ padding: 2, bgcolor: "#fffaf3" }}
             >
-              <TextField
-                variant="standard"
-                type={visibilities.password ? "text" : "password"}
-                label="الرقم السري"
-                placeholder="الرقم السري"
-                sx={{ width: sm ? "100%" : "770px" }}
-                fullWidth={sm}
-                onChange={({ target: { value } }) =>
-                  handleControlUpdate("password", value)
-                }
-                value={controls.password}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end" sx={{ margin: 0 }}>
-                      <IconButton
-                        onClick={() => handleVisibilityToggle("password")}
-                      >
-                        {visibilities.password ? (
-                          <VisibilityIcon />
-                        ) : (
-                          <VisibilityOffIcon />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                inputProps={{
-                  autoComplete: "new-password",
-                  form: {
-                    autoComplete: "off",
-                  },
-                }}
-                error={Boolean(errors?.password)}
-                helperText={errors?.password}
-              />
-              <TextField
-                type={visibilities.confirm ? "text" : "password"}
-                variant="standard"
-                label="تأكيد الرقم السري"
-                placeholder="تأكيد الرقم السري"
-                sx={{ width: sm ? "100%" : "770px" }}
-                fullWidth={sm}
-                onChange={({ target: { value } }) =>
-                  handleControlUpdate("confirm", value)
-                }
-                value={controls.confirm}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end" sx={{ margin: 0 }}>
-                      <IconButton
-                        onClick={() => handleVisibilityToggle("confirm")}
-                      >
-                        {visibilities.confirm ? (
-                          <VisibilityIcon />
-                        ) : (
-                          <VisibilityOffIcon />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                error={Boolean(errors?.confirm)}
-                helperText={errors?.confirm}
-              />
+              <Button
+                variant="contained"
+                type="submit"
+                color="primary"
+                disabled={isPending}
+              >
+                حفظ
+              </Button>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => resetControls()}
+              >
+                الغاء
+              </Button>
             </Stack>
-          </Stack>
-          <Stack
-            direction="row"
-            justifyContent="center"
-            spacing={1}
-            sx={{ padding: 2, bgcolor: "#fffaf3" }}
-          >
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
-              حفظ
-            </Button>
-            <Button variant="contained" color="error">
-              الغاء
-            </Button>
-          </Stack>
-        </Paper>
+          </Paper>
+        </form>
+        {successAlert}
+        {errorAlert}
       </Wrapper>
     </>
   );

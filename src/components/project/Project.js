@@ -48,7 +48,7 @@ export const ProjectSkeleton = () => {
   );
 };
 
-const Project = ({ picture, title, address, id }) => {
+const Project = ({ picture, title, address, comment, id }) => {
   const token = useSelector((state) => state.token.value);
   const domain = useSelector((state) => state.domain.value);
   const [isDeleted, setIsDeleted] = useState(false);
@@ -66,7 +66,7 @@ const Project = ({ picture, title, address, id }) => {
   };
 
   return (
-    <Collapse in={!isDeleted}>
+    <Collapse in={!isDeleted} unmountOnExit>
       <Card sx={{ maxWidth: 800, height: 110, display: "flex" }}>
         <CardMedia
           component="img"
@@ -92,15 +92,18 @@ const Project = ({ picture, title, address, id }) => {
             sx={{ height: "100%", maxWidth: "max-content" }}
           >
             <Typography
-              variant="body2"
+              variant="body1"
               color="primary"
               sx={{ fontWeight: "bold" }}
             >
               {title}
             </Typography>
-            <Typography variant="caption" color="primary">
+            <Typography variant="body2" color="primary">
               {address}
             </Typography>
+            {Boolean(comment) && (
+              <Typography variant="caption">تفاصيل: {comment}</Typography>
+            )}
           </Stack>
           <Stack
             direction="row-reverse"

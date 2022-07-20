@@ -42,12 +42,13 @@ const TotalCustomers = () => {
   const parseToProperData = (json) => {
     let parentArray = [];
     json.map((item, index) => {
-      console.log(item.bussiness.join(", "));
+      console.log(Boolean(item.bussiness.length));
       const customer = {
         name: item.user.first_name + " " + item.user.last_name,
         phone: item.user.phone,
-        project:
-          item.bussiness.length >= 0 ? item.bussiness.join(", ") : "لا يوجد",
+        project: Boolean(item.bussiness.length)
+          ? item.bussiness.join(", ")
+          : "لا يوجد",
         comment: "لايوجد",
         saler: item.agent,
         channel: item.channel,

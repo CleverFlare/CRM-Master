@@ -28,23 +28,23 @@ const AddJob = () => {
     resetControls();
   };
 
-  const [postRequest, errorAlert, successAlert] = usePost(
+  const [postRequest, errorAlert, successAlert, isPending] = usePost(
     "aqar/api/router/Job/",
     "وظيفة جديد تم إضافتها!",
     handleSuccess
   );
 
-  const validation = [
-    {
-      name: "name",
-      value: controls.name,
-      isRequired: true,
-    },
-  ];
-
-  const handleSubmit = () => {
-    validate(validation).then((output) => {
-      if (!output.ok) return setErrors(output.errors);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    validate([
+      {
+        name: "name",
+        value: controls.name,
+        isRequired: true,
+      },
+    ]).then((output) => {
+      setErrors(output.errors);
+      if (!output.ok) return;
       const requestBody = {
         title: controls.name,
         organization: 1,
@@ -55,44 +55,47 @@ const AddJob = () => {
   return (
     <Wrapper>
       <Parameter links={[{ text: "الموظفين" }, { text: "إضافة وظيفة" }]} />
-      <Stack
-        sx={{
-          maxWidth: "766px",
-        }}
-        justifyContent="center"
-        alignItems="center"
-        spacing={3}
-      >
-        <Paper
+      <form onSubmit={handleSubmit}>
+        <Stack
           sx={{
-            padding: sm ? 2 : 0,
-            width: "100%",
-            boxSizing: "border-box",
-            boxShadow: sm ? "inherit" : "none",
+            maxWidth: "766px",
           }}
+          justifyContent="center"
+          alignItems="center"
+          spacing={3}
         >
-          <TextField
-            variant="standard"
-            label="الوظيفة"
-            placeholder="الوظيفة"
+          <Paper
             sx={{
+              padding: sm ? 2 : 0,
               width: "100%",
-              maxWidth: 600,
+              boxSizing: "border-box",
+              boxShadow: sm ? "inherit" : "none",
             }}
-            error={Boolean(errors?.name)}
-            helperText={errors?.name}
-            value={controls.name}
-            onChange={(event) => setControl("name", event.target.value)}
-          />
-        </Paper>
-        <Button
-          variant="contained"
-          sx={{ maxWidth: 150, width: "100%", height: 45 }}
-          onClick={handleSubmit}
-        >
-          حفظ
-        </Button>
-      </Stack>
+          >
+            <TextField
+              variant="standard"
+              label="الوظيفة"
+              placeholder="الوظيفة"
+              sx={{
+                width: "100%",
+                maxWidth: 600,
+              }}
+              error={Boolean(errors?.name)}
+              helperText={errors?.name}
+              value={controls.name}
+              onChange={(event) => setControl("name", event.target.value)}
+            />
+          </Paper>
+          <Button
+            variant="contained"
+            type="submit"
+            sx={{ maxWidth: 150, width: "100%", height: 45 }}
+            disabled={isPending}
+          >
+            حفظ
+          </Button>
+        </Stack>
+      </form>
       {errorAlert}
       {successAlert}
     </Wrapper>
