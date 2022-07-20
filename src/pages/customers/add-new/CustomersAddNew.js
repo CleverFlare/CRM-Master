@@ -147,7 +147,7 @@ const CustomersAddNew = () => {
           last_name: controls.name.split(" ")[1],
           email: controls.email,
           phone: controls.phone,
-          permissions: [],
+          user_permissions: [],
         },
         organization: 1,
         bussiness: controls.projects,
@@ -415,15 +415,11 @@ const CustomersAddNew = () => {
                 helperText={errors?.saler}
               >
                 {employees ? (
-                  employees
-                    .filter((employee) => employee.job === "Agent")
-                    .map((employee, index) => (
-                      <MenuItem value={employee.id} key={index}>
-                        {employee.user.first_name +
-                          " " +
-                          employee.user.last_name}
-                      </MenuItem>
-                    ))
+                  employees.map((employee, index) => (
+                    <MenuItem value={employee.id} key={index}>
+                      {employee.user.first_name + " " + employee.user.last_name}
+                    </MenuItem>
+                  ))
                 ) : (
                   <MenuItem disabled>empty</MenuItem>
                 )}

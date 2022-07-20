@@ -56,6 +56,14 @@ const Login = () => {
         console.log(json);
         dispatch({ type: "token/set", payload: json.token });
         dispatch({ type: "id/set", payload: json.id });
+        dispatch({
+          type: "userInfo/set",
+          payload: {
+            name: json.username,
+            job: "مندوب مبيعات",
+            picture: "",
+          },
+        });
       })
       .catch((err) => {
         setControls({

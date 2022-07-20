@@ -11,9 +11,11 @@ import requestInfoSlice from "./store/requestInfoSlice";
 import statusSlice from "./store/statusSlice";
 import tokenSlice from "./store/tokenSlice";
 import userIdSlice from "./store/userIdSlice";
+import userInfoSlice from "./store/userInfoSlice";
 
 export default configureStore({
   reducer: {
+    userInfo: userInfoSlice,
     requestInfo: requestInfoSlice,
     token: tokenSlice,
     projects: projectsSlice,

@@ -27,7 +27,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Box } from "@mui/system";
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const SideBar = ({ width, name, role, permanent, open, onClose }) => {
   const [customers, setCustomers] = useState(false);
@@ -35,6 +35,7 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
   const [projects, setProjects] = useState(false);
   const [employees, setEmployees] = useState(false);
   const [settings, setSettings] = useState(false);
+  const userInfo = useSelector((state) => state.userInfo.value);
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
@@ -242,7 +243,7 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
             horizontal: "left",
           }}
         > */}
-        <Avatar sx={{ width: 60, height: 60 }} />
+        <Avatar sx={{ width: 60, height: 60 }} src={userInfo?.picture} />
         {/* </Badge> */}
         <Box
           sx={{
@@ -270,9 +271,9 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
                 sx={{ fontSize: "15px" }}
               />
             </IconButton> */}
-            <Typography>{name}</Typography>
+            <Typography>{userInfo?.name}</Typography>
           </Stack>
-          <Typography variant="caption">{role}</Typography>
+          <Typography variant="caption">{userInfo?.job}</Typography>
         </Box>
       </Box>
       <List>
