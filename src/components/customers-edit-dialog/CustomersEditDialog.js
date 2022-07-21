@@ -14,12 +14,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import axios from "axios";
 import usePatch from "../../hooks/usePatch";
 import { useSelector } from "react-redux";
 import useControls from "../../hooks/useControls";
+import useGet from "../../hooks/useGet";
+import { useDispatch } from "react-redux";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow direction="up" ref={ref} {...props} />;
@@ -33,6 +35,8 @@ const CustomersEditDialog = ({ isOpened, onClose, initials }) => {
     job: "",
     permissions: [],
   });
+  const dispatch = useDispatch();
+  const [jobsGetRequest, jobsGetRequestError] = useGet("aqar/api/router/Job/");
   const [patch, putSuccessAlert, putErrorAlert, isPending] = usePatch(
     "aqar/api/router/Employee/",
     "تم تعديل الموظف بنجاح!",
@@ -40,21 +44,36 @@ const CustomersEditDialog = ({ isOpened, onClose, initials }) => {
   );
   const sendData = () => {
     const requestBody = {
-      user: {},
+      user: {
+        user_permissions: [],
+      },
     };
-    console.log(controls.name.split(" ")[0]);
-    console.log(controls.name.split(" ")[1]);
-    Boolean(controls.name) &&
-      (requestBody.user.first_name = controls.name.split(" ")[0]);
-    Boolean(controls.name) &&
-      (requestBody.user.last_name = controls.name.split(" ")[1]);
+    if (Boolean(controls.name)) {
+      requestBody.user.first_name = controls.name.split(" ")[0];
+      requestBody.user.last_name = controls.name.split(" ")[1]
+        ? controls.name.split(" ")[1]
+        : "";
+    }
     Boolean(controls.email) && (requestBody.user.email = controls.email);
     Boolean(controls.job) && (requestBody.job = controls.job);
-    console.log(requestBody.user.first_name);
-    patch(requestBody, true, "jobs", initials.id + "/").then(() => {
+    patch(
+      requestBody,
+      true,
+      [
+        { name: "employees", path: "aqar/api/router/Employee/" },
+        { name: "allCustomers", path: "aqar/api/router/Client/" },
+      ],
+      initials.id + "/"
+    ).then(() => {
       resetControls();
     });
   };
+  useEffect(() => {
+    if (Boolean(jobs?.length)) return;
+    jobsGetRequest().then((res) => {
+      dispatch({ type: "jobs/set", payload: res });
+    });
+  }, []);
   return (
     <Dialog
       open={isOpened}
@@ -160,9 +179,12 @@ const CustomersEditDialog = ({ isOpened, onClose, initials }) => {
               value={controls.job}
               onChange={(e) => setControl("job", e.target.value)}
             >
-              {jobs.map((item) => {
-                console.log(item);
-                return <MenuItem value={item.id}>{item.title}</MenuItem>;
+              {jobs.map((item, index) => {
+                return (
+                  <MenuItem value={item.id} key={index}>
+                    {item.title}
+                  </MenuItem>
+                );
               })}
             </TextField>
           </Grid>

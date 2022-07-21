@@ -164,10 +164,10 @@ const EmployeesData = () => {
     let newArray = [];
     array.map((item) => {
       const employee = {
-        name: item.user.first_name + " " + item.user.last_name,
-        email: item.user.email,
-        job: item.job,
-        id: item.id,
+        name: item.user?.first_name + " " + item.user?.last_name,
+        email: item.user?.email,
+        job: item?.job,
+        id: item?.id,
       };
       newArray.push(employee);
     });
