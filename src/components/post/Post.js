@@ -165,6 +165,7 @@ const EditPostDialog = ({ open, onClose, id, init, originalContentSetter }) => {
 };
 
 const Post = ({ name, picture, date, children, id, imgs = null }) => {
+  const permissions = useSelector((state) => state.permissions.value);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [isDeleted, setIsDeleted] = useState(false);
@@ -243,28 +244,32 @@ const Post = ({ name, picture, date, children, id, imgs = null }) => {
                   horizontal: "left",
                 }}
               >
-                <MenuItem
-                  onClick={() => {
-                    handleCloseMenu();
-                    setOpenEdit(true);
-                  }}
-                >
-                  <ListItemIcon>
-                    <EditIcon />
-                  </ListItemIcon>
-                  <ListItemText>تعديل المنشور</ListItemText>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    handleCloseMenu();
-                    handleDeletion();
-                  }}
-                >
-                  <ListItemIcon>
-                    <DeleteIcon />
-                  </ListItemIcon>
-                  <ListItemText>نقل إلى سلة المهملات</ListItemText>
-                </MenuItem>
+                {permissions.includes("change_aqarpost") && (
+                  <MenuItem
+                    onClick={() => {
+                      handleCloseMenu();
+                      setOpenEdit(true);
+                    }}
+                  >
+                    <ListItemIcon>
+                      <EditIcon />
+                    </ListItemIcon>
+                    <ListItemText>تعديل المنشور</ListItemText>
+                  </MenuItem>
+                )}
+                {permissions.includes("delete_aqarpost") && (
+                  <MenuItem
+                    onClick={() => {
+                      handleCloseMenu();
+                      handleDeletion();
+                    }}
+                  >
+                    <ListItemIcon>
+                      <DeleteIcon />
+                    </ListItemIcon>
+                    <ListItemText>نقل إلى سلة المهملات</ListItemText>
+                  </MenuItem>
+                )}
                 <MenuItem onClick={handleCloseMenu}>
                   <ListItemIcon>
                     <NotificationsOffIcon />

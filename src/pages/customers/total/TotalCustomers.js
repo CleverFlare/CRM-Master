@@ -34,6 +34,7 @@ const dummyColumns = [
 ];
 
 const TotalCustomers = () => {
+  const permissions = useSelector((state) => state.permissions.value);
   const [customersGetRequest, customersGetRequestError] = useGet(
     "aqar/api/router/Client/"
   );
@@ -103,7 +104,9 @@ const TotalCustomers = () => {
           }}
           columns={dummyColumns}
           maxRowsPerPage={8}
-          onDelete={handleDelete}
+          onDelete={
+            permissions.includes("delete_aqarclient") ? handleDelete : null
+          }
         />
         {successAlert}
         {errorAlert}

@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const Home = () => {
+  const permissions = useSelector((state) => state.permissions.value);
   const postsStore = useSelector((state) => state.posts.value);
   const domain = useSelector((state) => state.domain.value);
   const dispatch = useDispatch();
@@ -52,40 +53,50 @@ const Home = () => {
             },
           ]}
         />
-        <Publisher name="أحمد محمد" dataSetter={setPosts} />
-        <Typography
-          variant="h6"
-          color="primary"
-          sx={{ padding: "30px 0", fontWeight: "bold" }}
-        >
-          احدث المنشورات
-        </Typography>
-        <Stack spacing={2} sx={{ paddingBottom: "30px" }}>
-          {isPending &&
-            skeletonNumber.map((skeleton, index) => (
-              <PostSkeleton key={index} />
-            ))}
-          {posts &&
-            posts.map((post, index) => (
-              <Post
-                name={post.user}
-                key={post.id}
-                date={post.created_at}
-                id={post.id}
-                imgs={post.medias}
-              >
-                {post.content}
-              </Post>
-            ))}
-          {!isPending && !posts.length && (
+        {permissions.includes("add_aqarpost") && (
+          <Publisher name="أحمد محمد" dataSetter={setPosts} />
+        )}
+        {permissions.includes("view_aqarpost") && (
+          <>
             <Typography
-              variant="h5"
-              sx={{ color: "gray", fontWeight: "bold", pointerEvents: "none" }}
+              variant="h6"
+              color="primary"
+              sx={{ padding: "30px 0", fontWeight: "bold" }}
             >
-              لا يوجد منشورات
+              احدث المنشورات
             </Typography>
-          )}
-        </Stack>
+            <Stack spacing={2} sx={{ paddingBottom: "30px" }}>
+              {isPending &&
+                skeletonNumber.map((skeleton, index) => (
+                  <PostSkeleton key={index} />
+                ))}
+              {posts &&
+                posts.map((post, index) => (
+                  <Post
+                    name={post.user}
+                    key={post.id}
+                    date={post.created_at}
+                    id={post.id}
+                    imgs={post.medias}
+                  >
+                    {post.content}
+                  </Post>
+                ))}
+              {!isPending && !posts.length && (
+                <Typography
+                  variant="h5"
+                  sx={{
+                    color: "gray",
+                    fontWeight: "bold",
+                    pointerEvents: "none",
+                  }}
+                >
+                  لا يوجد منشورات
+                </Typography>
+              )}
+            </Stack>
+          </>
+        )}
       </Wrapper>
     </div>
   );

@@ -23,9 +23,24 @@ import Jobs from "./pages/employees/jobs/Jobs";
 import AddStatus from "./pages/customers/add-status/AddStatus";
 import Statuses from "./pages/customers/statuses/Statuses";
 import DisplayChannels from "./pages/channels/display/DisplayChannels";
+import useGet from "./hooks/useGet";
 
 function App() {
+  const permissions = useSelector((state) => state.permissions.value);
   const token = useSelector((state) => state.token.value);
+  const dispatch = useDispatch();
+  const [userInfoGetRequest, userInfoGetRequestError] = useGet(
+    "aqar/api/router/UserInfo/"
+  );
+
+  useEffect(() => {
+    userInfoGetRequest().then((res) => {
+      dispatch({
+        type: "permissions",
+        payload: res.user_permissions.filter((item) => item.codename),
+      });
+    });
+  }, []);
   return (
     <div className="App">
       <Router>
@@ -37,27 +52,61 @@ function App() {
                 path="/customers/statistics"
                 element={<CustomersStatistics />}
               />
-              <Route path="/customers/total" element={<TotalCustomers />} />
-              <Route path="/customers/deleted" element={<CustomersDeleted />} />
-              <Route path="/customers/new" element={<CustomersNew />} />
+              {permissions.includes("view_aqarclient") && (
+                <Route path="/customers/total" element={<TotalCustomers />} />
+              )}
+              {permissions.includes("view_aqarclient") && (
+                <Route
+                  path="/customers/deleted"
+                  element={<CustomersDeleted />}
+                />
+              )}
+              {permissions.includes("view_aqarclient") && (
+                <Route path="/customers/new" element={<CustomersNew />} />
+              )}
               <Route path="/customers/import" element={<CustomersImport />} />
               <Route path="/customers/export" element={<CustomersExport />} />
-              <Route path="/projects/display" element={<ProjectsDisplay />} />
-              <Route path="/customers/add-new" element={<CustomersAddNew />} />
-              <Route path="/customers/add-status" element={<AddStatus />} />
-              <Route path="/customers/statuses" element={<Statuses />} />
-              <Route path="/projects/new" element={<ProjectsAddNew />} />
+              {permissions.includes("view_aqarproject") && (
+                <Route path="/projects/display" element={<ProjectsDisplay />} />
+              )}
+              {permissions.includes("add_aqarclient") && (
+                <Route
+                  path="/customers/add-new"
+                  element={<CustomersAddNew />}
+                />
+              )}
+              {permissions.includes("add_aqarevent") && (
+                <Route path="/customers/add-status" element={<AddStatus />} />
+              )}
+              {permissions.includes("view_aqarevent") && (
+                <Route path="/customers/statuses" element={<Statuses />} />
+              )}
+              {permissions.includes("add_aqarproject") && (
+                <Route path="/projects/new" element={<ProjectsAddNew />} />
+              )}
               <Route path="/reports" element={<Reports />} />
               <Route
                 path="/settings/change-password"
                 element={<ChangePassword />}
               />
-              <Route path="/channels/add-new" element={<AddChannel />} />
-              <Route path="/channels/display" element={<DisplayChannels />} />
-              <Route path="/employees/new" element={<EmployeesAddNew />} />
-              <Route path="/employees/data" element={<EmployeesData />} />
-              <Route path="/employees/add-job" element={<AddJob />} />
-              <Route path="/employees/jobs" element={<Jobs />} />
+              {permissions.includes("add_aqarchannel") && (
+                <Route path="/channels/add-new" element={<AddChannel />} />
+              )}
+              {permissions.includes("view_aqarchannel") && (
+                <Route path="/channels/display" element={<DisplayChannels />} />
+              )}
+              {permissions.includes("add_aqaremployee") && (
+                <Route path="/employees/new" element={<EmployeesAddNew />} />
+              )}
+              {permissions.includes("view_aqaremployee") && (
+                <Route path="/employees/data" element={<EmployeesData />} />
+              )}
+              {permissions.includes("add_aqarjob") && (
+                <Route path="/employees/add-job" element={<AddJob />} />
+              )}
+              {permissions.includes("view_aqarjob") && (
+                <Route path="/employees/jobs" element={<Jobs />} />
+              )}
             </Routes>
           </Layout>
         )}

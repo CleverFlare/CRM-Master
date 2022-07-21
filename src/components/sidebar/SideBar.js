@@ -30,6 +30,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 const SideBar = ({ width, name, role, permanent, open, onClose }) => {
+  const permissions = useSelector((state) => state.permissions.value);
   const [customers, setCustomers] = useState(false);
   const [channels, setChannels] = useState(false);
   const [projects, setProjects] = useState(false);
@@ -62,38 +63,47 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
         {
           text: "احصائيات العملاء",
           path: "/customers/statistics",
+          disabled: false,
         },
         {
           text: "جميع العملاء",
           path: "/customers/total",
+          disabled: !permissions.includes("view_aqarclient"),
         },
         {
           text: "العملاء الجدد",
           path: "/customers/new",
+          disabled: !permissions.includes("view_aqarclient"),
         },
         {
           text: "العملاء المحذوفة",
           path: "/customers/deleted",
+          disabled: !permissions.includes("view_aqarclient"),
         },
         {
           text: "إضافة عميل جديد",
           path: "/customers/add-new",
+          disabled: !permissions.includes("add_aqarclient"),
         },
         {
           text: "إضافة حالة عميل",
           path: "/customers/add-status",
+          disabled: !permissions.includes("add_aqarevent"),
         },
         {
           text: "حالات العميل",
           path: "/customers/statuses",
+          disabled: !permissions.includes("view_aqarevent"),
         },
         {
           text: "إستيراد عملاء",
           path: "/customers/import",
+          disabled: false,
         },
         {
           text: "تصدير عملاء",
           path: "/customers/export",
+          disabled: false,
         },
       ],
     },
@@ -107,10 +117,12 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
         {
           text: "عرض المشاريع",
           path: "/projects/display",
+          disabled: !permissions.includes("view_aqarproject"),
         },
         {
           text: "إضافة مشروع جديد",
           path: "/projects/new",
+          disabled: !permissions.includes("add_aqarproject"),
         },
       ],
     },
@@ -130,18 +142,22 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
         {
           text: "إضافة موظف جديد",
           path: "/employees/new",
+          disabled: !permissions.includes("add_aqaremployee"),
         },
         {
           text: "بيانات الموظفين",
           path: "/employees/data",
+          disabled: !permissions.includes("view_aqaremployee"),
         },
         {
           text: "إضافة وظيفة",
           path: "/employees/add-job",
+          disabled: !permissions.includes("add_aqarjob"),
         },
         {
           text: "الوظائف",
           path: "/employees/jobs",
+          disabled: !permissions.includes("view_aqarjob"),
         },
       ],
     },
@@ -155,10 +171,12 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
         {
           text: "إضافة قناة",
           path: "/channels/add-new",
+          disabled: !permissions.includes("add_aqarchannel"),
         },
         {
           text: "عرض القنوات",
           path: "/channels/display",
+          disabled: !permissions.includes("view_aqarchannel"),
         },
       ],
     },
@@ -173,6 +191,7 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
         {
           text: "تعديل كلمة السر",
           path: "/settings/change-password",
+          disabled: false,
         },
       ],
     },
@@ -322,6 +341,11 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
                 </ListItemButton>
               );
             case "parent":
+              if (
+                item.children.filter((child) => child.disabled === false)
+                  .length <= 0
+              )
+                return;
               return (
                 <React.Fragment key={index}>
                   <ListItemButton
@@ -337,46 +361,49 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
                   </ListItemButton>
 
                   <Collapse in={item.expander} timeout="auto" unmountOnExit>
-                    {item.children.map((child, index) => (
-                      <ListItemButton
-                        key={index}
-                        sx={{
-                          pl: 7,
-                          bgcolor:
-                            location.pathname === child.path
-                              ? "#f4f4f4"
-                              : "initial",
-                          "& *": {
-                            color:
-                              location.pathname === child.path
-                                ? "primary.main"
-                                : "white",
-                          },
-                          "&:hover": {
+                    {item.children.map((child, index) => {
+                      if (child.disabled) return;
+                      return (
+                        <ListItemButton
+                          key={index}
+                          sx={{
+                            pl: 7,
                             bgcolor:
                               location.pathname === child.path
                                 ? "#f4f4f4"
                                 : "initial",
-                          },
-                          "&:hover *": {
-                            color:
-                              location.pathname === child.path
-                                ? "primary.main"
-                                : "white",
-                          },
-                        }}
-                        onClick={() => navigate(child.path)}
-                      >
-                        <ListItemText
-                          primary={child.text}
-                          sx={{
-                            "& .MuiListItemText-primary": {
-                              fontSize: ".80rem",
+                            "& *": {
+                              color:
+                                location.pathname === child.path
+                                  ? "primary.main"
+                                  : "white",
+                            },
+                            "&:hover": {
+                              bgcolor:
+                                location.pathname === child.path
+                                  ? "#f4f4f4"
+                                  : "initial",
+                            },
+                            "&:hover *": {
+                              color:
+                                location.pathname === child.path
+                                  ? "primary.main"
+                                  : "white",
                             },
                           }}
-                        />
-                      </ListItemButton>
-                    ))}
+                          onClick={() => navigate(child.path)}
+                        >
+                          <ListItemText
+                            primary={child.text}
+                            sx={{
+                              "& .MuiListItemText-primary": {
+                                fontSize: ".80rem",
+                              },
+                            }}
+                          />
+                        </ListItemButton>
+                      );
+                    })}
                   </Collapse>
                 </React.Fragment>
               );

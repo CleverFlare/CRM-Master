@@ -14,6 +14,7 @@ import { useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useDispatch, useSelector } from "react-redux";
+import useGet from "../../hooks/useGet";
 
 const Login = () => {
   const sm = useMediaQuery(`(max-width: 740px)`);
@@ -56,14 +57,6 @@ const Login = () => {
         console.log(json);
         dispatch({ type: "token/set", payload: json.token });
         dispatch({ type: "id/set", payload: json.id });
-        dispatch({
-          type: "userInfo/set",
-          payload: {
-            name: json.username,
-            job: "مندوب مبيعات",
-            picture: "",
-          },
-        });
       })
       .catch((err) => {
         setControls({

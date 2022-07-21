@@ -28,6 +28,10 @@ const dummyColumns = [
     field: "job",
     headerName: "الوظيفة",
   },
+  {
+    field: "username",
+    headerName: "اسم المستخدم",
+  },
   // {
   //   field: "edit",
   //   headerName: "تعديل",
@@ -143,6 +147,7 @@ const dummyRows = [
 ];
 
 const EmployeesData = () => {
+  const permissions = useSelector((state) => state.permissions.value);
   const employees = useSelector((state) => state.employees.value);
   const [isEditedOpened, setIsEditOpened] = useState(false);
   const [editInitials, setEditInitials] = useState({
@@ -164,6 +169,7 @@ const EmployeesData = () => {
     let newArray = [];
     array.map((item) => {
       const employee = {
+        username: item?.user?.username,
         name: item.user?.first_name + " " + item.user?.last_name,
         email: item.user?.email,
         job: item?.job,
@@ -172,6 +178,7 @@ const EmployeesData = () => {
       newArray.push(employee);
     });
     return newArray;
+    console.log("");
   };
 
   useEffect(() => {
@@ -194,22 +201,32 @@ const EmployeesData = () => {
           columns={dummyColumns}
           nameWithSearch
           maxRowsPerPage={10}
-          onEdit={(e, rowData) => {
-            setIsEditOpened(true);
-            setEditInitials({
-              name: rowData.name,
-              job: rowData.job,
-              email: rowData.email,
-              id: rowData.id,
-            });
-          }}
-          onDelete={handleDelete}
-          onChangePassword={(e, rowData) => {
-            setEditInitials({
-              id: rowData.id,
-            });
-            setIsEditPassOpened(true);
-          }}
+          onEdit={
+            permissions.includes("change_aqaremployee")
+              ? (e, rowData) => {
+                  setIsEditOpened(true);
+                  setEditInitials({
+                    name: rowData.name,
+                    job: rowData.job,
+                    email: rowData.email,
+                    id: rowData.id,
+                  });
+                }
+              : null
+          }
+          onDelete={
+            permissions.includes("delete_aqaremployee") ? handleDelete : null
+          }
+          onChangePassword={
+            permissions.includes("change_aqaremployee")
+              ? (e, rowData) => {
+                  setEditInitials({
+                    id: rowData.id,
+                  });
+                  setIsEditPassOpened(true);
+                }
+              : null
+          }
           onBlock={() => {
             console.log("block");
           }}

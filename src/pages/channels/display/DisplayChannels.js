@@ -37,6 +37,7 @@ const dummyRows = [
 ];
 
 const DisplayChannels = () => {
+  const permissions = useSelector((state) => state.permissions.value);
   const parseToProperData = (json) => {
     let parentArray = [];
     json.map((item) => {
@@ -91,7 +92,9 @@ const DisplayChannels = () => {
         columns={dummyColumns}
         nameWithSearch
         maxRowsPerPage={8}
-        onDelete={handleDelete}
+        onDelete={
+          permissions.includes("delete_aqarchannel") ? handleDelete : null
+        }
       />
       {successAlert}
       {errorAlert}

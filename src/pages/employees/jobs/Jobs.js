@@ -31,6 +31,7 @@ const dummyRows = [
 ];
 
 const Jobs = () => {
+  const permissions = useSelector((state) => state.permissions.value);
   const jobs = useSelector((state) => state.jobs.value);
   const [jobsGetRequest, jobsGetRequestError] = useGet("aqar/api/router/Job/");
   const [deleteRequest, successAlert, errorAlert] = useDelete(
@@ -71,7 +72,9 @@ const Jobs = () => {
           columns={dummyColumns}
           nameWithSearch
           maxRowsPerPage={8}
-          onDelete={handleDelete}
+          onDelete={
+            permissions.includes("delete_aqarjob") ? handleDelete : null
+          }
         />
         {successAlert}
         {errorAlert}
