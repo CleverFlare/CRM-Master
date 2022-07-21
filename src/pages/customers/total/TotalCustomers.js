@@ -98,6 +98,9 @@ const TotalCustomers = () => {
           rows={
             Boolean(allCustomers.length) ? parseToProperData(allCustomers) : []
           }
+          onClick={(e, rowData) => {
+            console.log(rowData);
+          }}
           columns={dummyColumns}
           maxRowsPerPage={8}
           onDelete={handleDelete}

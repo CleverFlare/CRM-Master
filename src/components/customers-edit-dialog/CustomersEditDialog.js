@@ -16,12 +16,45 @@ import {
 } from "@mui/material";
 import React from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import axios from "axios";
+import usePatch from "../../hooks/usePatch";
+import { useSelector } from "react-redux";
+import useControls from "../../hooks/useControls";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow direction="up" ref={ref} {...props} />;
 });
 
 const CustomersEditDialog = ({ isOpened, onClose, initials }) => {
+  const jobs = useSelector((state) => state.jobs.value);
+  const [controls, setControl, resetControls] = useControls({
+    name: "",
+    email: "",
+    job: "",
+    permissions: [],
+  });
+  const [patch, putSuccessAlert, putErrorAlert, isPending] = usePatch(
+    "aqar/api/router/Employee/",
+    "تم تعديل الموظف بنجاح!",
+    onClose
+  );
+  const sendData = () => {
+    const requestBody = {
+      user: {},
+    };
+    console.log(controls.name.split(" ")[0]);
+    console.log(controls.name.split(" ")[1]);
+    Boolean(controls.name) &&
+      (requestBody.user.first_name = controls.name.split(" ")[0]);
+    Boolean(controls.name) &&
+      (requestBody.user.last_name = controls.name.split(" ")[1]);
+    Boolean(controls.email) && (requestBody.user.email = controls.email);
+    Boolean(controls.job) && (requestBody.job = controls.job);
+    console.log(requestBody.user.first_name);
+    patch(requestBody, true, "jobs", initials.id + "/").then(() => {
+      resetControls();
+    });
+  };
   return (
     <Dialog
       open={isOpened}
@@ -66,6 +99,8 @@ const CustomersEditDialog = ({ isOpened, onClose, initials }) => {
                 },
               }}
               placeholder={initials.name}
+              value={controls.name}
+              onChange={(e) => setControl("name", e.target.value)}
             />
           </Grid>
           <Grid item xs={2}>
@@ -83,14 +118,17 @@ const CustomersEditDialog = ({ isOpened, onClose, initials }) => {
                 },
               }}
               placeholder={initials.email}
+              value={controls.email}
+              onChange={(e) => setControl("email", e.target.value)}
             />
           </Grid>
           <Grid item xs={2}>
             الوظيفة*
           </Grid>
           <Grid item xs={10}>
-            <FormControl
+            <TextField
               variant="standard"
+              select
               sx={{
                 maxWidth: 500,
                 width: "100%",
@@ -99,12 +137,9 @@ const CustomersEditDialog = ({ isOpened, onClose, initials }) => {
                   overflow: "hidden",
                 },
               }}
-            >
-              <Select
-                MenuProps={{ PaperProps: { style: { maxHeight: "250px" } } }}
-                IconComponent={KeyboardArrowDownIcon}
-                displayEmpty
-                renderValue={(selected) => {
+              SelectProps={{
+                displayEmpty: true,
+                renderValue: (selected) => {
                   if (!selected) {
                     return (
                       <Typography
@@ -114,16 +149,24 @@ const CustomersEditDialog = ({ isOpened, onClose, initials }) => {
                       </Typography>
                     );
                   } else {
-                    console.log(selected.length);
-                    return selected.replace(/\d/gi, "");
+                    return jobs.filter((item) => item.id === selected)[0].title;
                   }
-                }}
-              >
-                <MenuItem value="مندوب مبيعات">مندوب مبيعات</MenuItem>
-              </Select>
-            </FormControl>
+                },
+                MenuProps: {
+                  PaperProps: { style: { maxHeight: "250px" } },
+                },
+                IconComponent: KeyboardArrowDownIcon,
+              }}
+              value={controls.job}
+              onChange={(e) => setControl("job", e.target.value)}
+            >
+              {jobs.map((item) => {
+                console.log(item);
+                return <MenuItem value={item.id}>{item.title}</MenuItem>;
+              })}
+            </TextField>
           </Grid>
-          <Grid item xs={2}>
+          {/* <Grid item xs={2}>
             التابع له*
           </Grid>
           <Grid item xs={10}>
@@ -160,8 +203,8 @@ const CustomersEditDialog = ({ isOpened, onClose, initials }) => {
                 <MenuItem value="محمد علي">محمد علي</MenuItem>
               </Select>
             </FormControl>
-          </Grid>
-          <Grid item xs={2}>
+          </Grid> */}
+          {/* <Grid item xs={2}>
             قوائم الإنتظار*
           </Grid>
           <Grid item xs={10}>
@@ -196,11 +239,35 @@ const CustomersEditDialog = ({ isOpened, onClose, initials }) => {
                 }}
               ></Select>
             </FormControl>
+          </Grid> */}
+        </Grid>
+      </DialogContent>
+      <Divider variant="middle" sx={{ borderColor: "rgb(255 255 255 / 8%)" }} />
+      <DialogTitle>صلاحيات الموظفين</DialogTitle>
+      <DialogContent>
+        <Grid container spacing={2} columnSpacing={13}>
+          <Grid
+            item
+            xs={12}
+            sm={4}
+            sx={{ display: "flex", justifyContent: "space-between" }}
+          >
+            إضافة موظف
+            <Switch defaultChecked />
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            sm={4}
+            sx={{ display: "flex", justifyContent: "space-between" }}
+          >
+            حذف موظف
+            <Switch defaultChecked />
           </Grid>
         </Grid>
       </DialogContent>
       <Divider variant="middle" sx={{ borderColor: "rgb(255 255 255 / 8%)" }} />
-      <DialogTitle>العملاء</DialogTitle>
+      <DialogTitle>صلاحيات العملاء</DialogTitle>
       <DialogContent>
         <Grid container spacing={2} columnSpacing={13}>
           <Grid
@@ -218,7 +285,7 @@ const CustomersEditDialog = ({ isOpened, onClose, initials }) => {
             sm={4}
             sx={{ display: "flex", justifyContent: "space-between" }}
           >
-            عميل الإستيراد
+            حذف عميل
             <Switch defaultChecked />
           </Grid>
           <Grid
@@ -227,7 +294,7 @@ const CustomersEditDialog = ({ isOpened, onClose, initials }) => {
             sm={4}
             sx={{ display: "flex", justifyContent: "space-between" }}
           >
-            مدخلات العميل
+            تعديل عميل
             <Switch defaultChecked />
           </Grid>
           <Grid
@@ -236,7 +303,7 @@ const CustomersEditDialog = ({ isOpened, onClose, initials }) => {
             sm={4}
             sx={{ display: "flex", justifyContent: "space-between" }}
           >
-            اظهر مدخلات البيانات
+            إضافة حالة عميل
             <Switch defaultChecked />
           </Grid>
           <Grid
@@ -245,7 +312,7 @@ const CustomersEditDialog = ({ isOpened, onClose, initials }) => {
             sm={4}
             sx={{ display: "flex", justifyContent: "space-between" }}
           >
-            إلغاء تعديل صفحة العميل
+            حذف حالة عميل
             <Switch defaultChecked />
           </Grid>
           <Grid
@@ -254,22 +321,13 @@ const CustomersEditDialog = ({ isOpened, onClose, initials }) => {
             sm={4}
             sx={{ display: "flex", justifyContent: "space-between" }}
           >
-            تعديل الهاتف
-            <Switch defaultChecked />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            تقود الجيل
+            تعديل حالة عميل
             <Switch defaultChecked />
           </Grid>
         </Grid>
       </DialogContent>
       <Divider variant="middle" sx={{ borderColor: "rgb(255 255 255 / 8%)" }} />
-      <DialogTitle>الصفقات</DialogTitle>
+      <DialogTitle>صلاحيات القنوات</DialogTitle>
       <DialogContent>
         <Grid container spacing={2} columnSpacing={13}>
           <Grid
@@ -278,7 +336,7 @@ const CustomersEditDialog = ({ isOpened, onClose, initials }) => {
             sm={4}
             sx={{ display: "flex", justifyContent: "space-between" }}
           >
-            الصفقات
+            إضضافة قناة
             <Switch defaultChecked />
           </Grid>
           <Grid
@@ -287,22 +345,7 @@ const CustomersEditDialog = ({ isOpened, onClose, initials }) => {
             sm={4}
             sx={{ display: "flex", justifyContent: "space-between" }}
           >
-            طلب صفقة
-            <Switch defaultChecked />
-          </Grid>
-        </Grid>
-      </DialogContent>
-      <Divider variant="middle" sx={{ borderColor: "rgb(255 255 255 / 8%)" }} />
-      <DialogTitle>الملاك</DialogTitle>
-      <DialogContent>
-        <Grid container spacing={2} columnSpacing={13}>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            المالك
+            حذف قناة
             <Switch defaultChecked />
           </Grid>
           <Grid
@@ -311,207 +354,7 @@ const CustomersEditDialog = ({ isOpened, onClose, initials }) => {
             sm={4}
             sx={{ display: "flex", justifyContent: "space-between" }}
           >
-            جميع الملاك
-            <Switch defaultChecked />
-          </Grid>
-        </Grid>
-      </DialogContent>
-      <Divider variant="middle" sx={{ borderColor: "rgb(255 255 255 / 8%)" }} />
-      <DialogTitle>التقارير</DialogTitle>
-      <DialogContent>
-        <Grid container spacing={2} columnSpacing={13}>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            تقرير المبيعات
-            <Switch defaultChecked />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            استدعاء التقرير
-            <Switch defaultChecked />
-          </Grid>
-        </Grid>
-      </DialogContent>
-      <Divider variant="middle" sx={{ borderColor: "rgb(255 255 255 / 8%)" }} />
-      <DialogTitle>الوحدة</DialogTitle>
-      <DialogContent>
-        <Grid container spacing={2} columnSpacing={13}>
-          <Grid
-            item
-            xs={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            إضافة وحدة
-            <Switch defaultChecked />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            تصدير وحدة
-            <Switch defaultChecked />
-          </Grid>
-        </Grid>
-      </DialogContent>
-      <Divider variant="middle" sx={{ borderColor: "rgb(255 255 255 / 8%)" }} />
-      <DialogTitle>أخرى</DialogTitle>
-      <DialogContent>
-        <Grid container spacing={2} columnSpacing={13}>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            مشاريعي
-            <Switch defaultChecked />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            اضف إجراء على الأعضاء
-            <Switch defaultChecked />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            السماح بنسخ النص
-            <Switch defaultChecked />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            ملاحظات المبيعات
-            <Switch defaultChecked />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            طلب الحجز
-            <Switch defaultChecked />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            مخطط افضل بائع
-            <Switch defaultChecked />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            مخطط افضل عمل
-            <Switch defaultChecked />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            شركة مطورة
-            <Switch defaultChecked />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            تعليقات الجودة
-            <Switch defaultChecked />
-          </Grid>
-        </Grid>
-      </DialogContent>
-      <Divider variant="middle" sx={{ borderColor: "rgb(255 255 255 / 8%)" }} />
-      <DialogTitle>وحدات التحكم</DialogTitle>
-      <DialogContent>
-        <Grid container spacing={2} columnSpacing={13}>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            تعيين
-            <Switch defaultChecked />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            تصدير
-            <Switch defaultChecked />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            رسالة نصية
-            <Switch defaultChecked />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            البريد الإلكتروني
-            <Switch defaultChecked />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            استيراد
-            <Switch defaultChecked />
-          </Grid>
-        </Grid>
-      </DialogContent>
-      <Divider variant="middle" sx={{ borderColor: "rgb(255 255 255 / 8%)" }} />
-      <DialogTitle>الحساب</DialogTitle>
-      <DialogContent>
-        <Grid container spacing={2} columnSpacing={13}>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            sx={{ display: "flex", justifyContent: "space-between" }}
-          >
-            نشط
+            تعديل قناة
             <Switch defaultChecked />
           </Grid>
         </Grid>
@@ -534,6 +377,7 @@ const CustomersEditDialog = ({ isOpened, onClose, initials }) => {
                 color: "#fff",
               },
             }}
+            onClick={sendData}
           >
             حفظ
           </Button>

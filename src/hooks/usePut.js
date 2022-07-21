@@ -4,9 +4,9 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import useGet from "./useGet";
 
-const usePatch = (
+const usePut = (
   path,
-  successMessage = "تم الإرسال بنجاح!",
+  successMessage = "تم التعديل بنجاح!!",
   onSuccess = () => {}
 ) => {
   const dispatch = useDispatch();
@@ -19,15 +19,14 @@ const usePatch = (
       requestInfo.value.domain +
       "." +
       requestInfo.value.topLevelDomain +
-      "/" +
-      path
+      "/"
   );
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const [syncDataRequest, syncDataRequestError] = useGet(path);
 
-  const request = async (requestBody, json = true, requestName) => {
+  const request = async (requestBody, json = true, requestName, id = null) => {
     setIsPending(true);
     const headers = json
       ? {
@@ -40,9 +39,13 @@ const usePatch = (
           "Authorization": "Token " + token,
         };
     return axios
-      .post(host, json ? JSON.stringify(requestBody) : requestBody, {
-        headers,
-      })
+      .put(
+        host + path + (Boolean(id) ? id : ""),
+        json ? JSON.stringify(requestBody) : requestBody,
+        {
+          headers,
+        }
+      )
       .then((res) => {
         setIsPending(false);
         setSuccess(true);
@@ -62,7 +65,7 @@ const usePatch = (
             dispatch({ type: requestName + "/set", payload: res });
           });
         }
-        return res.data;
+        return res;
       })
       .catch((err) => {
         setIsPending(false);
@@ -70,7 +73,6 @@ const usePatch = (
         return null;
       });
   };
-
   return [
     request,
     <Snackbar
@@ -107,4 +109,4 @@ const usePatch = (
   ];
 };
 
-export default usePatch;
+export default usePut;

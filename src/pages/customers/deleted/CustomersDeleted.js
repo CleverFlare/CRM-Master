@@ -10,6 +10,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import usePost from "../../../hooks/usePost";
 import useDelete from "../../../hooks/useDelete";
+import useGet from "../../../hooks/useGet";
 
 const dummyRows = [
   {
@@ -116,6 +117,9 @@ const dummyRows = [
 const CustomersDeleted = () => {
   const token = useSelector((state) => state.token.value);
   const domain = useSelector((state) => state.domain.value);
+  const [customersGetRequest, customersGetRequestError] = useGet(
+    "aqar/api/router/RestoreClient/"
+  );
   const [restoreRequest, restoreSuccessAlert, restoreErrorAlert] = usePost(
     "aqar/api/router/RestoreClient/",
     "تم إسترجاع العملاء بنجاح"
@@ -147,20 +151,10 @@ const CustomersDeleted = () => {
   const dispatch = useDispatch();
   const [selected, setSelected] = useState([]);
   useEffect(() => {
-    fetch(domain + "aqar/api/router/RestoreClient/", {
-      method: "GET",
-      headers: {
-        //prettier-ignore
-        "Authorization": "Token " + token,
-      },
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((json) => {
-        console.log(json);
-        dispatch({ type: "deletedCustomers/set", payload: [...json] });
-      });
+    if (Boolean(deletedCustomers.length)) return;
+    customersGetRequest().then((res) => {
+      dispatch({ type: "deletedCustomers/set", payload: res });
+    });
   }, []);
 
   const handleRestore = () => {
@@ -168,7 +162,10 @@ const CustomersDeleted = () => {
       organization: 1,
       id: selected,
     };
-    restoreRequest(requestBody);
+    restoreRequest(requestBody, true, [
+      { path: "aqar/api/router/RestoreClient/", name: "deletedCustomers" },
+      { path: "aqar/api/router/Client/", name: "allCustomers" },
+    ]);
   };
 
   const handleCheckboxChange = (e, id) => {
@@ -178,24 +175,6 @@ const CustomersDeleted = () => {
       setSelected((old) => [...old.filter((item) => item !== id)]);
     }
   };
-
-  useEffect(() => {
-    if (!deletedCustomers.length) return;
-    fetch(domain + "aqar/api/router/Client/", {
-      method: "GET",
-      headers: {
-        //prettier-ignore
-        "Authorization": "Token " + token,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw Error("couldn't fetch the data for that resource");
-        return res.json();
-      })
-      .then((json) => {
-        console.log(json);
-      });
-  }, []);
 
   const dummyColumns = [
     {

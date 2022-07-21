@@ -120,53 +120,57 @@ const ProjectsAddNew = () => {
             spacing={4}
             sx={{ width: "100%" }}
           >
-            <Paper
-              sx={{
-                minWidth: "max-content",
-                padding: 2,
-                cursor: "pointer",
-                position: "relative",
-                overflow: "hidden",
-                outline: errors?.imageURL ? "1px solid #ff000066" : "unset",
-              }}
-              onClick={() => fileRef.current.click()}
-            >
-              <Stack alignItems="center" sx={{ width: "max-content" }}>
-                <AddPhotoAlternateIcon
-                  color="primary"
-                  sx={{ width: 100, height: 100 }}
-                />
-                <Typography variant="caption" color="primary">
-                  اضف صورة المشروع هنا
-                </Typography>
-              </Stack>
-              {imageURL && (
-                <Box
-                  sx={{
-                    bgcolor: "white",
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                  }}
-                >
-                  <img
-                    src={imageURL && imageURL}
-                    alt=""
-                    style={{
+            {!sm && (
+              <Paper
+                sx={{
+                  minWidth: "max-content",
+                  minHeight: "max-content",
+                  height: "0",
+                  padding: 2,
+                  cursor: "pointer",
+                  position: "relative",
+                  overflow: "hidden",
+                  outline: errors?.imageURL ? "1px solid #ff000066" : "unset",
+                }}
+                onClick={() => fileRef.current.click()}
+              >
+                <Stack alignItems="center" sx={{ width: "max-content" }}>
+                  <AddPhotoAlternateIcon
+                    color="primary"
+                    sx={{ width: 100, height: 100 }}
+                  />
+                  <Typography variant="caption" color="primary">
+                    اضف صورة المشروع هنا
+                  </Typography>
+                </Stack>
+                {imageURL && (
+                  <Box
+                    sx={{
+                      bgcolor: "white",
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
                       width: "100%",
                       height: "100%",
-                      objectFit: "cover",
-                      objectPosition: "center",
                     }}
-                    onError={() => {
-                      setControl("imageURL", "");
-                    }}
-                  />
-                </Box>
-              )}
-            </Paper>
+                  >
+                    <img
+                      src={imageURL && imageURL}
+                      alt=""
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        objectPosition: "center",
+                      }}
+                      onError={() => {
+                        setControl("imageURL", "");
+                      }}
+                    />
+                  </Box>
+                )}
+              </Paper>
+            )}
             <Paper
               sx={{
                 padding: sm ? 2 : 0,
@@ -181,32 +185,111 @@ const ProjectsAddNew = () => {
                 spacing={2}
                 sx={{ height: "100%" }}
               >
-                <TextField
-                  variant="standard"
-                  label="اسم المشروع"
-                  placeholder="اسم المشروع"
+                <Stack
+                  direction="row"
+                  spacing={2}
                   sx={{
-                    maxWidth: 600,
+                    maxWidth: "800px",
+                    width: "100%",
+                    height: "max-content",
                   }}
-                  error={Boolean(errors?.name)}
-                  helperText={errors?.name}
-                  value={name}
-                  onChange={(event) => setControl("name", event.target.value)}
-                />
-                <TextField
-                  variant="standard"
-                  label="العنوان"
-                  placeholder="عنوان المشروع"
-                  sx={{
-                    maxWidth: 600,
-                  }}
-                  error={Boolean(errors?.address)}
-                  helperText={errors?.address}
-                  value={address}
-                  onChange={(event) =>
-                    setControl("address", event.target.value)
-                  }
-                />
+                >
+                  {sm && (
+                    <Paper
+                      variant="outlined"
+                      sx={{
+                        minWidth: "max-content",
+                        // minHeight: "100%",
+                        // height: "0",
+                        padding: 2,
+                        cursor: "pointer",
+                        position: "relative",
+                        overflow: "hidden",
+                        outline: errors?.imageURL
+                          ? "1px solid #ff000066"
+                          : "unset",
+                        flex: 1,
+                      }}
+                      onClick={() => fileRef.current.click()}
+                    >
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        justifyItems="center"
+                        sx={{ width: "100%", height: "100%" }}
+                      >
+                        <AddPhotoAlternateIcon
+                          color="primary"
+                          sx={{ width: 70, height: 70 }}
+                        />
+                        <Typography variant="caption" color="primary">
+                          اضف صورة المشروع هنا
+                        </Typography>
+                      </Stack>
+                      {imageURL && (
+                        <Box
+                          sx={{
+                            bgcolor: "white",
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            width: "100%",
+                            height: "100%",
+                          }}
+                        >
+                          <img
+                            src={imageURL && imageURL}
+                            alt=""
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                              objectPosition: "center",
+                            }}
+                            onError={() => {
+                              setControl("imageURL", "");
+                            }}
+                          />
+                        </Box>
+                      )}
+                    </Paper>
+                  )}
+                  <Stack
+                    direction="column"
+                    justifyContent="center"
+                    spacing={2}
+                    sx={{ width: "100%" }}
+                  >
+                    <TextField
+                      variant="standard"
+                      label="اسم المشروع"
+                      placeholder="اسم المشروع"
+                      sx={{
+                        maxWidth: "100%",
+                      }}
+                      error={Boolean(errors?.name)}
+                      helperText={errors?.name}
+                      value={name}
+                      onChange={(event) =>
+                        setControl("name", event.target.value)
+                      }
+                    />
+                    <TextField
+                      variant="standard"
+                      label="العنوان"
+                      placeholder="عنوان المشروع"
+                      sx={{
+                        maxWidth: "100%",
+                      }}
+                      error={Boolean(errors?.address)}
+                      helperText={errors?.address}
+                      value={address}
+                      onChange={(event) =>
+                        setControl("address", event.target.value)
+                      }
+                    />
+                  </Stack>
+                </Stack>
                 <TextField
                   variant="standard"
                   label="الفاصيل"
@@ -220,7 +303,7 @@ const ProjectsAddNew = () => {
                   error={Boolean(errors?.details)}
                   helperText={errors?.details}
                   sx={{
-                    maxWidth: 600,
+                    maxWidth: 800,
                   }}
                 />
               </Stack>

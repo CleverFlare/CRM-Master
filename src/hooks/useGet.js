@@ -12,14 +12,13 @@ const useGet = (path) => {
       requestInfo.value.domain +
       "." +
       requestInfo.value.topLevelDomain +
-      "/" +
-      path
+      "/"
   );
   const [error, setError] = useState(null);
 
-  const request = async () =>
+  const request = async (customPath = null) =>
     axios
-      .get(host, {
+      .get(host + (customPath ? customPath : path), {
         headers: {
           //prettier-ignore
           "Authorization": "Token " + token,

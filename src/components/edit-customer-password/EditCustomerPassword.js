@@ -11,18 +11,32 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useState } from "react";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+import usePut from "../../hooks/usePut";
 import React from "react";
+import useControls from "../../hooks/useControls";
+import useValidate from "../../hooks/useValidate";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow direction="up" ref={ref} {...props} />;
 });
 
-const EditCustomerPassword = ({ isOpened, onClose }) => {
+const EditCustomerPassword = ({ isOpened, onClose, initials }) => {
   const [visibilities, setVisibilities] = useState({
     old: false,
     new: false,
     confirm: false,
   });
+  const [controls, setControl, resetControls] = useControls({
+    password: "",
+    confirm: "",
+  });
+  const [errors, setErrors] = useState({});
+  const [putRequest, putSuccessAlert, putErrorAlert, isPending] = usePut(
+    "aqar/api/router/Employee/",
+    "تم تعديل الموظف بنجاح!",
+    onClose
+  );
+  const validate = useValidate();
 
   const handleVisibilityToggle = (which) => {
     const temp = visibilities;
@@ -44,6 +58,35 @@ const EditCustomerPassword = ({ isOpened, onClose }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    validate([
+      {
+        name: "password",
+        value: controls.password,
+        isRequired: true,
+      },
+      {
+        name: "confirm",
+        value: controls.confirm,
+        isRequired: true,
+        validation: [
+          {
+            regex: new RegExp(`${controls.password}`, ""),
+            value: "رقم التأكيد لا يطابق الرقم السري",
+          },
+        ],
+      },
+    ]).then((output) => {
+      setErrors(output.errors);
+      if (!output.ok) return;
+      const requestBody = {
+        user: {
+          password: controls.password,
+        },
+      };
+      putRequest(requestBody, true, "jobs", initials.id + "/").then(() => {
+        resetControls();
+      });
+    });
   };
 
   return (
@@ -84,48 +127,6 @@ const EditCustomerPassword = ({ isOpened, onClose }) => {
           sx={{ width: "100%", maxWidth: 350 }}
         >
           <TextField
-            type={visibilities.old ? "text" : "password"}
-            variant="standard"
-            label="الرقم السري القديم"
-            sx={{
-              "& .MuiInputLabel-formControl": {
-                fontSize: 20,
-                fontWeight: "normal",
-                transform: "translate(10px, -10.5px) scale(0.75)",
-                color: "white",
-              },
-              "& .MuiInput-input": {
-                paddingBlock: 1.2,
-                fontSize: 15,
-              },
-              "& .MuiInputBase-formControl": {
-                borderColor: "white",
-                bgcolor: "white",
-              },
-
-              "& .MuiInputLabel-formControl.Mui-focused": {
-                color: "unset",
-              },
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment
-                  position="end"
-                  onClick={() => handleVisibilityToggle("old")}
-                >
-                  <IconButton>
-                    {visibilities.old ? (
-                      <VisibilityIcon color="primary" />
-                    ) : (
-                      <VisibilityOffIcon color="primary" />
-                    )}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            fullWidth
-          />
-          <TextField
             type={visibilities.new ? "text" : "password"}
             variant="standard"
             label="الرقم السري الجديد"
@@ -163,6 +164,10 @@ const EditCustomerPassword = ({ isOpened, onClose }) => {
               ),
             }}
             fullWidth
+            value={controls.password}
+            onChange={(e) => setControl("password", e.target.value)}
+            error={Boolean(errors?.password)}
+            helperText={errors?.password}
           />
           <TextField
             type={visibilities.confirm ? "text" : "password"}
@@ -202,6 +207,10 @@ const EditCustomerPassword = ({ isOpened, onClose }) => {
               ),
             }}
             fullWidth
+            value={controls.confirm}
+            onChange={(e) => setControl("confirm", e.target.value)}
+            error={Boolean(errors?.confirm)}
+            helperText={errors?.confirm}
           />
           <Button
             type="submit"
@@ -215,6 +224,7 @@ const EditCustomerPassword = ({ isOpened, onClose }) => {
               },
             }}
             fullWidth
+            onClick={handleSubmit}
           >
             حفظ
           </Button>

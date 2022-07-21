@@ -48,6 +48,7 @@ const AddJob = () => {
       const requestBody = {
         title: controls.name,
         organization: 1,
+        permissions: [],
       };
       postRequest(requestBody, true, "jobs");
     });

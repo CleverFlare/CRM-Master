@@ -11,6 +11,9 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useGet from "../../../hooks/useGet";
 import useDelete from "../../../hooks/useDelete";
+import CustomersEditDialog from "../../../components/customers-edit-dialog/CustomersEditDialog";
+import { GridRowEditStartReasons } from "@mui/x-data-grid";
+import EditCustomerPassword from "../../../components/edit-customer-password/EditCustomerPassword";
 
 const dummyColumns = [
   {
@@ -141,11 +144,19 @@ const dummyRows = [
 
 const EmployeesData = () => {
   const employees = useSelector((state) => state.employees.value);
+  const [isEditedOpened, setIsEditOpened] = useState(false);
+  const [editInitials, setEditInitials] = useState({
+    name: "الأسم",
+    email: "بريد",
+    job: "وظيفة",
+    id: 0,
+  });
+  const [isEditPassOpened, setIsEditPassOpened] = useState(false);
   const dispatch = useDispatch();
   const [employeeGetRequest, employeeGetRequestError] = useGet(
     "aqar/api/router/Employee/"
   );
-  const [deleteRequest, successAlert, errorAlert] = useDelete(
+  const [deleteRequest, deleteSuccessAlert, deleteErrorAlert] = useDelete(
     "aqar/api/router/Employee/"
   );
 
@@ -179,23 +190,42 @@ const EmployeesData = () => {
           links={[{ text: "الموظفين" }, { text: "بيانات الموظفين" }]}
         />
         <DataGrid
-          rows={Boolean(employees.length) ? parseToProperData(employees) : []}
+          rows={Boolean(employees?.length) ? parseToProperData(employees) : []}
           columns={dummyColumns}
           nameWithSearch
           maxRowsPerPage={10}
-          onEdit={() => {
-            console.log("edit");
+          onEdit={(e, rowData) => {
+            setIsEditOpened(true);
+            setEditInitials({
+              name: rowData.name,
+              job: rowData.job,
+              email: rowData.email,
+              id: rowData.id,
+            });
           }}
           onDelete={handleDelete}
-          onChangePassword={() => {
-            console.log("changePassword");
+          onChangePassword={(e, rowData) => {
+            setEditInitials({
+              id: rowData.id,
+            });
+            setIsEditPassOpened(true);
           }}
           onBlock={() => {
             console.log("block");
           }}
         />
-        {successAlert}
-        {errorAlert}
+        {deleteSuccessAlert}
+        {deleteErrorAlert}
+        <CustomersEditDialog
+          isOpened={isEditedOpened}
+          onClose={() => setIsEditOpened(false)}
+          initials={editInitials}
+        />
+        <EditCustomerPassword
+          isOpened={isEditPassOpened}
+          onClose={() => setIsEditPassOpened(false)}
+          initials={{ id: editInitials.id }}
+        />
       </Wrapper>
     </>
   );

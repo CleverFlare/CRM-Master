@@ -38,6 +38,7 @@ const DataGrid = ({
   columns,
   nameWithSearch,
   maxRowsPerPage,
+  onClick = null,
   onDelete = null,
   onArchive = null,
   onChangePassword = null,
@@ -220,9 +221,21 @@ const DataGrid = ({
                           return (
                             <TableRow
                               sx={{
-                                bgcolor:
-                                  rowIndex % 2 == 0 ? "#f5f5f5" : "initial",
+                                bgcolor: rowIndex % 2 == 0 ? "#f5f5f5" : "#fff",
+                                cursor: Boolean(onClick)
+                                  ? "pointer"
+                                  : "default",
+                                "&:hover": {
+                                  filter: Boolean(onClick)
+                                    ? "brightness(0.95)"
+                                    : "none",
+                                },
                               }}
+                              onClick={
+                                Boolean(onClick)
+                                  ? (e) => onClick(e, row)
+                                  : () => {}
+                              }
                               key={rowIndex}
                             >
                               {columns &&

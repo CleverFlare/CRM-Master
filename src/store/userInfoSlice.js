@@ -4,7 +4,7 @@ export const userInfoSlice = createSlice({
   name: "userInfo",
   initialState: {
     value: localStorage.getItem("userInfo")
-      ? localStorage.getItem("userInfo")
+      ? JSON.parse(localStorage.getItem("userInfo"))
       : {
           name: "غير معروف",
           job: "مندوب مبيعات",

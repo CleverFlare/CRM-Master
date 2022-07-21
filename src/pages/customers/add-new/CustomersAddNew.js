@@ -148,6 +148,7 @@ const CustomersAddNew = () => {
           email: controls.email,
           phone: controls.phone,
           user_permissions: [],
+          permissions: [],
         },
         organization: 1,
         bussiness: controls.projects,
@@ -159,7 +160,7 @@ const CustomersAddNew = () => {
         comment: "",
         aqar_comment_client: [],
       };
-      postRequest(requestBody, true, "customers");
+      postRequest(requestBody, true, "allCustomers");
     });
   };
 

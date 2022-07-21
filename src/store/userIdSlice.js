@@ -12,6 +12,10 @@ export const userIdSlice = createSlice({
       state.value = action.payload;
       localStorage.setItem("userId", action.payload);
     },
+    remove: (state) => {
+      state.value = "";
+      localStorage.setItem("userId", "");
+    },
   },
 });
 

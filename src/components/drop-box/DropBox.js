@@ -17,18 +17,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 
 const DropBox = ({ variant, path }) => {
-  const token = useSelector((state) => state.token.value);
-  const domain = useSelector((state) => state.domain.value);
-  const [files, setFiles] = useState([
-    {
-      picture: "",
-      progress: 100,
-    },
-    {
-      picture: "",
-      progress: 50,
-    },
-  ]);
+  const [files, setFiles] = useState([]);
 
   const fileRef = useRef();
 
@@ -36,32 +25,36 @@ const DropBox = ({ variant, path }) => {
     fileRef.current.click();
   };
 
-  // const handleUpload = () => {
-  //   const formData = new FormData();
-  //   formData.append("organization", 1);
-  //   const file = fileRef.current.files[0];
-  //   formData.append("file", file);
-  //   setFiles([...files, { picture: "", progress: 0 }]);
-  //   setTimeout(() => {
-  //     const allFiles = files;
-  //     allFiles[allFiles.length - 1].progress = 100;
-  //     setFiles(allFiles);
-  //   }, 1000);
-  //   // axios.post(domain + path, formData, {
-  //   //   headers: {
-  //   //     //prettier-ignore
-  //   //     "Authorization": "Token " + token,
-  //   //   },
-  //   //   onUploadProgress: (progress) => {
-  //   //     const { loaded, total } = progress;
-  //   //     const percentage = Math.floor((loaded * 100) / total);
-  //   //     const allFiles = files;
-  //   //     const uploadingFile = (allFiles[allFiles.length].percentage =
-  //   //       percentage);
-  //   //     setFiles((old) => allFiles);
-  //   //   },
-  //   // });
-  // };
+  const handleUpload = () => {
+    const formData = new FormData();
+    formData.append("organization", 1);
+    const file = fileRef.current.files[0];
+    formData.append("file", file);
+    const allFiles = [...files, { picture: "", progress: 0 }];
+    setFiles(allFiles);
+    setTimeout(() => {
+      allFiles[allFiles.length - 1].progress = 50;
+      setFiles([...allFiles]);
+    }, 1000);
+    setTimeout(() => {
+      allFiles[allFiles.length - 1].progress = 100;
+      setFiles([...allFiles]);
+    }, 2000);
+    // axios.post(domain + path, formData, {
+    //   headers: {
+    //     //prettier-ignore
+    //     "Authorization": "Token " + token,
+    //   },
+    //   onUploadProgress: (progress) => {
+    //     const { loaded, total } = progress;
+    //     const percentage = Math.floor((loaded * 100) / total);
+    //     const allFiles = files;
+    //     const uploadingFile = (allFiles[allFiles.length].percentage =
+    //       percentage);
+    //     setFiles((old) => allFiles);
+    //   },
+    // });
+  };
 
   return (
     <Paper sx={{ bgcolor: "#f5f6fa", maxWidth: 600, width: "100%" }}>
@@ -69,7 +62,7 @@ const DropBox = ({ variant, path }) => {
         type="file"
         style={{ display: "none" }}
         ref={fileRef}
-        // onChange={handleUpload}
+        onChange={handleUpload}
       />
       <Stack spacing={2}>
         <Paper
@@ -116,55 +109,71 @@ const DropBox = ({ variant, path }) => {
             </Button>
           </Stack>
         </Paper>
-        <Stack divider={<Divider />}>
-          {files.map((file, index) => (
-            <Card
-              sx={{
-                bgcolor: "transparent",
-                boxShadow: "none",
-                position: "relative",
-              }}
-              key={index}
-            >
-              <CardHeader
-                avatar={<Avatar src={file.picture && file.picture} />}
-                title={
-                  <Typography sx={{ color: "#7884a0" }}>
-                    {file.progress !== 100
-                      ? `يتم الأن ${
-                          variant === "upload" ? "رفع" : "تحميل"
-                        } ملف العملاء`
-                      : `تم ${
-                          variant === "upload" ? "رفع" : "تحميل"
-                        } ملف العملاء`}
-                  </Typography>
-                }
-                subheader={
-                  <Typography
-                    variant="body2"
-                    sx={{ color: "#a1a9bf", marginBlock: "5px" }}
-                  >
-                    428kb
-                  </Typography>
-                }
-                action={
-                  file.progress ? (
-                    <CheckCircleIcon sx={{ color: "#687ddb" }} size="large" />
-                  ) : (
-                    <CancelIcon sx={{ color: "#ff6464" }} size="large" />
-                  )
-                }
+        {Boolean(files.length) && (
+          <Stack divider={<Divider />}>
+            {files.map((file, index) => (
+              <Card
                 sx={{
-                  "& .MuiCardHeader-action": {
-                    margin: 0,
-                    alignSelf: "unset",
-                    display: "flex",
-                    alignItems: "center",
-                    transform: "scale(1.2)",
-                  },
+                  bgcolor: "transparent",
+                  boxShadow: "none",
+                  position: "relative",
                 }}
-              />
-              {file.progress !== 100 && (
+                key={index}
+              >
+                <CardHeader
+                  avatar={<Avatar src={file.picture && file.picture} />}
+                  title={
+                    <Typography sx={{ color: "#7884a0" }}>
+                      {file.progress !== 100
+                        ? `يتم الأن ${
+                            variant === "upload" ? "رفع" : "تحميل"
+                          } ملف العملاء`
+                        : `تم ${
+                            variant === "upload" ? "رفع" : "تحميل"
+                          } ملف العملاء`}
+                    </Typography>
+                  }
+                  subheader={
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#a1a9bf", marginBlock: "5px" }}
+                    >
+                      428kb
+                    </Typography>
+                  }
+                  action={
+                    file.progress ? (
+                      <CheckCircleIcon sx={{ color: "#687ddb" }} size="large" />
+                    ) : (
+                      <CancelIcon sx={{ color: "#ff6464" }} size="large" />
+                    )
+                  }
+                  sx={{
+                    "& .MuiCardHeader-action": {
+                      margin: 0,
+                      alignSelf: "unset",
+                      display: "flex",
+                      alignItems: "center",
+                      transform: "scale(1.2)",
+                    },
+                  }}
+                />
+                <Typography
+                  variant="h2"
+                  sx={{
+                    position: "absolute",
+                    top: 0,
+                    right: "100px",
+                    pointerEvents: "none",
+                    color: "#23397542",
+                    visibility: file.progress === 100 ? "hidden" : "visible",
+                    opacity: file.progress === 100 ? "0" : "1",
+                    transition: "1s",
+                  }}
+                >
+                  {file.progress}%
+                </Typography>
+                {/* {file.progress !== 100 && ( */}
                 <LinearProgress
                   variant="determinate"
                   value={file.progress}
@@ -181,12 +190,16 @@ const DropBox = ({ variant, path }) => {
                     "& .MuiLinearProgress-bar1Determinate": {
                       bgcolor: "#23397542",
                     },
+                    visibility: file.progress === 100 ? "hidden" : "visible",
+                    opacity: file.progress === 100 ? "0" : "1",
+                    transition: "1s",
                   }}
                 />
-              )}
-            </Card>
-          ))}
-        </Stack>
+                {/* )} */}
+              </Card>
+            ))}
+          </Stack>
+        )}
       </Stack>
     </Paper>
   );
