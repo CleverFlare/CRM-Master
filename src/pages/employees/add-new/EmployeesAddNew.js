@@ -155,7 +155,7 @@ const EmployeesAddNew = () => {
           phone: controls.phone,
           // controls.code.replace(/\((.*?)\)\[.*?\]/gi, "$1") + controls.phone,
           password: controls.password,
-          permissions: [],
+          user_permissions: [],
         },
         job: controls.job,
         business: [1],
