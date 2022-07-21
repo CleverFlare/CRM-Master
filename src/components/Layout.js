@@ -34,8 +34,8 @@ const Layout = ({ children }) => {
         type: "userInfo/set",
         payload: {
           name: res.first_name + " " + res.last_name,
-          job: "مندوب مبيعات",
-          picture: res.image,
+          job: res?.job_title,
+          picture: res?.image,
         },
       });
     });

@@ -268,6 +268,7 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
           sx={{
             display: "flex",
             flexDirection: "column",
+            alignItems: "center",
             paddingTop: "10px",
           }}
         >
