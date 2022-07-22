@@ -10,7 +10,7 @@ const useDelete = (
   onSuccess = () => {}
 ) => {
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.requestInfo.value.token);
+  const token = useSelector((state) => state.token.value);
   const host = useSelector(
     ({ requestInfo }) =>
       requestInfo.value.protocol +

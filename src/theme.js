@@ -26,7 +26,7 @@ const theme = createTheme({
           left: "unset",
           right: 0,
           "&.Mui-checked": {
-            color: "unset",
+            color: "#fff",
           },
         },
         colorPrimary: {

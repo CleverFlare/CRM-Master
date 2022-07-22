@@ -149,6 +149,7 @@ const dummyRows = [
 const EmployeesData = () => {
   const permissions = useSelector((state) => state.permissions.value);
   const employees = useSelector((state) => state.employees.value);
+  const storeUsername = useSelector((state) => state.userInfo.value.username);
   const [isEditedOpened, setIsEditOpened] = useState(false);
   const [editInitials, setEditInitials] = useState({
     name: "الأسم",
@@ -174,11 +175,13 @@ const EmployeesData = () => {
         email: item.user?.email,
         job: item?.job,
         id: item?.id,
+        permissions: item?.user?.user_permissions.map(
+          (permission) => permission.codename
+        ),
       };
       newArray.push(employee);
     });
     return newArray;
-    console.log("");
   };
 
   useEffect(() => {
@@ -197,7 +200,15 @@ const EmployeesData = () => {
           links={[{ text: "الموظفين" }, { text: "بيانات الموظفين" }]}
         />
         <DataGrid
-          rows={Boolean(employees?.length) ? parseToProperData(employees) : []}
+          rows={
+            Boolean(employees?.length)
+              ? parseToProperData(employees).filter((employee) => {
+                  console.log(employee);
+                  console.log(storeUsername);
+                  return employee.username !== storeUsername;
+                })
+              : []
+          }
           columns={dummyColumns}
           nameWithSearch
           maxRowsPerPage={10}
@@ -210,6 +221,7 @@ const EmployeesData = () => {
                     job: rowData.job,
                     email: rowData.email,
                     id: rowData.id,
+                    perms: rowData.permissions,
                   });
                 }
               : null

@@ -28,19 +28,6 @@ import useGet from "./hooks/useGet";
 function App() {
   const permissions = useSelector((state) => state.permissions.value);
   const token = useSelector((state) => state.token.value);
-  const dispatch = useDispatch();
-  const [userInfoGetRequest, userInfoGetRequestError] = useGet(
-    "aqar/api/router/UserInfo/"
-  );
-
-  useEffect(() => {
-    userInfoGetRequest().then((res) => {
-      dispatch({
-        type: "permissions",
-        payload: res.user_permissions.filter((item) => item.codename),
-      });
-    });
-  }, []);
   return (
     <div className="App">
       <Router>

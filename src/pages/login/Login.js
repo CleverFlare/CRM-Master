@@ -19,6 +19,9 @@ import useGet from "../../hooks/useGet";
 const Login = () => {
   const sm = useMediaQuery(`(max-width: 740px)`);
   const domain = useSelector((state) => state.domain.value);
+  const [userInfoGetRequest, userInfoGetRequestError] = useGet(
+    "aqar/api/router/UserInfo/"
+  );
   const dispatch = useDispatch();
   const [visibilities, setVisibilities] = useState({
     password: false,

@@ -378,15 +378,6 @@ const DataGrid = ({
           />
         </Stack>
       </Paper>
-      <CustomersEditDialog
-        isOpened={openEditInfo}
-        onClose={handleCloseEditInfo}
-        initials={initials}
-      />
-      <EditCustomerPassword
-        isOpened={openEditPass}
-        onClose={handleCloseEditPass}
-      />
     </Paper>
   );
 };

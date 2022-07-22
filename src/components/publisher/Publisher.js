@@ -17,6 +17,7 @@ import { Box } from "@mui/system";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useRef } from "react";
+import usePost from "../../hooks/usePost";
 import Picker, { SKIN_TONE_MEDIUM_DARK } from "emoji-picker-react";
 
 const Publisher = ({ name, picture, dataSetter }) => {
@@ -26,6 +27,10 @@ const Publisher = ({ name, picture, dataSetter }) => {
   const domain = useSelector((state) => state.domain.value);
   const [emojisAnchorEl, setEmojisAnchorEl] = useState(null);
   const openEmojisList = Boolean(emojisAnchorEl);
+  const [postRequest, successAlert, errorAlert, isPending] = usePost(
+    "aqar/api/router/Post/",
+    "تم إضافة منشور جديد بنجاح"
+  );
   const inputFile = useRef();
 
   const handleSubmit = () => {
@@ -36,27 +41,7 @@ const Publisher = ({ name, picture, dataSetter }) => {
     formData.set("user", userId);
     inputFile.current.files[0] &&
       formData.set("media", inputFile.current.files[0]);
-    fetch(domain + "aqar/api/router/Post/", {
-      method: "POST",
-      headers: {
-        //prettier-ignore
-        "Authorization": "Token " + token,
-      },
-      body: formData,
-    })
-      .then((res) => {
-        if (!res.ok) throw Error("couldn't fetch the data for that resource");
-
-        return res.json();
-      })
-      .then((json) => {
-        console.log(json);
-        setContent("");
-        dataSetter((oldPosts) => [...oldPosts, json]);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+    postRequest(formData, false, "posts");
   };
 
   const handleAddEmoji = (e, selectedEmoji) => {
@@ -136,6 +121,8 @@ const Publisher = ({ name, picture, dataSetter }) => {
           onChange={(event) => console.log(event.target.files)}
         />
       </CardActions>
+      {successAlert}
+      {errorAlert}
     </Card>
   );
 };

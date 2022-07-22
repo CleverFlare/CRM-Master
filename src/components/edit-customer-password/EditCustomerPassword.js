@@ -11,7 +11,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useState } from "react";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
-import usePut from "../../hooks/usePut";
+import usePatch from "../../hooks/usePatch";
 import React from "react";
 import useControls from "../../hooks/useControls";
 import useValidate from "../../hooks/useValidate";
@@ -31,7 +31,7 @@ const EditCustomerPassword = ({ isOpened, onClose, initials }) => {
     confirm: "",
   });
   const [errors, setErrors] = useState({});
-  const [putRequest, putSuccessAlert, putErrorAlert, isPending] = usePut(
+  const [putRequest, putSuccessAlert, putErrorAlert, isPending] = usePatch(
     "aqar/api/router/Employee/",
     "تم تعديل الموظف بنجاح!",
     onClose
@@ -83,7 +83,7 @@ const EditCustomerPassword = ({ isOpened, onClose, initials }) => {
           password: controls.password,
         },
       };
-      putRequest(requestBody, true, "jobs", initials.id + "/").then(() => {
+      putRequest(requestBody, true, "employees", initials.id + "/").then(() => {
         resetControls();
       });
     });
@@ -230,6 +230,8 @@ const EditCustomerPassword = ({ isOpened, onClose, initials }) => {
           </Button>
         </Stack>
       </Stack>
+      {putSuccessAlert}
+      {putErrorAlert}
     </Dialog>
   );
 };

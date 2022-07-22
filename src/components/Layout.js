@@ -20,22 +20,19 @@ const Layout = ({ children }) => {
     setMobileMenu(!mobileMenu);
   };
   useEffect(() => {
-    userInfoGetRequest("aqar/api/router/UserInfo/" + id).then((res) => {
-      console.log(
-        res.user_permissions.map((item) => {
-          return item.codename;
-        })
-      );
+    userInfoGetRequest().then((res) => {
+      console.log(res[0]);
       dispatch({
         type: "permissions/set",
-        payload: res.user_permissions.map((item) => item.codename),
+        payload: res[0].user_permissions.map((item) => item.codename),
       });
       dispatch({
         type: "userInfo/set",
         payload: {
-          name: res.first_name + " " + res.last_name,
-          job: res?.job_title,
-          picture: res?.image,
+          name: res[0].first_name + " " + res[0].last_name,
+          job: res[0]?.job_title,
+          picture: res[0]?.image,
+          username: res[0]?.username,
         },
       });
     });

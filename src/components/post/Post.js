@@ -34,6 +34,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import useDelete from "../../hooks/useDelete";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow direction="up" ref={ref} {...props} />;
@@ -173,6 +174,10 @@ const Post = ({ name, picture, date, children, id, imgs = null }) => {
   const [content, setContent] = useState(children);
   const token = useSelector((state) => state.token.value);
   const domain = useSelector((state) => state.domain.value);
+  const [deleteRequest, successAlert, errorAlert, isPending] = useDelete(
+    "aqar/api/router/Post/",
+    "تم حذف المنشور بنجاح"
+  );
 
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -183,21 +188,9 @@ const Post = ({ name, picture, date, children, id, imgs = null }) => {
   };
 
   const handleDeletion = () => {
-    fetch(domain + "aqar/api/router/Post/" + id + "/", {
-      method: "DELETE",
-      headers: {
-        //prettier-ignore
-        "Authorization": "Token " + token,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw Error("couldn't fetch the data for that resource");
-        setIsDeleted(true);
-        return res.json();
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+    deleteRequest("posts", id).then(() => {
+      setIsDeleted(true);
+    });
   };
 
   const handleCloseEditPostDialog = () => {
@@ -205,138 +198,145 @@ const Post = ({ name, picture, date, children, id, imgs = null }) => {
   };
 
   return (
-    <Collapse in={!isDeleted} unmountOnExit>
-      <Card
-        sx={{
-          maxWidth: "766px",
-        }}
-      >
-        <EditPostDialog
-          open={openEdit}
-          onClose={handleCloseEditPostDialog}
-          init={children}
-          originalContentSetter={setContent}
-          id={id}
-        />
-        <CardHeader
-          avatar={
-            <Avatar src={picture ? picture : null}>
-              {name ? name[0] : ""}
-            </Avatar>
-          }
-          action={
-            <div style={{ position: "relative" }}>
-              <Tooltip title="settings">
-                <IconButton onClick={handleOpenMenu}>
-                  <MoreHorizIcon />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleCloseMenu}
-                anchorOrigin={{
-                  vertical: "center",
-                  horizontal: "center",
-                }}
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-              >
-                {permissions.includes("change_aqarpost") && (
-                  <MenuItem
-                    onClick={() => {
-                      handleCloseMenu();
-                      setOpenEdit(true);
-                    }}
-                  >
-                    <ListItemIcon>
-                      <EditIcon />
-                    </ListItemIcon>
-                    <ListItemText>تعديل المنشور</ListItemText>
-                  </MenuItem>
-                )}
-                {permissions.includes("delete_aqarpost") && (
-                  <MenuItem
-                    onClick={() => {
-                      handleCloseMenu();
-                      handleDeletion();
-                    }}
-                  >
-                    <ListItemIcon>
-                      <DeleteIcon />
-                    </ListItemIcon>
-                    <ListItemText>نقل إلى سلة المهملات</ListItemText>
-                  </MenuItem>
-                )}
-                <MenuItem onClick={handleCloseMenu}>
-                  <ListItemIcon>
-                    <NotificationsOffIcon />
-                  </ListItemIcon>
-                  <ListItemText>إيقاف إشعارات المنشور</ListItemText>
-                </MenuItem>
-              </Menu>
-            </div>
-          }
-          title={name}
-          subheader={date ? date.split("T")[0].replace(/-/gi, "/") : "منذ ساعة"}
+    <>
+      <Collapse in={!isDeleted} unmountOnExit>
+        <Card
           sx={{
-            "& .MuiCardHeader-title": { color: "#233975" },
-            "& .MuiCardHeader-subheader": {
-              color: "#233975",
-              fontSize: "12px",
-            },
+            maxWidth: "766px",
           }}
-        />
-        <CardContent>
-          <Box
+        >
+          <EditPostDialog
+            open={openEdit}
+            onClose={handleCloseEditPostDialog}
+            init={children}
+            originalContentSetter={setContent}
+            id={id}
+          />
+          <CardHeader
+            avatar={
+              <Avatar src={picture ? picture : null}>
+                {name ? name[0] : ""}
+              </Avatar>
+            }
+            action={
+              <div style={{ position: "relative" }}>
+                <Tooltip title="settings">
+                  <IconButton onClick={handleOpenMenu}>
+                    <MoreHorizIcon />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleCloseMenu}
+                  anchorOrigin={{
+                    vertical: "center",
+                    horizontal: "center",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
+                  }}
+                >
+                  {permissions.includes("change_aqarpost") && (
+                    <MenuItem
+                      onClick={() => {
+                        handleCloseMenu();
+                        setOpenEdit(true);
+                      }}
+                    >
+                      <ListItemIcon>
+                        <EditIcon />
+                      </ListItemIcon>
+                      <ListItemText>تعديل المنشور</ListItemText>
+                    </MenuItem>
+                  )}
+                  {permissions.includes("delete_aqarpost") && (
+                    <MenuItem
+                      onClick={() => {
+                        handleCloseMenu();
+                        handleDeletion();
+                      }}
+                    >
+                      <ListItemIcon>
+                        <DeleteIcon />
+                      </ListItemIcon>
+                      <ListItemText>نقل إلى سلة المهملات</ListItemText>
+                    </MenuItem>
+                  )}
+                  <MenuItem onClick={handleCloseMenu}>
+                    <ListItemIcon>
+                      <NotificationsOffIcon />
+                    </ListItemIcon>
+                    <ListItemText>إيقاف إشعارات المنشور</ListItemText>
+                  </MenuItem>
+                </Menu>
+              </div>
+            }
+            title={name}
+            subheader={
+              date ? date.split("T")[0].replace(/-/gi, "/") : "منذ ساعة"
+            }
             sx={{
-              padding: "0 55px",
-              direction: /[a-z]/gi.test(children) ? "rtl" : "ltr",
+              "& .MuiCardHeader-title": { color: "#233975" },
+              "& .MuiCardHeader-subheader": {
+                color: "#233975",
+                fontSize: "12px",
+              },
             }}
-          >
-            <Typography variant="body2" color="primary">
-              {content}
-            </Typography>
+          />
+          <CardContent>
+            <Box
+              sx={{
+                padding: "0 55px",
+                direction: /[a-z]/gi.test(children) ? "rtl" : "ltr",
+              }}
+            >
+              <Typography variant="body2" color="primary">
+                {content}
+              </Typography>
+            </Box>
+          </CardContent>
+          {imgs[0] && (
+            <CardMedia
+              component="img"
+              image={imgs[0]}
+              alt="posts image"
+              sx={{
+                bgcolor: "black",
+                objectFit: "contain",
+                aspectRatio: "2 / 1",
+              }}
+            />
+          )}
+          <CardActions sx={{ justifyContent: "space-between" }}>
+            <Tooltip title="likes">
+              <Button endIcon={<FavoriteIcon />}>أعجبني</Button>
+            </Tooltip>
+            <Tooltip title="comments">
+              <Button endIcon={<ChatBubbleIcon />}>تعليقات</Button>
+            </Tooltip>
+          </CardActions>
+          <Divider />
+          <Box>
+            <input
+              type="text"
+              style={{
+                width: "100%",
+                boxSizing: "border-box",
+                border: "none",
+                outline: "none",
+                padding: "5px 15px",
+              }}
+              placeholder="اكتب تعليق"
+            />
           </Box>
-        </CardContent>
-        {imgs[0] && (
-          <CardMedia
-            component="img"
-            image={imgs[0]}
-            alt="posts image"
-            sx={{
-              bgcolor: "black",
-              objectFit: "contain",
-              aspectRatio: "2 / 1",
-            }}
-          />
-        )}
-        <CardActions sx={{ justifyContent: "space-between" }}>
-          <Tooltip title="likes">
-            <Button endIcon={<FavoriteIcon />}>أعجبني</Button>
-          </Tooltip>
-          <Tooltip title="comments">
-            <Button endIcon={<ChatBubbleIcon />}>تعليقات</Button>
-          </Tooltip>
-        </CardActions>
-        <Divider />
-        <Box>
-          <input
-            type="text"
-            style={{
-              width: "100%",
-              boxSizing: "border-box",
-              border: "none",
-              outline: "none",
-              padding: "5px 15px",
-            }}
-            placeholder="اكتب تعليق"
-          />
-        </Box>
-      </Card>
-    </Collapse>
+        </Card>
+      </Collapse>
+
+      {successAlert}
+      {errorAlert}
+    </>
   );
 };
 

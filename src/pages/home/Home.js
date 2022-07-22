@@ -12,7 +12,6 @@ const Home = () => {
   const postsStore = useSelector((state) => state.posts.value);
   const domain = useSelector((state) => state.domain.value);
   const dispatch = useDispatch();
-  const [posts, setPosts] = useState([...postsStore]);
   const [isPending, setIsPending] = useState(false);
   const skeletonNumber = Array(4).fill(0);
   const token = useSelector((state) => state.token.value);
@@ -33,7 +32,6 @@ const Home = () => {
         return res.json();
       })
       .then((json) => {
-        setPosts([...json]);
         dispatch({ type: "posts/set", payload: json });
         setIsPending(false);
       })
@@ -53,9 +51,7 @@ const Home = () => {
             },
           ]}
         />
-        {permissions.includes("add_aqarpost") && (
-          <Publisher name="أحمد محمد" dataSetter={setPosts} />
-        )}
+        {permissions.includes("add_aqarpost") && <Publisher name="أحمد محمد" />}
         {permissions.includes("view_aqarpost") && (
           <>
             <Typography
@@ -70,8 +66,8 @@ const Home = () => {
                 skeletonNumber.map((skeleton, index) => (
                   <PostSkeleton key={index} />
                 ))}
-              {posts &&
-                posts.map((post, index) => (
+              {postsStore &&
+                postsStore.map((post, index) => (
                   <Post
                     name={post.user}
                     key={post.id}
@@ -82,7 +78,7 @@ const Home = () => {
                     {post.content}
                   </Post>
                 ))}
-              {!isPending && !posts.length && (
+              {!isPending && !postsStore.length && (
                 <Typography
                   variant="h5"
                   sx={{

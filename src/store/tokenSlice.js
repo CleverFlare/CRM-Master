@@ -4,7 +4,6 @@ export const tokenSlice = createSlice({
   name: "token",
   initialState: {
     value: localStorage.getItem("token") ? localStorage.getItem("token") : null,
-    // value: "c4909c2cafc2fd526d1febc544b66a0d56bc1f72",
   },
   reducers: {
     set: (state, action) => {

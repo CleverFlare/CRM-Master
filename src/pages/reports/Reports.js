@@ -128,12 +128,8 @@ const Reports = () => {
         <Parameter
           links={[
             {
-              text: "العملاء",
+              text: "تقارير فريق المبيعات",
               path: "#",
-            },
-            {
-              text: "جميع العملاء",
-              path: "/customers/total",
             },
           ]}
         />
