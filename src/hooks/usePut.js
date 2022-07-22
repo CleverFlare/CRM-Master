@@ -69,7 +69,11 @@ const usePut = (
       })
       .catch((err) => {
         setIsPending(false);
-        setError(err.message);
+        if (err.response.status === 400) {
+          setError(err.response.data[Object.keys(err.response.data)[0]]);
+        } else {
+          setError(err.message);
+        }
         return null;
       });
   };

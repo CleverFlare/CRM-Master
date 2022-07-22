@@ -79,7 +79,7 @@ const CustomersAddNew = () => {
     mediator: "",
     channel: "",
     contact: "",
-    balance: "",
+    budget: "",
     password: "",
     confirm: "",
     projects: [],
@@ -129,8 +129,8 @@ const CustomersAddNew = () => {
         isRequired: true,
       },
       {
-        name: "balance",
-        value: controls.balance,
+        name: "budget",
+        value: controls.budget,
         isRequired: true,
       },
       {
@@ -155,7 +155,7 @@ const CustomersAddNew = () => {
         channel: controls.channel,
         agent: controls.saler,
         min_budget: "00.00",
-        max_budget: "00.00",
+        max_budget: controls.budget,
         fav_contacts: controls.contact,
         comment: "",
         aqar_comment_client: [],
@@ -565,11 +565,11 @@ const CustomersAddNew = () => {
                 }}
                 fullWidth={sm}
                 onChange={({ target: { value } }) =>
-                  setControl("balance", value)
+                  setControl("budget", value)
                 }
-                value={controls.balance}
-                error={Boolean(errors?.balance)}
-                helperText={errors?.balance}
+                value={controls.budget}
+                error={Boolean(errors?.budget)}
+                helperText={errors?.budget}
               />
             </Stack>
           </Stack>

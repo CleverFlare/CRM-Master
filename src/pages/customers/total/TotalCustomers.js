@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useGet from "../../../hooks/useGet";
 import useDelete from "../../../hooks/useDelete";
+import CustomerDetails from "../../../components/customer-details/CustomerDetails";
 
 const dummyColumns = [
   {
@@ -34,6 +35,8 @@ const dummyColumns = [
 ];
 
 const TotalCustomers = () => {
+  const [openDetails, setOpenDetails] = useState(false);
+  const [initials, setInitials] = useState({});
   const permissions = useSelector((state) => state.permissions.value);
   const [customersGetRequest, customersGetRequestError] = useGet(
     "aqar/api/router/Client/"
@@ -44,7 +47,6 @@ const TotalCustomers = () => {
   const parseToProperData = (json) => {
     let parentArray = [];
     json.map((item, index) => {
-      console.log(Boolean(item.bussiness.length));
       const customer = {
         name: item.user.first_name + " " + item.user.last_name,
         phone: item.user.phone,
@@ -55,6 +57,7 @@ const TotalCustomers = () => {
         saler: item.agent,
         channel: item.channel,
         id: item.id,
+        allData: item,
       };
       parentArray.push(customer);
     });
@@ -100,6 +103,8 @@ const TotalCustomers = () => {
             Boolean(allCustomers.length) ? parseToProperData(allCustomers) : []
           }
           onClick={(e, rowData) => {
+            setInitials(rowData);
+            setOpenDetails(true);
             console.log(rowData);
           }}
           columns={dummyColumns}
@@ -110,6 +115,11 @@ const TotalCustomers = () => {
         />
         {successAlert}
         {errorAlert}
+        <CustomerDetails
+          isOpened={openDetails}
+          onClose={() => setOpenDetails(false)}
+          initials={initials}
+        />
       </Wrapper>
     </div>
   );

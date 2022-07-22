@@ -285,9 +285,10 @@ const DataGrid = ({
                                             backgroundColor: "#5c77c1",
                                           },
                                         }}
-                                        onClick={(event) =>
-                                          onChangePassword(event, row)
-                                        }
+                                        onClick={(event) => {
+                                          event.stopPropagation();
+                                          onChangePassword(event, row);
+                                        }}
                                       >
                                         <KeyIcon />
                                       </IconButton>
@@ -303,7 +304,10 @@ const DataGrid = ({
                                             backgroundColor: "#b2f1b7",
                                           },
                                         }}
-                                        onClick={(event) => onEdit(event, row)}
+                                        onClick={(event) => {
+                                          event.stopPropagation();
+                                          onEdit(event, row);
+                                        }}
                                       >
                                         <EditIcon />
                                       </IconButton>
@@ -319,9 +323,10 @@ const DataGrid = ({
                                             backgroundColor: "#ffe9e9",
                                           },
                                         }}
-                                        onClick={(event) =>
-                                          onDelete(event, row)
-                                        }
+                                        onClick={(event) => {
+                                          event.stopPropagation();
+                                          onDelete(event, row);
+                                        }}
                                       >
                                         <DeleteIcon />
                                       </IconButton>
@@ -337,7 +342,10 @@ const DataGrid = ({
                                             backgroundColor: "#ff8080",
                                           },
                                         }}
-                                        onClick={(event) => onBlock(event, row)}
+                                        onClick={(event) => {
+                                          event.stopPropagation();
+                                          onBlock(event, row);
+                                        }}
                                       >
                                         <BlockIcon />
                                       </IconButton>

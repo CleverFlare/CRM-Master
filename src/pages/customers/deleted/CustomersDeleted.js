@@ -151,7 +151,7 @@ const CustomersDeleted = () => {
   const dispatch = useDispatch();
   const [selected, setSelected] = useState([]);
   useEffect(() => {
-    if (Boolean(deletedCustomers.length)) return;
+    if (Boolean(deletedCustomers?.length)) return;
     customersGetRequest().then((res) => {
       dispatch({ type: "deletedCustomers/set", payload: res });
     });
@@ -229,7 +229,7 @@ const CustomersDeleted = () => {
         />
         <DataGrid
           rows={
-            Boolean(deletedCustomers.length)
+            Boolean(deletedCustomers?.length)
               ? parseToProperData(deletedCustomers)
               : []
           }
