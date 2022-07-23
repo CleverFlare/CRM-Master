@@ -91,7 +91,7 @@ const EmployeesAddNew = () => {
 
   const dispatch = useDispatch();
 
-  const [jobs, setJobs] = useState(jobsData.length ? jobsData : null);
+  const [jobs, setJobs] = useState(jobsData?.length ? jobsData : null);
 
   const [errors, setErrors] = useState({});
 
@@ -173,7 +173,7 @@ const EmployeesAddNew = () => {
   };
 
   useEffect(() => {
-    if (jobsData.length) return;
+    if (jobsData?.length) return;
     jobsGetRequest().then((res) => {
       dispatch({ type: "jobs/set", payload: res });
       setJobs(res);
@@ -440,7 +440,7 @@ const EmployeesAddNew = () => {
               </Stack>
               <Box
                 sx={{
-                  display: Boolean(permissionsState.length)
+                  display: Boolean(permissionsState?.length)
                     ? "initial"
                     : "none",
                 }}

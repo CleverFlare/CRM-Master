@@ -54,7 +54,7 @@ const TotalCustomers = () => {
           ? item.bussiness.join(", ")
           : "لا يوجد",
         comment: "لايوجد",
-        saler: item.agent,
+        saler: item.agent.name,
         channel: item.channel,
         id: item.id,
         allData: item,
@@ -70,7 +70,7 @@ const TotalCustomers = () => {
   );
 
   useEffect(() => {
-    if (Boolean(allCustomers.length)) return;
+    if (Boolean(allCustomers?.length)) return;
     customersGetRequest().then((res) => {
       dispatch({
         type: "allCustomers/set",
@@ -78,6 +78,8 @@ const TotalCustomers = () => {
       });
     });
   }, []);
+
+  console.log(allCustomers);
 
   const handleDelete = (e, rowData) => {
     deleteRequest("allCustomers", rowData.id);
@@ -98,9 +100,10 @@ const TotalCustomers = () => {
             },
           ]}
         />
+
         <DataGrid
           rows={
-            Boolean(allCustomers.length) ? parseToProperData(allCustomers) : []
+            Boolean(allCustomers?.length) ? parseToProperData(allCustomers) : []
           }
           onClick={(e, rowData) => {
             setInitials(rowData);
@@ -115,11 +118,13 @@ const TotalCustomers = () => {
         />
         {successAlert}
         {errorAlert}
-        <CustomerDetails
-          isOpened={openDetails}
-          onClose={() => setOpenDetails(false)}
-          initials={initials}
-        />
+        {permissions.includes("change_aqarclient") && (
+          <CustomerDetails
+            isOpened={openDetails}
+            onClose={() => setOpenDetails(false)}
+            initials={initials}
+          />
+        )}
       </Wrapper>
     </div>
   );

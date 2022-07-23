@@ -22,6 +22,13 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  Radio,
+  RadioGroup,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemButton,
+  ListItemText,
 } from "@mui/material";
 import ChangeCircleIcon from "@mui/icons-material/ChangeCircle";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
@@ -81,7 +88,7 @@ const dummyComments = [
   {
     picture:
       "https://cdn.pixabay.com/photo/2021/04/05/12/39/man-6153298_1280.jpg",
-    name: "محمد ماهر",
+    name: "احمد محمود",
     content: "حاجة",
     date: "22/7/2022",
     job: "مسؤول مبيعات",
@@ -89,7 +96,7 @@ const dummyComments = [
   {
     picture:
       "https://cdn.pixabay.com/photo/2021/04/05/12/39/man-6153298_1280.jpg",
-    name: "محمد ماهر",
+    name: "محمود عبدالله",
     content: "حاجة",
     date: "22/7/2022",
     job: "مسؤول مبيعات",
@@ -97,7 +104,31 @@ const dummyComments = [
   {
     picture:
       "https://cdn.pixabay.com/photo/2021/04/05/12/39/man-6153298_1280.jpg",
-    name: "محمد ماهر",
+    name: "مصطفى عبدالرحمن",
+    content: "حاجة",
+    date: "22/7/2022",
+    job: "مسؤول مبيعات",
+  },
+  {
+    picture:
+      "https://cdn.pixabay.com/photo/2021/04/05/12/39/man-6153298_1280.jpg",
+    name: "عبدالله خالد",
+    content: "حاجة",
+    date: "22/7/2022",
+    job: "مسؤول مبيعات",
+  },
+  {
+    picture:
+      "https://cdn.pixabay.com/photo/2021/04/05/12/39/man-6153298_1280.jpg",
+    name: "عبدالرحمن احمد",
+    content: "حاجة",
+    date: "22/7/2022",
+    job: "مسؤول مبيعات",
+  },
+  {
+    picture:
+      "https://cdn.pixabay.com/photo/2021/04/05/12/39/man-6153298_1280.jpg",
+    name: "خالد إبراهيم",
     content: "حاجة",
     date: "22/7/2022",
     job: "مسؤول مبيعات",
@@ -118,8 +149,15 @@ const CustomerDetails = ({
     });
   const [agentControls, agentSetControl, agentResetControls] = useControls({
     search: "",
-    selectedAgent: "",
+    agent: "",
+    transferMethod: true,
   });
+  const [
+    agentPostRequest,
+    agentSuccessAlert,
+    agentErrorAlert,
+    agentRequestIsPending,
+  ] = usePost("aqar/api/transfer/", "تم التبديل بنجاح!");
   const validate = useValidate();
   const [errors, setErrors] = useState({});
   const status = useSelector((state) => state.status.value);
@@ -133,6 +171,10 @@ const CustomerDetails = ({
     commentErrorAlert,
     isPending,
   ] = usePost("aqar/api/router/CommentClient/");
+  const [employeesGetRequest, employeesGetRequestError] = useGet(
+    "aqar/api/router/Employee/"
+  );
+  const employees = useSelector((state) => state.employees.value);
   const [tab, setTab] = useState("home");
   const convertToProperData = (array) => {
     const newArray = [];
@@ -141,7 +183,7 @@ const CustomerDetails = ({
         project: item.bussiness.map((project) => project.name).join(" ، "),
         channel: item.channel,
         agent: item.agent,
-        favContact: item.fav_contacts,
+        status: item.event,
         createdBy:
           initials?.allData?.history[0]?.history_user?.first_name +
           " " +
@@ -225,6 +267,7 @@ const CustomerDetails = ({
   ];
 
   const handleOnClose = (e) => {
+    console.log(employees);
     setTab("home");
     commentResetControls();
     onClose(e);
@@ -235,7 +278,15 @@ const CustomerDetails = ({
     statusGetRequest().then((res) => {
       dispatch({ type: "status/set", payload: res });
     });
+    if (Boolean(employees?.length)) return;
+    employeesGetRequest().then((res) => {
+      dispatch({ type: "employees/set", payload: res });
+    });
   }, []);
+
+  useEffect(() => {
+    agentSetControl("agent", initials?.allData?.agent?.id);
+  }, [initials?.allData?.agent?.id]);
 
   const handleSave = () => {
     validate([
@@ -267,6 +318,21 @@ const CustomerDetails = ({
         commentResetControls();
         handleOnClose();
       });
+    });
+  };
+
+  const handleSubmitAgent = () => {
+    if (agentControls.agent === initials?.allData?.agent?.id) return;
+    const requestBody = {
+      client: initials?.id,
+      agent: agentControls.agent,
+      option: agentControls.transferMethod,
+    };
+    agentPostRequest(requestBody, true, [
+      { name: "allCustomers", path: "aqar/api/router/Client/" },
+    ]).then((res) => {
+      if (res === null) return;
+      handleOnClose();
     });
   };
 
@@ -443,6 +509,7 @@ const CustomerDetails = ({
               p: 2,
               boxShadow: "0 0 20px #ffffff6e",
               maxHeight: 300,
+              minHeight: 300,
               overflowY: "auto",
             }}
             spacing={2}
@@ -474,6 +541,17 @@ const CustomerDetails = ({
                 </Stack>
               </Stack>
             ))}
+            {!Boolean(initials?.allData?.aqar_comment_client?.length) && (
+              <Stack
+                sx={{ width: "100%", height: "100%", flex: 1 }}
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Typography variant="h4" sx={{ color: "#fff5" }}>
+                  فارغ
+                </Typography>
+              </Stack>
+            )}
           </Stack>
         </DialogContent>
         <DialogContent>
@@ -617,6 +695,7 @@ const CustomerDetails = ({
               p: 2,
               boxShadow: "0 0 20px #ffffff6e",
               maxHeight: 400,
+              minHeight: 400,
             }}
             spacing={2}
           >
@@ -634,87 +713,101 @@ const CustomerDetails = ({
                   </InputAdornment>
                 ),
               }}
+              value={agentControls.search}
+              onChange={(e) => agentSetControl("search", e.target.value)}
             />
-            <Stack
+            <List
               sx={{
-                maxHeight: 300,
+                height: "100%",
                 overflowY: "auto",
               }}
             >
-              {dummyComments.map((comment, index) => (
-                <Button sx={{ color: "white" }} key={index}>
-                  <Stack
-                    direction="row"
-                    spacing={2}
-                    alignItems="center"
+              {employees
+                ?.filter(
+                  (item) =>
+                    (
+                      item?.user?.first_name +
+                      " " +
+                      item?.user?.last_name
+                    )?.includes(agentControls.search) ||
+                    item?.job?.includes(agentControls.search)
+                )
+                ?.map((agent, index) => (
+                  <ListItemButton
+                    selected={agent?.id === agentControls?.agent}
+                    onClick={(e) => agentSetControl("agent", agent?.id)}
                     sx={{
-                      width: "100%",
-                      padding: 1,
-                      bgcolor: comment?.selected ? "#b5b5b5" : "initial",
                       borderRadius: 2,
+                      "&.Mui-selected": {
+                        bgcolor: "#b5b5b5",
+                      },
+                      "&.Mui-selected:hover": {
+                        bgcolor: "#b5b5b5",
+                      },
+                      "& .MuiListItemText-primary": {
+                        color: "#fff",
+                      },
+                      "& .MuiListItemText-secondary": {
+                        color: "#fff",
+                      },
                     }}
+                    key={index}
                   >
-                    <Avatar
-                      src={comment.picture}
-                      sx={{ width: 40, height: 40 }}
+                    <ListItemAvatar>
+                      <Avatar
+                        src={agent?.picture}
+                        sx={{ width: 40, height: 40 }}
+                      />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={
+                        agent?.user?.first_name + " " + agent?.user?.last_name
+                      }
+                      secondary={agent?.job}
                     />
-                    <Stack
-                      direction="column"
-                      justifyContent="center"
-                      sx={{ height: "100%" }}
-                    >
-                      <Stack direction="row" spacing={2} alignItems="center">
-                        <Typography variant="body1">{comment.name}</Typography>
-                      </Stack>
-                      <Typography variant="body2">{comment.job}</Typography>
-                    </Stack>
-                  </Stack>
-                </Button>
-              ))}
-            </Stack>
+                  </ListItemButton>
+                ))}
+            </List>
           </Stack>
         </DialogContent>
         <DialogContent>
           <FormGroup sx={{ marginBottom: 5 }}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  sx={{
-                    color: "white",
-                    "& *": {
-                      color: "white",
-                    },
-                  }}
-                />
+            <RadioGroup
+              name="transfer-method"
+              value={agentControls.transferMethod}
+              onChange={(e) =>
+                agentSetControl("transferMethod", e.target.value)
               }
-              label="نفس المرحلة"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  sx={{
-                    color: "white",
-                    "& *": {
+            >
+              <FormControlLabel
+                control={
+                  <Radio
+                    sx={{
                       color: "white",
-                    },
-                  }}
-                />
-              }
-              label="حذف السجلات"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  sx={{
-                    color: "white",
-                    "& *": {
+                      "& *": {
+                        color: "white",
+                      },
+                    }}
+                  />
+                }
+                label="نفس المرحلة"
+                value={Boolean(true)}
+              />
+              <FormControlLabel
+                control={
+                  <Radio
+                    sx={{
                       color: "white",
-                    },
-                  }}
-                />
-              }
-              label="عميل جديد"
-            />
+                      "& *": {
+                        color: "white",
+                      },
+                    }}
+                  />
+                }
+                label="حذف السجلات"
+                value={Boolean(false)}
+              />
+            </RadioGroup>
           </FormGroup>
           <Stack
             direction="row"
@@ -736,6 +829,7 @@ const CustomerDetails = ({
                   filter: "brightness(.9)",
                 },
               }}
+              onClick={handleSubmitAgent}
             >
               <Typography sx={{ fontWeight: "bold" }}>حفظ</Typography>
             </Button>

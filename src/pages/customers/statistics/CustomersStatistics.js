@@ -153,19 +153,14 @@ const CustomersStatistics = () => {
     <Wrapper>
       <Parameter links={[{ text: "عملاء" }, { text: "احصائيات العملاء" }]} />
       <Stack spacing={5}>
-        <Grid
-          container
+        <Stack
+          direction="row"
           justifyContent="center"
+          alignItems="center"
           spacing={2}
-          sx={{
-            "& .MuiGrid-item": {
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            },
-          }}
+          flexWrap="wrap"
         >
-          <Grid item lg={3}>
+          <Stack justifyContent="center" alignItems="center">
             <StatisticalCard
               title="جميع العملاء"
               since="منذ يوم"
@@ -173,8 +168,8 @@ const CustomersStatistics = () => {
               percentage={100}
               profit={100}
             />
-          </Grid>
-          <Grid item lg={3}>
+          </Stack>
+          <Stack justifyContent="center" alignItems="center">
             <StatisticalCard
               title="العملاء المؤجله"
               since="منذ شهر"
@@ -182,8 +177,8 @@ const CustomersStatistics = () => {
               profit={4.1}
               bars={[5, 4, 2, 4, 2, 3, 5, 1, 3]}
             />
-          </Grid>
-          <Grid item lg={3}>
+          </Stack>
+          <Stack justifyContent="center" alignItems="center">
             <StatisticalCard
               title="العملاء الجدد"
               since="اكتساب"
@@ -191,8 +186,8 @@ const CustomersStatistics = () => {
               percentage={50}
               loss={2.4}
             />
-          </Grid>
-          <Grid item lg={3}>
+          </Stack>
+          <Stack justifyContent="center" alignItems="center">
             <StatisticalCard
               title="الموظفين الجدد"
               since="منذ اسبوع"
@@ -200,8 +195,8 @@ const CustomersStatistics = () => {
               profit={22.4}
               bars={[5, 4, 2, 4, 2, 3, 5, 1, 3]}
             />
-          </Grid>
-        </Grid>
+          </Stack>
+        </Stack>
         <Grid
           container
           spacing={3}

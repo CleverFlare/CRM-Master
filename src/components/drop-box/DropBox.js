@@ -16,8 +16,10 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import axios from "axios";
 import { useSelector } from "react-redux";
 
-const DropBox = ({ variant, path }) => {
+const DropBox = ({ variant }) => {
   const [files, setFiles] = useState([]);
+  const token = useSelector((state) => state.token.value);
+  const domain = useSelector((state) => state.domain.value);
 
   const fileRef = useRef();
 
@@ -32,28 +34,38 @@ const DropBox = ({ variant, path }) => {
     formData.append("file", file);
     const allFiles = [...files, { picture: "", progress: 0 }];
     setFiles(allFiles);
-    setTimeout(() => {
-      allFiles[allFiles.length - 1].progress = 50;
-      setFiles([...allFiles]);
-    }, 1000);
-    setTimeout(() => {
-      allFiles[allFiles.length - 1].progress = 100;
-      setFiles([...allFiles]);
-    }, 2000);
-    // axios.post(domain + path, formData, {
-    //   headers: {
-    //     //prettier-ignore
-    //     "Authorization": "Token " + token,
-    //   },
-    //   onUploadProgress: (progress) => {
-    //     const { loaded, total } = progress;
-    //     const percentage = Math.floor((loaded * 100) / total);
-    //     const allFiles = files;
-    //     const uploadingFile = (allFiles[allFiles.length].percentage =
-    //       percentage);
-    //     setFiles((old) => allFiles);
-    //   },
-    // });
+    // setTimeout(() => {
+    //   allFiles[allFiles.length - 1].progress = 50;
+    //   setFiles([...allFiles]);
+    // }, 1000);
+    // setTimeout(() => {
+    //   allFiles[allFiles.length - 1].progress = 100;
+    //   setFiles([...allFiles]);
+    // }, 2000);
+    axios.post(domain + "aqar/api/import/", formData, {
+      headers: {
+        //prettier-ignore
+        "Authorization": "Token " + token,
+      },
+      onUploadProgress: (progress) => {
+        const { loaded, total } = progress;
+        const percentage = Math.floor((loaded * 100) / total);
+        allFiles[allFiles.length - 1].progress = percentage;
+        setFiles([...allFiles]);
+      },
+    });
+  };
+
+  const handleExport = () => {
+    window.open(domain + "aqar/api/export/", "_parent");
+  };
+
+  const handleSubmit = () => {
+    if (variant !== "upload") {
+      handleExport();
+    } else {
+      handleUpload();
+    }
   };
 
   return (
@@ -74,7 +86,7 @@ const DropBox = ({ variant, path }) => {
             cursor: "default",
             margin: 2,
           }}
-          onClick={handleOpenFile}
+          onClick={handleSubmit}
         >
           <Stack
             sx={{
@@ -104,6 +116,7 @@ const DropBox = ({ variant, path }) => {
               variant="contained"
               size="large"
               sx={{ width: 150, height: 50 }}
+              onClick={handleSubmit}
             >
               {variant === "upload" ? "رفع الملف" : "تحميل الملف"}
             </Button>
@@ -206,3 +219,5 @@ const DropBox = ({ variant, path }) => {
 };
 
 export default DropBox;
+
+// owner_01000015160
