@@ -9,6 +9,7 @@ import {
   Select,
   Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
@@ -154,14 +155,14 @@ const FilterItem = ({
                 direction="column"
                 sx={{
                   width: "100%",
-                  paddingInline: "20px",
+                  padding: "10px",
                   boxSizing: "border-box",
                 }}
                 justifyContent="center"
                 spacing={2}
                 onClick={(event) => event.stopPropagation()}
               >
-                <FormControl>
+                {/* <FormControl>
                   <Select
                     value={balance}
                     onChange={handleBalanceChange}
@@ -171,8 +172,36 @@ const FilterItem = ({
                     <MenuItem value="greater">اكثر من</MenuItem>
                     <MenuItem value="less">اقل من</MenuItem>
                   </Select>
-                </FormControl>
+                </FormControl> */}
                 <TextField
+                  variant="standard"
+                  select
+                  SelectProps={{
+                    displayEmpty: true,
+                    renderValue: (selected) => {
+                      if (!selected) {
+                        return (
+                          <Typography sx={{ opacity: ".5" }}>الفئة</Typography>
+                        );
+                      } else {
+                        switch (selected) {
+                          case "equal":
+                            return "يساوي";
+                          case "greater":
+                            return "اكثر من";
+                          case "less":
+                            return "اقل من";
+                        }
+                      }
+                    },
+                  }}
+                >
+                  <MenuItem value="equal">يساوي</MenuItem>
+                  <MenuItem value="greater">اكثر من</MenuItem>
+                  <MenuItem value="less">اقل من</MenuItem>
+                </TextField>
+                <TextField
+                  variant="standard"
                   type="number"
                   inputProps={{ min: 0 }}
                   placeholder="ادخل الرقم"
