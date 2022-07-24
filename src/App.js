@@ -71,7 +71,7 @@ function App() {
               {permissions.includes("add_aqarproject") && (
                 <Route path="/projects/new" element={<ProjectsAddNew />} />
               )}
-              <Route path="/reports" element={<Reports />} />
+              {/* <Route path="/reports" element={<Reports />} /> */}
               <Route
                 path="/settings/change-password"
                 element={<ChangePassword />}

@@ -6,43 +6,87 @@ import { useDispatch, useSelector } from "react-redux";
 import useGet from "../../../hooks/useGet";
 import useDelete from "../../../hooks/useDelete";
 import CustomerDetails from "../../../components/customer-details/CustomerDetails";
-
-const dummyColumns = [
-  {
-    field: "name",
-    headerName: "الاسم",
-  },
-  {
-    field: "phone",
-    headerName: "الهاتف",
-  },
-  {
-    field: "project",
-    headerName: "المشروع",
-  },
-  {
-    field: "comment",
-    headerName: "تعليق",
-  },
-  {
-    field: "saler",
-    headerName: "مسؤول المبيعات",
-  },
-  {
-    field: "channel",
-    headerName: "القناة",
-  },
-];
+import { Button, Checkbox, Stack } from "@mui/material";
+import { CSVLink, CSVDownload } from "react-csv";
 
 const TotalCustomers = () => {
   const [openDetails, setOpenDetails] = useState(false);
   const [initials, setInitials] = useState({});
   const permissions = useSelector((state) => state.permissions.value);
+  const [exportArray, setExportArray] = useState({});
   const [customersGetRequest, customersGetRequestError] = useGet(
     "aqar/api/router/Client/"
   );
+  const [exportComp, setExportComp] = useState(null);
   const allCustomers = useSelector((state) => state.allCustomers.value);
   const dispatch = useDispatch();
+
+  const dummyColumns = [
+    {
+      field: "check",
+      headerName: "تحديد للإستيراد",
+      customeContent: (params) => (
+        <Checkbox
+          onClick={(e) => {
+            e.stopPropagation();
+            switch (e.target.checked) {
+              case true:
+                setExportArray((old) => {
+                  // const assignment = old;
+                  old[`${params.rowIndex}`] = {
+                    //prettier-ignore
+                    "الأسم": params.name,
+                    //prettier-ignore
+                    "الهاتف": params.phone,
+                    //prettier-ignore
+                    "المشروع": params.project,
+                    //prettier-ignore
+                    "تعليق": params.comment,
+                    //prettier-ignore
+                    "مسؤول المبيعات": params.saler,
+                    //prettier-ignore
+                    "القناة": params.channel,
+                  };
+                  return { ...old };
+                });
+                break;
+              case false:
+                setExportArray((old) => {
+                  old[`${params.rowIndex}`] = null;
+                  delete old[`${params.rowIndex}`];
+                  return { ...old };
+                });
+                break;
+            }
+          }}
+        />
+      ),
+    },
+    {
+      field: "name",
+      headerName: "الاسم",
+    },
+    {
+      field: "phone",
+      headerName: "الهاتف",
+    },
+    {
+      field: "project",
+      headerName: "المشروع",
+    },
+    {
+      field: "comment",
+      headerName: "تعليق",
+    },
+    {
+      field: "saler",
+      headerName: "مسؤول المبيعات",
+    },
+    {
+      field: "channel",
+      headerName: "القناة",
+    },
+  ];
 
   const parseToProperData = (json) => {
     let parentArray = [];
@@ -116,6 +160,32 @@ const TotalCustomers = () => {
             permissions.includes("delete_aqarclient") ? handleDelete : null
           }
         />
+        <Stack
+          justifyContent="center"
+          alignItems="center"
+          sx={{ paddingBottom: "20px" }}
+        >
+          <Button
+            variant="contained"
+            onClick={() => {
+              if (!Boolean(Object.keys(exportArray).length)) return;
+              setExportComp(
+                <CSVDownload
+                  data={Object.keys(exportArray).map((key) => exportArray[key])}
+                  target="_parent"
+                  filename={"my-file.csv"}
+                />
+              );
+              setTimeout(() => {
+                setExportComp(null);
+              }, 0);
+            }}
+          >
+            إستخراج
+          </Button>
+
+          {exportComp}
+        </Stack>
         {successAlert}
         {errorAlert}
         {permissions.includes("change_aqarclient") && (

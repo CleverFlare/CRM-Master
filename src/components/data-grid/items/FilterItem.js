@@ -15,19 +15,23 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import { useState, useEffect } from "react";
+import useGet from "../../../hooks/useGet";
 
 const FilterItem = ({
   name,
   properties,
   property,
   array,
-  setter,
+  setter = () => {},
   disableSorting,
 }) => {
   const [sort, setSort] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [balance, setBalance] = useState("equal");
   const open = Boolean(anchorEl);
+  const [filterBy, setFilterBy] = useState("equal");
+  const [compareValue, setCompareValue] = useState("");
+  const [selectedProject, setSelectedProject] = useState("");
 
   const handleBalanceChange = (event) => {
     setBalance(event.target.value);
@@ -45,24 +49,24 @@ const FilterItem = ({
 
   const handleSortTopToBottom = () => {
     const newArray = [...array];
-    return setter([
-      ...newArray.sort((a, b) =>
-        a[property].localeCompare(b[property], ["ar"])
-      ),
+    return setter((old) => [
+      ...old.sort((a, b) => a[property].localeCompare(b[property], ["ar"])),
     ]);
   };
 
   const handleSortBottomToTop = () => {
     const newArray = [...array];
-    return setter([
-      ...newArray.sort((a, b) =>
-        b[property].localeCompare(a[property], ["ar"])
-      ),
+    return setter((old) => [
+      ...old.sort((a, b) => b[property].localeCompare(a[property], ["ar"])),
     ]);
   };
 
   const handleSortReset = () => {
-    return setter([...array]);
+    return setter((old) => [
+      ...array.filter((item) =>
+        old.map((oldItem) => oldItem.id).includes(item.id)
+      ),
+    ]);
   };
 
   const handleSetSort = (event) => {
@@ -80,6 +84,45 @@ const FilterItem = ({
         handleSortTopToBottom();
     }
   };
+
+  const handleBudgetFilter = (value) => {
+    if (value === "" && Boolean(array?.length)) return setter([...array]);
+    switch (filterBy) {
+      case "equal":
+        return setter(
+          array?.filter(
+            (item) => parseFloat(item.allData.max_budget) === parseFloat(value)
+          )
+        );
+      case "greater":
+        return setter(
+          array?.filter(
+            (item) => parseFloat(item.allData.max_budget) > parseFloat(value)
+          )
+        );
+      case "less":
+        return setter(
+          array?.filter(
+            (item) => parseFloat(item.allData.max_budget) < parseFloat(value)
+          )
+        );
+    }
+  };
+
+  const handleFilter = () => {
+    if (selectedProject === "" && Boolean(array?.length))
+      return setter((old) => [...old]);
+    setter((old) => [
+      ...old?.filter((item) =>
+        item.allData.bussiness.includes(selectedProject)
+      ),
+    ]);
+  };
+
+  useEffect(() => {
+    handleBudgetFilter(compareValue);
+    handleFilter();
+  }, [compareValue, selectedProject]);
 
   return (
     <Stack
@@ -143,9 +186,28 @@ const FilterItem = ({
               },
             }}
           >
+            {Array.isArray(properties) && (
+              <MenuItem>
+                <ListItemText
+                  onClick={(e) => {
+                    setSelectedProject("");
+                    handleCloseMenu(e);
+                  }}
+                >
+                  الجميع
+                </ListItemText>
+              </MenuItem>
+            )}
             {Array.isArray(properties) ? (
               properties.map((item, index) => (
-                <MenuItem key={index} onClick={handleCloseMenu}>
+                <MenuItem
+                  key={index}
+                  onClick={(e) => {
+                    setSelectedProject(item.text);
+                    handleCloseMenu(e);
+                  }}
+                  selected={selectedProject === item.text}
+                >
                   {item.icon && <ListItemIcon>{item.icon}</ListItemIcon>}
                   <ListItemText>{item.text}</ListItemText>
                 </MenuItem>
@@ -155,7 +217,7 @@ const FilterItem = ({
                 direction="column"
                 sx={{
                   width: "100%",
-                  padding: "10px",
+                  padding: "10px 15px",
                   boxSizing: "border-box",
                 }}
                 justifyContent="center"
@@ -195,6 +257,11 @@ const FilterItem = ({
                       }
                     },
                   }}
+                  value={filterBy}
+                  onChange={(e) => {
+                    setCompareValue("");
+                    setFilterBy(e.target.value);
+                  }}
                 >
                   <MenuItem value="equal">يساوي</MenuItem>
                   <MenuItem value="greater">اكثر من</MenuItem>
@@ -206,6 +273,10 @@ const FilterItem = ({
                   inputProps={{ min: 0 }}
                   placeholder="ادخل الرقم"
                   size="small"
+                  onChange={(e) => {
+                    setCompareValue(e.target.value);
+                  }}
+                  value={compareValue}
                 />
               </Stack>
             )}

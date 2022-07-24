@@ -13,6 +13,7 @@ import tokenSlice from "./store/tokenSlice";
 import userIdSlice from "./store/userIdSlice";
 import userInfoSlice from "./store/userInfoSlice";
 import permissionsSlice from "./store/permissionsSlice";
+import newClientsSlice from "./store/newClientsSlice";
 
 export default configureStore({
   reducer: {
@@ -30,5 +31,6 @@ export default configureStore({
     deletedCustomers: deletedCustomers,
     status: statusSlice,
     permissions: permissionsSlice,
+    newClients: newClientsSlice,
   },
 });

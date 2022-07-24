@@ -150,7 +150,7 @@ const CustomerDetails = ({
   const [agentControls, agentSetControl, agentResetControls] = useControls({
     search: "",
     agent: "",
-    transferMethod: true,
+    transferMethod: 1,
   });
   const [
     agentPostRequest,
@@ -264,6 +264,10 @@ const CustomerDetails = ({
         </IconButton>
       ),
     },
+    {
+      name: "الميزانية",
+      value: initials?.allData?.max_budget,
+    },
   ];
 
   const handleOnClose = (e) => {
@@ -326,7 +330,7 @@ const CustomerDetails = ({
     const requestBody = {
       client: initials?.id,
       agent: agentControls.agent,
-      option: agentControls.transferMethod,
+      option: Boolean(Number(agentControls.transferMethod)),
     };
     agentPostRequest(requestBody, true, [
       { name: "allCustomers", path: "aqar/api/router/Client/" },
@@ -791,7 +795,7 @@ const CustomerDetails = ({
                   />
                 }
                 label="نفس المرحلة"
-                value={Boolean(true)}
+                value={1}
               />
               <FormControlLabel
                 control={
@@ -805,7 +809,7 @@ const CustomerDetails = ({
                   />
                 }
                 label="حذف السجلات"
-                value={Boolean(false)}
+                value={0}
               />
             </RadioGroup>
           </FormGroup>

@@ -126,12 +126,12 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
         },
       ],
     },
-    {
-      type: "normal",
-      text: "تقارير فريق المبيعات",
-      icon: <FeedIcon sx={{ color: "white" }} />,
-      path: "/reports",
-    },
+    // {
+    //   type: "normal",
+    //   text: "تقارير فريق المبيعات",
+    //   icon: <FeedIcon sx={{ color: "white" }} />,
+    //   path: "/reports",
+    // },
     {
       type: "parent",
       text: "الموظفين",

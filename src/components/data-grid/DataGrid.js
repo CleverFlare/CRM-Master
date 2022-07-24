@@ -30,6 +30,9 @@ import BlockIcon from "@mui/icons-material/Block";
 import areaMenu from "./assets/AreaMenuMapping";
 import code from "./assets/CountryCodeMapping";
 import projectsMenu from "./assets/ProjectsMenuMapping";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import useGet from "../../hooks/useGet";
 
 const balance = "filter";
 
@@ -46,12 +49,18 @@ const DataGrid = ({
   onEdit = null,
 }) => {
   const [rowsCopy, setRowsCopy] = useState(null);
+  const gotTheRows = false;
   const [openEditInfo, setOpenEditInfo] = useState(false);
   const [openEditPass, setOpenEditPass] = useState(false);
   const [initials, setInitial] = useState(false);
   const [pages, setPages] = useState(19);
   const [currentPage, setCurrentPage] = useState(1);
   const [sliceStart, setSliceStart] = useState(0);
+  const dispatch = useDispatch();
+  const projects = useSelector((state) => state.projects.value);
+  const [projectsGetRequest, projectsGetRequestError] = useGet(
+    "aqar/api/router/Project/"
+  );
   const [sliceEnd, setSliceEnd] = useState(maxRowsPerPage);
 
   const handleSetInitials = (value) => {
@@ -77,8 +86,8 @@ const DataGrid = ({
   useEffect(() => {
     if (rows) {
       setRowsCopy(rows);
-      setPages(Math.ceil(rows.length / maxRowsPerPage));
     }
+    setPages(Math.ceil(rows.length / maxRowsPerPage));
   }, [rows]);
 
   useEffect(() => {
@@ -86,8 +95,15 @@ const DataGrid = ({
     setSliceEnd(maxRowsPerPage * currentPage);
   }, [currentPage]);
 
+  useEffect(() => {
+    if (Boolean(projects.length)) return;
+    projectsGetRequest().then((res) =>
+      dispatch({ type: "projects/set", payload: res })
+    );
+  }, []);
+
   return (
-    <Paper sx={{ overflowX: "auto" }} elevation={2}>
+    <Paper sx={{ overflowX: "auto", marginBlock: 5 }} elevation={2}>
       <Paper variant="outlined">
         <Box sx={{ overflowX: "auto" }}>
           <Stack
@@ -159,23 +175,32 @@ const DataGrid = ({
                   name="الأسم"
                   property="name"
                   array={rows}
+                  actualArray={rowsCopy}
                   setter={setRowsCopy}
                 />
                 <FilterItem name="كود البلد" properties={code} disableSorting />
-                <FilterItem
+                {/* <FilterItem
                   name="المنطقة"
                   properties={areaMenu}
                   disableSorting
-                />
+                /> */}
                 <FilterItem
                   name="المشروع"
-                  properties={projectsMenu}
+                  properties={projects?.map((project) => ({
+                    text: project.name,
+                  }))}
                   disableSorting
+                  array={rows}
+                  setter={setRowsCopy}
+                  actualArray={rowsCopy}
                 />
                 <FilterItem
                   name="الميزانية"
                   properties={balance}
                   disableSorting
+                  array={rows}
+                  actualArray={rowsCopy}
+                  setter={setRowsCopy}
                 />
               </Stack>
             )}
@@ -243,14 +268,11 @@ const DataGrid = ({
                                   if (column.customeContent) {
                                     return (
                                       <TableCell key={columnIndex}>
-                                        {column.customeContent(
-                                          {
-                                            ...row,
-                                          },
-                                          setOpenEditInfo,
-                                          setOpenEditPass,
-                                          handleSetInitials
-                                        )}
+                                        {column.customeContent({
+                                          ...row,
+                                          columnIndex: columnIndex,
+                                          rowIndex: rowIndex,
+                                        })}
                                       </TableCell>
                                     );
                                   }
@@ -390,4 +412,4 @@ const DataGrid = ({
   );
 };
 
-export default DataGrid;
+export default React.memo(DataGrid);

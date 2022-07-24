@@ -15,6 +15,9 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useDispatch, useSelector } from "react-redux";
 import useGet from "../../hooks/useGet";
+import usePost from "../../hooks/usePost";
+import useValidate from "../../hooks/useValidate";
+import useControls from "../../hooks/useControls";
 
 const Login = () => {
   const sm = useMediaQuery(`(max-width: 740px)`);
@@ -27,48 +30,63 @@ const Login = () => {
     password: false,
   });
 
-  const [controls, setControls] = useState({
+  const [controls, setControl, resetControls] = useControls({
     username: "",
     password: "",
   });
 
   const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
+  // const [postRequest, successAlert, errorAlert, isPending] = usePost(
+  //   "api/login/",
+  //   "تم التسجيل بنجاح"
+  // );
+  const validate = useValidate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const requestBody = {
-      username: controls.username,
-      password: controls.password,
-    };
-    fetch(domain + "api/login/", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
+    validate([
+      {
+        name: "username",
+        value: controls.username,
+        isRequired: true,
       },
-      body: JSON.stringify(requestBody),
-    })
-      .then((res) => {
-        setControls({
-          username: "",
-          password: "",
-        });
-        setError("an error occured");
-        if (!res.ok) throw Error("couldn't login for some reason");
-        return res.json();
+      {
+        name: "password",
+        value: controls.password,
+        isRequired: true,
+      },
+    ]).then((output) => {
+      setErrors(output.errors);
+      if (!output.ok) return;
+      const requestBody = {
+        username: controls.username,
+        password: controls.password,
+      };
+      fetch(domain + "api/login/", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
       })
-      .then((json) => {
-        console.log(json);
-        dispatch({ type: "token/set", payload: json.token });
-        dispatch({ type: "id/set", payload: json.id });
-      })
-      .catch((err) => {
-        setControls({
-          username: "",
-          password: "",
+        .then((res) => {
+          if (!res.ok) {
+            setError("couldn't login for some reason");
+            throw Error("couldn't login for some reason");
+          }
+          return res.json();
+        })
+        .then((json) => {
+          dispatch({ type: "token/set", payload: json.token });
+          dispatch({ type: "id/set", payload: json.id });
+          resetControls();
+        })
+        .catch((err) => {
+          setError(`${err.message}`);
+          console.log(err.message);
         });
-        setError(`${err.message}`);
-        console.log(err.message);
-      });
+    });
   };
 
   return (
@@ -104,9 +122,9 @@ const Login = () => {
                 variant="standard"
                 label="اسم المستخدم"
                 value={controls.username}
-                onChange={(e) =>
-                  setControls((old) => ({ ...old, username: e.target.value }))
-                }
+                onChange={(e) => setControl("username", e.target.value)}
+                error={Boolean(errors?.username)}
+                helperText={errors?.username}
                 sx={{
                   maxWidth: "400px",
                   width: "100vmax",
@@ -151,9 +169,9 @@ const Login = () => {
                   },
                 }}
                 value={controls.password}
-                onChange={(e) =>
-                  setControls((old) => ({ ...old, password: e.target.value }))
-                }
+                onChange={(e) => setControl("password", e.target.value)}
+                error={Boolean(errors?.password)}
+                helperText={errors?.password}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment
