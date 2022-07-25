@@ -6,32 +6,80 @@ import { useDispatch, useSelector } from "react-redux";
 import useGet from "../../../hooks/useGet";
 import useDelete from "../../../hooks/useDelete";
 import CustomerDetails from "../../../components/customer-details/CustomerDetails";
-import { Button, Checkbox, Stack } from "@mui/material";
+import { Button, Checkbox, Stack, Typography } from "@mui/material";
 import { CSVLink, CSVDownload } from "react-csv";
+import usePagination from "../../../hooks/usePagination";
 
 const TotalCustomers = () => {
   const [openDetails, setOpenDetails] = useState(false);
   const [initials, setInitials] = useState({});
   const permissions = useSelector((state) => state.permissions.value);
-  const [exportArray, setExportArray] = useState({});
+  const [exportObject, setExportObject] = useState({});
   const [customersGetRequest, customersGetRequestError] = useGet(
     "aqar/api/router/Client/"
   );
+
+  const [data, setData] = useState([]);
   const [exportComp, setExportComp] = useState(null);
   const allCustomers = useSelector((state) => state.allCustomers.value);
+  const [current, limit, onNext, onPrev] = usePagination(
+    "aqar/api/router/Client/",
+    {
+      storeValuesToDispatch: "allCustomers",
+    },
+    setData
+  );
+  console.log(current);
   const dispatch = useDispatch();
 
   const dummyColumns = [
     {
       field: "check",
-      headerName: "تحديد للإستيراد",
+      headerName: (
+        <>
+          <Checkbox
+            onChange={(e) => {
+              if (Boolean(allCustomers.length)) {
+                switch (e.target.checked) {
+                  case true:
+                    parseToProperData(allCustomers)?.map((item, index) => {
+                      setExportObject((old) => {
+                        old[`${index}`] = {
+                          //prettier-ignore
+                          "الأسم": item.name,
+                          //prettier-ignore
+                          "الهاتف": item.phone,
+                          //prettier-ignore
+                          "المشروع": item.project,
+                          //prettier-ignore
+                          "تعليق": item.comment,
+                          //prettier-ignore
+                          "موظف": item.saler,
+                          //prettier-ignore
+                          "القناة": item.channel,
+                        };
+                        return { ...old };
+                      });
+                    });
+                    break;
+                  case false:
+                    setExportObject({});
+                }
+              }
+            }}
+          />
+        </>
+      ),
       customeContent: (params) => (
         <Checkbox
-          onClick={(e) => {
+          checked={Boolean(
+            Object?.keys(exportObject)?.includes(`${params.rowIndex}`)
+          )}
+          onChange={(e) => {
             e.stopPropagation();
             switch (e.target.checked) {
               case true:
-                setExportArray((old) => {
+                setExportObject((old) => {
                   // const assignment = old;
                   old[`${params.rowIndex}`] = {
                     //prettier-ignore
@@ -43,7 +91,7 @@ const TotalCustomers = () => {
                     //prettier-ignore
                     "تعليق": params.comment,
                     //prettier-ignore
-                    "مسؤول المبيعات": params.saler,
+                    "موظف": params.saler,
                     //prettier-ignore
                     "القناة": params.channel,
                   };
@@ -51,13 +99,16 @@ const TotalCustomers = () => {
                 });
                 break;
               case false:
-                setExportArray((old) => {
+                setExportObject((old) => {
                   old[`${params.rowIndex}`] = null;
                   delete old[`${params.rowIndex}`];
                   return { ...old };
                 });
                 break;
             }
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
           }}
         />
       ),
@@ -80,17 +131,17 @@ const TotalCustomers = () => {
     },
     {
       field: "saler",
-      headerName: "مسؤول المبيعات",
+      headerName: "الموظف",
     },
-    {
-      field: "channel",
-      headerName: "القناة",
-    },
+    // {
+    //   field: "channel",
+    //   headerName: "القناة",
+    // },
   ];
 
   const parseToProperData = (json) => {
     let parentArray = [];
-    json.map((item, index) => {
+    json?.map((item, index) => {
       const customer = {
         name: item.user.first_name + " " + item.user.last_name,
         phone: item.user.phone,
@@ -114,12 +165,12 @@ const TotalCustomers = () => {
   );
 
   useEffect(() => {
-    if (Boolean(allCustomers?.length)) return;
     customersGetRequest().then((res) => {
-      dispatch({
-        type: "allCustomers/set",
-        payload: res,
-      });
+      // dispatch({
+      //   type: "allCustomers/set",
+      //   payload: res.results,
+      // });
+      setData([...res.results]);
     });
   }, []);
 
@@ -146,32 +197,45 @@ const TotalCustomers = () => {
         />
 
         <DataGrid
-          rows={
-            Boolean(allCustomers?.length) ? parseToProperData(allCustomers) : []
-          }
-          onClick={(e, rowData) => {
+          rows={Boolean(data?.length) ? parseToProperData(data) : null}
+          onView={(e, rowData) => {
             setInitials(rowData);
             setOpenDetails(true);
             console.log(rowData);
           }}
+          current={current}
+          max={limit}
+          onNext={onNext}
+          onPrev={onPrev}
           columns={dummyColumns}
-          maxRowsPerPage={8}
+          maxRowsPerPage={7}
           onDelete={
-            permissions.includes("delete_aqarclient") ? handleDelete : null
+            permissions?.includes("delete_aqarclient") ? handleDelete : null
           }
         />
         <Stack
+          direction="row"
           justifyContent="center"
           alignItems="center"
           sx={{ paddingBottom: "20px" }}
+          spacing={2}
         >
           <Button
             variant="contained"
+            sx={{ width: "200px", height: "50px" }}
+            color="error"
+          >
+            حذف المحدد
+          </Button>
+          <Button
+            variant="contained"
             onClick={() => {
-              if (!Boolean(Object.keys(exportArray).length)) return;
+              if (!Boolean(Object.keys(exportObject).length)) return;
               setExportComp(
                 <CSVDownload
-                  data={Object.keys(exportArray).map((key) => exportArray[key])}
+                  data={Object.keys(exportObject)?.map(
+                    (key) => exportObject[key]
+                  )}
                   target="_parent"
                   filename={"my-file.csv"}
                 />
@@ -180,15 +244,15 @@ const TotalCustomers = () => {
                 setExportComp(null);
               }, 0);
             }}
+            sx={{ width: "200px", height: "50px" }}
           >
-            إستخراج
+            إستيراد المحدد
           </Button>
-
-          {exportComp}
         </Stack>
+        {exportComp}
         {successAlert}
         {errorAlert}
-        {permissions.includes("change_aqarclient") && (
+        {permissions?.includes("change_aqarclient") && (
           <CustomerDetails
             isOpened={openDetails}
             onClose={() => setOpenDetails(false)}

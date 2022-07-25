@@ -4,14 +4,15 @@ import DataGrid from "../../../components/data-grid/DataGrid";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useDelete from "../../../hooks/useDelete";
+import useFormatTimeAndDate from "../../../hooks/useFormatTimeAndDate";
 
 const dummyColumns = [
   {
     field: "name",
-    headerName: "اسم الوظيفة",
+    headerName: "اسم الحالة",
   },
   {
-    field: "created_at",
+    field: "createdAt",
     headerName: "تاريخ الإنشاء",
   },
 ];
@@ -29,6 +30,7 @@ const Statuses = () => {
   const token = useSelector((state) => state.token.value);
   const domain = useSelector((state) => state.domain.value);
   const status = useSelector((state) => state.status.value);
+  const format = useFormatTimeAndDate();
   const [deleteRequest, deleteSuccessAlert, deleteErrorAlert] = useDelete(
     "aqar/api/router/Status/",
     "تم محو الحالة بنجاح!"
@@ -56,15 +58,27 @@ const Statuses = () => {
       .then((json) => {
         dispatch({
           type: "status/set",
-          payload: json,
+          payload: json?.results,
         });
       });
   }, []);
+
+  const parseToProperData = (data) => {
+    let returnedArray = [];
+    data.map((item) => {
+      returnedArray.push({
+        name: item.name,
+        createdAt: format(item.created_at),
+      });
+    });
+    return returnedArray;
+  };
+
   return (
     <Wrapper>
       <Parameter links={[{ text: "العملاء" }, { text: "حالات العميل" }]} />
       <DataGrid
-        rows={status ? status : []}
+        rows={Boolean(status.length) ? parseToProperData(status) : null}
         columns={dummyColumns}
         nameWithSearch
         maxRowsPerPage={8}

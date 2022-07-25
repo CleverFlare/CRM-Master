@@ -3,23 +3,31 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useState, useEffect } from "react";
 
-const TablePagination = ({ max, page, setPage }) => {
-  const handleChange = (event) => {
-    setPage(event.target.value);
-  };
+const TablePagination = ({
+  max,
+  page,
+  setPage,
+  current = "1",
+  onNext = () => {},
+  onPrev = () => {},
+  onInput = () => {},
+}) => {
+  // const handleChange = (event) => {
+  //   setPage(event.target.value);
+  // };
 
-  const handleIncrease = () => {
-    setPage((prev) => prev + 1);
-  };
+  // const handleIncrease = () => {
+  //   setPage((prev) => prev + 1);
+  // };
 
-  const handleDecrease = () => {
-    setPage((prev) => prev - 1);
-  };
+  // const handleDecrease = () => {
+  //   setPage((prev) => prev - 1);
+  // };
 
-  useEffect(() => {
-    if (page < 1) setPage(1);
-    if (page > max) setPage(max);
-  }, [page]);
+  // useEffect(() => {
+  //   if (page < 1) setPage(1);
+  //   if (page > max) setPage(max);
+  // }, [page]);
 
   return (
     <Stack
@@ -30,7 +38,7 @@ const TablePagination = ({ max, page, setPage }) => {
       spacing={1}
       sx={{ direction: "ltr" }}
     >
-      <IconButton onClick={handleIncrease}>
+      <IconButton onClick={onNext}>
         <ArrowForwardIosIcon
           sx={{ width: "15px", height: "15px" }}
           color="primary"
@@ -46,8 +54,8 @@ const TablePagination = ({ max, page, setPage }) => {
         <input
           type="number"
           className="disable-number-controllers"
-          value={page}
-          onInput={handleChange}
+          value={current}
+          onInput={onInput}
           style={{
             width: 20,
             height: 20,
@@ -59,7 +67,7 @@ const TablePagination = ({ max, page, setPage }) => {
           }}
         />
       </Box>
-      <IconButton onClick={handleDecrease}>
+      <IconButton onClick={onPrev}>
         <ArrowBackIosNewIcon
           sx={{ width: "15px", height: "15px" }}
           color="primary"

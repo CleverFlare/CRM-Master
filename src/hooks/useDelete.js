@@ -46,7 +46,7 @@ const useDelete = (
           );
         } else {
           syncDataRequest().then((res) => {
-            dispatch({ type: requestName + "/set", payload: res });
+            dispatch({ type: requestName + "/set", payload: res.results });
           });
         }
         return res.data;

@@ -238,7 +238,7 @@ const Post = ({ name, picture, date, children, id, imgs = null }) => {
                     horizontal: "left",
                   }}
                 >
-                  {permissions.includes("change_aqarpost") && (
+                  {permissions?.includes("change_aqarpost") && (
                     <MenuItem
                       onClick={() => {
                         handleCloseMenu();
@@ -251,7 +251,7 @@ const Post = ({ name, picture, date, children, id, imgs = null }) => {
                       <ListItemText>تعديل المنشور</ListItemText>
                     </MenuItem>
                   )}
-                  {permissions.includes("delete_aqarpost") && (
+                  {permissions?.includes("delete_aqarpost") && (
                     <MenuItem
                       onClick={() => {
                         handleCloseMenu();

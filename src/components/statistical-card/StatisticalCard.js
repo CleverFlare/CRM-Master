@@ -17,6 +17,7 @@ const StatisticalCard = ({
   profit,
   loss = 0,
   bars,
+  sx = {},
 }) => {
   return (
     <Paper
@@ -27,6 +28,7 @@ const StatisticalCard = ({
         maxWidth: "280px",
         width: "100%",
         color: "white",
+        ...sx,
       }}
       elevation={3}
     >
@@ -69,7 +71,7 @@ const StatisticalCard = ({
               alignItems="flex-end"
               spacing={1}
             >
-              {bars.map((bar, index) => (
+              {bars?.map((bar, index) => (
                 <Box
                   key={index}
                   sx={{

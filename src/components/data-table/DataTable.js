@@ -46,7 +46,7 @@ const DataTable = ({
           >
             <TableHead>
               <TableRow>
-                {columns.map((column, index) => (
+                {columns?.map((column, index) => (
                   <TableCell key={index}>
                     {column.headerName ? column.headerName : column.field}
                   </TableCell>
@@ -55,7 +55,7 @@ const DataTable = ({
             </TableHead>
             <TableBody sx={{ height: "max-content" }}>
               {rows &&
-                rows.map((row, rowIndex) => {
+                rows?.map((row, rowIndex) => {
                   return (
                     <TableRow
                       sx={{
@@ -64,7 +64,7 @@ const DataTable = ({
                       key={rowIndex}
                     >
                       {columns &&
-                        columns.map((column, columnIndex) => {
+                        columns?.map((column, columnIndex) => {
                           if (row[column.field]) {
                             return (
                               <TableCell key={columnIndex}>

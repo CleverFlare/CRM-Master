@@ -6,7 +6,7 @@ const Parameter = ({ links }) => {
     <div style={{ padding: "20px 0" }}>
       <Breadcrumbs separator={<KeyboardDoubleArrowLeftIcon color="primary" />}>
         {links &&
-          links.map((item, index) => (
+          links?.map((item, index) => (
             <Link underline="none" color="primary.main" key={index}>
               {item.text}
             </Link>

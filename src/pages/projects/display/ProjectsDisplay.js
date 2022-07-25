@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Parameter from "../../../components/parameter/Parameter";
 import Project, { ProjectSkeleton } from "../../../components/project/Project";
 import Wrapper from "../../../components/wrapper/Wrapper";
@@ -22,14 +22,17 @@ const ProjectSkeletonsStack = () => {
 const ProjectsDisplay = () => {
   const token = useSelector((state) => state.token.value);
   const domain = useSelector((state) => state.domain.value);
+  const projects = useSelector((state) => state.projects.value);
+  const dispatch = useDispatch();
   const [projectsGetRequest, projectsGetRequestError] = useGet(
     "aqar/api/router/Project/"
   );
-  const [projects, setProjects] = useState([]);
-  const [isPending, setIsPending] = useState(true);
+  const [isPending, setIsPending] = useState(false);
   useEffect(() => {
+    if (Boolean(projects.length)) return;
+    setIsPending(true);
     projectsGetRequest().then((res) => {
-      setProjects(res);
+      dispatch({ type: "projects/set", payload: res.results });
       setIsPending(false);
     });
   }, []);
@@ -49,8 +52,8 @@ const ProjectsDisplay = () => {
       />
       <Stack spacing={4}>
         {isPending && <ProjectSkeletonsStack />}
-        {projects.length > 0 &&
-          projects.map((project, index) => (
+        {Boolean(projects.length) &&
+          projects?.map((project, index) => (
             <Project
               key={index}
               picture={project.logo}

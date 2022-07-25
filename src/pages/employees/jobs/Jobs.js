@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import useGet from "../../../hooks/useGet";
 import useDelete from "../../../hooks/useDelete";
+import useFormatTimeAndDate from "../../../hooks/useFormatTimeAndDate";
 
 const dummyColumns = [
   {
@@ -34,6 +35,7 @@ const Jobs = () => {
   const permissions = useSelector((state) => state.permissions.value);
   const jobs = useSelector((state) => state.jobs.value);
   const [jobsGetRequest, jobsGetRequestError] = useGet("aqar/api/router/Job/");
+  const format = useFormatTimeAndDate();
   const [deleteRequest, successAlert, errorAlert] = useDelete(
     "aqar/api/router/Job/",
     "تم حذف الوظيفة بنجاح"
@@ -42,10 +44,10 @@ const Jobs = () => {
 
   const convertIntoProperObject = (json) => {
     const arrayOfData = [];
-    json.map((item, index) => {
+    json?.map((item, index) => {
       arrayOfData.push({
         title: item.title,
-        createdAt: item.created_at,
+        createdAt: format(item.created_at),
         id: item.id,
       });
     });
@@ -55,7 +57,7 @@ const Jobs = () => {
   useEffect(() => {
     if (Boolean(jobs.length)) return;
     jobsGetRequest().then((res) => {
-      dispatch({ type: "jobs/set", payload: res });
+      dispatch({ type: "jobs/set", payload: res.results });
     });
   }, []);
 
@@ -68,12 +70,12 @@ const Jobs = () => {
       <Wrapper>
         <Parameter links={[{ text: "الموظفين" }, { text: "الوظائف" }]} />
         <DataGrid
-          rows={Boolean(jobs.length) ? convertIntoProperObject(jobs) : []}
+          rows={Boolean(jobs.length) ? convertIntoProperObject(jobs) : null}
           columns={dummyColumns}
           nameWithSearch
           maxRowsPerPage={8}
           onDelete={
-            permissions.includes("delete_aqarjob") ? handleDelete : null
+            permissions?.includes("delete_aqarjob") ? handleDelete : null
           }
         />
         {successAlert}

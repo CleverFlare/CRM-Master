@@ -167,15 +167,15 @@ const CustomersAddNew = () => {
   useEffect(() => {
     if (projects.length) return;
     projectsGetRequest().then((res) => {
-      dispatch({ type: "projects/set", payload: res });
+      dispatch({ type: "projects/set", payload: res.results });
     });
     if (channels.length) return;
     channelsGetRequest().then((res) => {
-      dispatch({ type: "channels/set", payload: res });
+      dispatch({ type: "channels/set", payload: res.results });
     });
     if (employees.length) return;
     employeesGetRequest().then((res) => {
-      dispatch({ type: "employees/set", payload: res });
+      dispatch({ type: "employees/set", payload: res.results });
     });
   }, []);
 
@@ -266,7 +266,7 @@ const CustomersAddNew = () => {
                           }
                           value={controls.code}
                         >
-                          {countries.map((item, index) => (
+                          {countries?.map((item, index) => (
                             <MenuItem key={index} value={item.code + item.flag}>
                               <ListItemIcon
                                 sx={{
@@ -348,7 +348,7 @@ const CustomersAddNew = () => {
                 helperText={errors?.projects}
               >
                 {projects ? (
-                  projects.map((project, index) => (
+                  projects?.map((project, index) => (
                     <MenuItem value={project.id} key={index}>
                       {project.name}
                       <Box
@@ -376,7 +376,7 @@ const CustomersAddNew = () => {
               </TextField>
               <TextField
                 variant="standard"
-                label="مسؤول المبيعات"
+                label="موظف"
                 select
                 SelectProps={{
                   defaultValue: "",
@@ -387,7 +387,7 @@ const CustomersAddNew = () => {
                         <Typography
                           sx={{ color: "currentColor", opacity: "0.42" }}
                         >
-                          مسؤول المبيعات
+                          موظف
                         </Typography>
                       );
                     } else {
@@ -416,7 +416,7 @@ const CustomersAddNew = () => {
                 helperText={errors?.saler}
               >
                 {employees ? (
-                  employees.map((employee, index) => (
+                  employees?.map((employee, index) => (
                     <MenuItem value={employee.id} key={index}>
                       {employee.user.first_name + " " + employee.user.last_name}
                     </MenuItem>
@@ -483,7 +483,7 @@ const CustomersAddNew = () => {
                 helperText={errors?.channel}
               >
                 {channels ? (
-                  channels.map((channel, index) => (
+                  channels?.map((channel, index) => (
                     <MenuItem value={channel.id} key={index}>
                       <ListItemIcon sx={{ paddingRight: "10px" }}>
                         <Avatar src={channel.logo} sx={{ bgcolor: "orange" }}>

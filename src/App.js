@@ -39,36 +39,36 @@ function App() {
                 path="/customers/statistics"
                 element={<CustomersStatistics />}
               />
-              {permissions.includes("view_aqarclient") && (
+              {permissions?.includes("view_aqarclient") && (
                 <Route path="/customers/total" element={<TotalCustomers />} />
               )}
-              {permissions.includes("view_aqarclient") && (
+              {permissions?.includes("view_aqarclient") && (
                 <Route
                   path="/customers/deleted"
                   element={<CustomersDeleted />}
                 />
               )}
-              {permissions.includes("view_aqarclient") && (
+              {permissions?.includes("view_aqarclient") && (
                 <Route path="/customers/new" element={<CustomersNew />} />
               )}
               <Route path="/customers/import" element={<CustomersImport />} />
               <Route path="/customers/export" element={<CustomersExport />} />
-              {permissions.includes("view_aqarproject") && (
+              {permissions?.includes("view_aqarproject") && (
                 <Route path="/projects/display" element={<ProjectsDisplay />} />
               )}
-              {permissions.includes("add_aqarclient") && (
+              {permissions?.includes("add_aqarclient") && (
                 <Route
                   path="/customers/add-new"
                   element={<CustomersAddNew />}
                 />
               )}
-              {permissions.includes("add_aqarevent") && (
+              {permissions?.includes("add_aqarevent") && (
                 <Route path="/customers/add-status" element={<AddStatus />} />
               )}
-              {permissions.includes("view_aqarevent") && (
+              {permissions?.includes("view_aqarevent") && (
                 <Route path="/customers/statuses" element={<Statuses />} />
               )}
-              {permissions.includes("add_aqarproject") && (
+              {permissions?.includes("add_aqarproject") && (
                 <Route path="/projects/new" element={<ProjectsAddNew />} />
               )}
               {/* <Route path="/reports" element={<Reports />} /> */}
@@ -76,22 +76,22 @@ function App() {
                 path="/settings/change-password"
                 element={<ChangePassword />}
               />
-              {permissions.includes("add_aqarchannel") && (
+              {permissions?.includes("add_aqarchannel") && (
                 <Route path="/channels/add-new" element={<AddChannel />} />
               )}
-              {permissions.includes("view_aqarchannel") && (
+              {permissions?.includes("view_aqarchannel") && (
                 <Route path="/channels/display" element={<DisplayChannels />} />
               )}
-              {permissions.includes("add_aqaremployee") && (
+              {permissions?.includes("add_aqaremployee") && (
                 <Route path="/employees/new" element={<EmployeesAddNew />} />
               )}
-              {permissions.includes("view_aqaremployee") && (
+              {permissions?.includes("view_aqaremployee") && (
                 <Route path="/employees/data" element={<EmployeesData />} />
               )}
-              {permissions.includes("add_aqarjob") && (
+              {permissions?.includes("add_aqarjob") && (
                 <Route path="/employees/add-job" element={<AddJob />} />
               )}
-              {permissions.includes("view_aqarjob") && (
+              {permissions?.includes("view_aqarjob") && (
                 <Route path="/employees/jobs" element={<Jobs />} />
               )}
             </Routes>

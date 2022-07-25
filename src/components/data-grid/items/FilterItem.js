@@ -64,7 +64,7 @@ const FilterItem = ({
   const handleSortReset = () => {
     return setter((old) => [
       ...array.filter((item) =>
-        old.map((oldItem) => oldItem.id).includes(item.id)
+        old?.map((oldItem) => oldItem.id)?.includes(item.id)
       ),
     ]);
   };
@@ -114,7 +114,7 @@ const FilterItem = ({
       return setter((old) => [...old]);
     setter((old) => [
       ...old?.filter((item) =>
-        item.allData.bussiness.includes(selectedProject)
+        item.allData.bussiness?.includes(selectedProject)
       ),
     ]);
   };
@@ -199,7 +199,7 @@ const FilterItem = ({
               </MenuItem>
             )}
             {Array.isArray(properties) ? (
-              properties.map((item, index) => (
+              properties?.map((item, index) => (
                 <MenuItem
                   key={index}
                   onClick={(e) => {

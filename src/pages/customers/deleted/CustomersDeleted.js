@@ -132,7 +132,7 @@ const CustomersDeleted = () => {
 
   const parseToProperData = (json) => {
     let parentArray = [];
-    json.map((item, index) => {
+    json?.map((item, index) => {
       const customer = {
         name: item.user.first_name + " " + item.user.last_name,
         phone: item.user.phone,
@@ -140,20 +140,22 @@ const CustomersDeleted = () => {
           ? item.bussiness.join(", ")
           : "لا يوجد",
         comment: "لايوجد",
-        saler: item.agent,
+        saler: item.agent.name,
         channel: item.channel,
         id: item.id,
+        allData: item,
       };
       parentArray.push(customer);
     });
     return parentArray;
   };
+
   const dispatch = useDispatch();
   const [selected, setSelected] = useState([]);
   useEffect(() => {
     if (Boolean(deletedCustomers?.length)) return;
     customersGetRequest().then((res) => {
-      dispatch({ type: "deletedCustomers/set", payload: res });
+      dispatch({ type: "deletedCustomers/set", payload: res.results });
     });
   }, []);
 
@@ -204,7 +206,7 @@ const CustomersDeleted = () => {
     },
     {
       field: "saler",
-      headerName: "مسؤول المبيعات",
+      headerName: "موظف",
     },
     {
       field: "channel",
@@ -231,7 +233,7 @@ const CustomersDeleted = () => {
           rows={
             Boolean(deletedCustomers?.length)
               ? parseToProperData(deletedCustomers)
-              : []
+              : null
           }
           columns={dummyColumns}
           maxRowsPerPage={10}

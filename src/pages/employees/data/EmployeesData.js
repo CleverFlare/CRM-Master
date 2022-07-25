@@ -1,4 +1,4 @@
-import { IconButton, Paper, Stack } from "@mui/material";
+import { Avatar, IconButton, Paper, Stack, Typography } from "@mui/material";
 import DataGrid from "../../../components/data-grid/DataGrid";
 import Parameter from "../../../components/parameter/Parameter";
 import Wrapper from "../../../components/wrapper/Wrapper";
@@ -19,6 +19,12 @@ const dummyColumns = [
   {
     field: "name",
     headerName: "الأسم",
+    customeContent: (params) => (
+      <Stack direction="row" alignItems="center" spacing={2}>
+        <Avatar sx={{ height: "34px", width: "34px" }} src={params.picture} />
+        <Typography>{params.name}</Typography>
+      </Stack>
+    ),
   },
   {
     field: "email",
@@ -168,14 +174,15 @@ const EmployeesData = () => {
 
   const parseToProperData = (array) => {
     let newArray = [];
-    array.map((item) => {
+    array?.map((item) => {
       const employee = {
         username: item?.user?.username,
         name: item.user?.first_name + " " + item.user?.last_name,
         email: item.user?.email,
         job: item?.job,
         id: item?.id,
-        permissions: item?.user?.user_permissions.map(
+        picture: item?.user?.image,
+        permissions: item?.user?.user_permissions?.map(
           (permission) => permission.codename
         ),
       };
@@ -186,7 +193,7 @@ const EmployeesData = () => {
 
   useEffect(() => {
     employeeGetRequest().then((res) => {
-      dispatch({ type: "employees/set", payload: res });
+      dispatch({ type: "employees/set", payload: res.results });
     });
   }, []);
 
@@ -213,7 +220,7 @@ const EmployeesData = () => {
           nameWithSearch
           maxRowsPerPage={10}
           onEdit={
-            permissions.includes("change_aqaremployee")
+            permissions?.includes("change_aqaremployee")
               ? (e, rowData) => {
                   setIsEditOpened(true);
                   setEditInitials({
@@ -227,10 +234,10 @@ const EmployeesData = () => {
               : null
           }
           onDelete={
-            permissions.includes("delete_aqaremployee") ? handleDelete : null
+            permissions?.includes("delete_aqaremployee") ? handleDelete : null
           }
           onChangePassword={
-            permissions.includes("change_aqaremployee")
+            permissions?.includes("change_aqaremployee")
               ? (e, rowData) => {
                   setEditInitials({
                     id: rowData.id,

@@ -21,18 +21,20 @@ const Layout = ({ children }) => {
   };
   useEffect(() => {
     userInfoGetRequest().then((res) => {
-      console.log(res[0]);
       dispatch({
         type: "permissions/set",
-        payload: res[0].user_permissions.map((item) => item.codename),
+        payload: res?.results?.[0]?.user_permissions?.map(
+          (item) => item.codename
+        ),
       });
       dispatch({
         type: "userInfo/set",
         payload: {
-          name: res[0].first_name + " " + res[0].last_name,
-          job: res[0]?.job_title,
-          picture: res[0]?.image,
-          username: res[0]?.username,
+          name:
+            res?.results?.[0]?.first_name + " " + res?.result?.[0]?.last_name,
+          job: res?.results?.[0]?.job_title,
+          picture: res?.results?.[0]?.image,
+          username: res?.results?.[0]?.username,
         },
       });
     });

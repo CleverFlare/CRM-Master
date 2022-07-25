@@ -22,7 +22,7 @@ const dummyColumns = [
   },
   {
     field: "saler",
-    headerName: "مسؤول المبيعات",
+    headerName: "موظف",
   },
   {
     field: "channel",

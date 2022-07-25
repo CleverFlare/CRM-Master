@@ -9,6 +9,9 @@ export const allCustomersSlice = createSlice({
     set: (state, action) => {
       state.value = action.payload;
     },
+    reset: (state) => {
+      state.value = [];
+    },
   },
 });
 

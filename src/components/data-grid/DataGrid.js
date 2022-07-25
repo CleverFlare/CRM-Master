@@ -39,14 +39,18 @@ const balance = "filter";
 const DataGrid = ({
   rows,
   columns,
-  nameWithSearch,
   maxRowsPerPage,
-  onClick = null,
+  onView = null,
   onDelete = null,
   onArchive = null,
   onChangePassword = null,
   onBlock = null,
   onEdit = null,
+  onNext = () => {},
+  onPrev = () => {},
+  onInput = () => {},
+  max = 1,
+  current,
 }) => {
   const [rowsCopy, setRowsCopy] = useState(null);
   const gotTheRows = false;
@@ -77,7 +81,7 @@ const DataGrid = ({
 
   const handleSearchName = (event) => {
     const filteredArray = rows.filter((item, index) =>
-      item.name.includes(event.target.value)
+      item.name?.includes(event.target.value)
     );
     console.log(filteredArray);
     setRowsCopy(filteredArray);
@@ -87,18 +91,18 @@ const DataGrid = ({
     if (rows) {
       setRowsCopy(rows);
     }
-    setPages(Math.ceil(rows.length / maxRowsPerPage));
+    // setPages(Math.ceil(rows?.length / maxRowsPerPage));
   }, [rows]);
 
-  useEffect(() => {
-    setSliceStart(maxRowsPerPage * (currentPage - 1));
-    setSliceEnd(maxRowsPerPage * currentPage);
-  }, [currentPage]);
+  // useEffect(() => {
+  //   setSliceStart(maxRowsPerPage * (currentPage - 1));
+  //   setSliceEnd(maxRowsPerPage * currentPage);
+  // }, [currentPage]);
 
   useEffect(() => {
-    if (Boolean(projects.length)) return;
+    if (Boolean(projects?.length)) return;
     projectsGetRequest().then((res) =>
-      dispatch({ type: "projects/set", payload: res })
+      dispatch({ type: "projects/set", payload: res.results })
     );
   }, []);
 
@@ -112,99 +116,8 @@ const DataGrid = ({
           >
             {/* Grid Header */}
 
-            {nameWithSearch ? (
-              <Stack
-                direction="row"
-                alignItems="center"
-                divider={
-                  <Divider orientation="vertical" variant="middle" flexItem />
-                }
-                sx={{ width: "100%", height: 70 }}
-              >
-                <FilterItem
-                  name="الأسم"
-                  property="name"
-                  array={rows}
-                  setter={setRowsCopy}
-                />
-                <Stack
-                  direction="row-reverse"
-                  alignItems="center"
-                  sx={{
-                    width: "100%",
-                    boxSizing: "border-box",
-                    paddingInline: 10,
-                  }}
-                >
-                  <TextField
-                    variant="standard"
-                    placeholder="بحث"
-                    sx={{
-                      width: 400,
-                      "& .MuiInput-root": {
-                        borderRadius: "100vmax",
-                        border: "none",
-                        bgcolor: "#f5f5f5",
-                        padding: 0.5,
-                        boxSizing: "border-box",
-                      },
-                    }}
-                    onChange={handleSearchName}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton>
-                            <SearchIcon />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Stack>
-              </Stack>
-            ) : (
-              <Stack
-                direction="row"
-                alignItems="center"
-                divider={
-                  <Divider orientation="vertical" variant="middle" flexItem />
-                }
-                sx={{ width: "100%", height: 70 }}
-              >
-                <FilterItem
-                  name="الأسم"
-                  property="name"
-                  array={rows}
-                  actualArray={rowsCopy}
-                  setter={setRowsCopy}
-                />
-                <FilterItem name="كود البلد" properties={code} disableSorting />
-                {/* <FilterItem
-                  name="المنطقة"
-                  properties={areaMenu}
-                  disableSorting
-                /> */}
-                <FilterItem
-                  name="المشروع"
-                  properties={projects?.map((project) => ({
-                    text: project.name,
-                  }))}
-                  disableSorting
-                  array={rows}
-                  setter={setRowsCopy}
-                  actualArray={rowsCopy}
-                />
-                <FilterItem
-                  name="الميزانية"
-                  properties={balance}
-                  disableSorting
-                  array={rows}
-                  actualArray={rowsCopy}
-                  setter={setRowsCopy}
-                />
-              </Stack>
-            )}
-            <Divider orientation="horizontal" />
+            {/* filter items were here */}
+            {/* <Divider orientation="horizontal" /> */}
             {/* Grid Content */}
             <Box
               sx={{
@@ -224,9 +137,16 @@ const DataGrid = ({
                     },
                   }}
                 >
-                  <TableHead>
+                  <TableHead
+                    sx={{
+                      position: "sticky",
+                      top: 0,
+                      zIndex: 500,
+                      bgcolor: "white",
+                    }}
+                  >
                     <TableRow>
-                      {columns.map((column, index) => (
+                      {columns?.map((column, index) => (
                         <TableCell key={index}>
                           {column.headerName ? column.headerName : column.field}
                         </TableCell>
@@ -241,30 +161,22 @@ const DataGrid = ({
                   <TableBody sx={{ height: "max-content" }}>
                     {rowsCopy &&
                       rowsCopy
-                        .slice(sliceStart, sliceEnd)
-                        .map((row, rowIndex) => {
+                        // .slice(sliceStart, sliceEnd)
+                        ?.map((row, rowIndex) => {
                           return (
                             <TableRow
                               sx={{
-                                bgcolor: rowIndex % 2 == 0 ? "#f5f5f5" : "#fff",
-                                cursor: Boolean(onClick)
-                                  ? "pointer"
-                                  : "default",
-                                "&:hover": {
-                                  filter: Boolean(onClick)
-                                    ? "brightness(0.95)"
-                                    : "none",
-                                },
+                                bgcolor:
+                                  rowIndex % 2 == 0
+                                    ? "#f5f5f5"
+                                    : "#fff"
+                                    ? "pointer"
+                                    : "default",
                               }}
-                              onClick={
-                                Boolean(onClick)
-                                  ? (e) => onClick(e, row)
-                                  : () => {}
-                              }
                               key={rowIndex}
                             >
                               {columns &&
-                                columns.map((column, columnIndex) => {
+                                columns?.map((column, columnIndex) => {
                                   if (column.customeContent) {
                                     return (
                                       <TableCell key={columnIndex}>
@@ -381,7 +293,7 @@ const DataGrid = ({
                   </TableBody>
                 </Table>
               )}
-              {!rowsCopy && (
+              {rows === null && (
                 <Box
                   sx={{
                     display: "flex",
@@ -402,9 +314,13 @@ const DataGrid = ({
           sx={{ direction: "rtl", paddingBlock: 1 }}
         >
           <TablePagination
-            max={pages}
-            page={currentPage}
-            setPage={setCurrentPage}
+            max={max}
+            current={current}
+            // page={currentPage}
+            // setPage={setCurrentPage}
+            onNext={onNext}
+            onPrev={onPrev}
+            onInput={onInput}
           />
         </Stack>
       </Paper>
@@ -412,4 +328,97 @@ const DataGrid = ({
   );
 };
 
-export default React.memo(DataGrid);
+export default DataGrid;
+
+// {nameWithSearch ? (
+//   <Stack
+//     direction="row"
+//     alignItems="center"
+//     divider={
+//       <Divider orientation="vertical" variant="middle" flexItem />
+//     }
+//     sx={{ width: "100%", height: 70 }}
+//   >
+//     <FilterItem
+//       name="الأسم"
+//       property="name"
+//       array={rows}
+//       setter={setRowsCopy}
+//     />
+//     <Stack
+//       direction="row-reverse"
+//       alignItems="center"
+//       sx={{
+//         width: "100%",
+//         boxSizing: "border-box",
+//         paddingInline: 10,
+//       }}
+//     >
+//       <TextField
+//         variant="standard"
+//         placeholder="بحث"
+//         sx={{
+//           width: 400,
+//           "& .MuiInput-root": {
+//             borderRadius: "100vmax",
+//             border: "none",
+//             bgcolor: "#f5f5f5",
+//             padding: 0.5,
+//             boxSizing: "border-box",
+//           },
+//         }}
+//         onChange={handleSearchName}
+//         InputProps={{
+//           endAdornment: (
+//             <InputAdornment position="end">
+//               <IconButton>
+//                 <SearchIcon />
+//               </IconButton>
+//             </InputAdornment>
+//           ),
+//         }}
+//       />
+//     </Stack>
+//   </Stack>
+// ) : (
+//   <Stack
+//     direction="row"
+//     alignItems="center"
+//     divider={
+//       <Divider orientation="vertical" variant="middle" flexItem />
+//     }
+//     sx={{ width: "100%", height: 70 }}
+//   >
+//     <FilterItem
+//       name="الأسم"
+//       property="name"
+//       array={rows}
+//       actualArray={rowsCopy}
+//       setter={setRowsCopy}
+//     />
+//     <FilterItem name="كود البلد" properties={code} disableSorting />
+//     {/* <FilterItem
+//       name="المنطقة"
+//       properties={areaMenu}
+//       disableSorting
+//     /> */}
+//     <FilterItem
+//       name="المشروع"
+//       properties={projects?.map((project) => ({
+//         text: project.name,
+//       }))}
+//       disableSorting
+//       array={rows}
+//       setter={setRowsCopy}
+//       actualArray={rowsCopy}
+//     />
+//     <FilterItem
+//       name="الميزانية"
+//       properties={balance}
+//       disableSorting
+//       array={rows}
+//       actualArray={rowsCopy}
+//       setter={setRowsCopy}
+//     />
+//   </Stack>
+// )}

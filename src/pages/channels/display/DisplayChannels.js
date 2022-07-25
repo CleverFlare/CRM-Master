@@ -9,13 +9,16 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import usePost from "../../../hooks/usePost";
 import useDelete from "../../../hooks/useDelete";
+import useFormatTimeAndDate from "../../../hooks/useFormatTimeAndDate";
 
 const dummyColumns = [
   {
     field: "picture",
     headerName: "الصورة",
     customeContent: (params) => (
-      <Avatar src={params.picture}>{params.name[0].toUpperCase()}</Avatar>
+      <Avatar src={params.picture} variant="rounded">
+        {params.name[0].toUpperCase()}
+      </Avatar>
     ),
   },
   {
@@ -38,12 +41,14 @@ const dummyRows = [
 
 const DisplayChannels = () => {
   const permissions = useSelector((state) => state.permissions.value);
+  const format = useFormatTimeAndDate();
   const parseToProperData = (json) => {
+    if (!Boolean(json?.length)) return;
     let parentArray = [];
-    json.map((item) => {
+    json?.map((item) => {
       const customer = {
         name: item.name,
-        createdAt: item.created_at,
+        createdAt: format(item.created_at),
         id: item.id,
         picture: item.logo,
       };
@@ -69,10 +74,11 @@ const DisplayChannels = () => {
   useEffect(() => {
     if (Boolean(channels?.length)) return;
     channelsGetRequest().then((res) => {
+      console.log("breh");
       const parsedData = parseToProperData(res);
       dispatch({
         type: "channels/set",
-        payload: res,
+        payload: res?.results,
       });
       // setRowsData(parseToProperData(res));
     });
@@ -88,12 +94,12 @@ const DisplayChannels = () => {
     <Wrapper>
       <Parameter links={[{ text: "القنوات" }, { text: "عرض القنوات" }]} />
       <DataGrid
-        rows={Boolean(channels?.length) ? parseToProperData(channels) : []}
+        rows={Boolean(channels?.length) ? parseToProperData(channels) : null}
         columns={dummyColumns}
         nameWithSearch
         maxRowsPerPage={8}
         onDelete={
-          permissions.includes("delete_aqarchannel") ? handleDelete : null
+          permissions?.includes("delete_aqarchannel") ? handleDelete : null
         }
       />
       {successAlert}

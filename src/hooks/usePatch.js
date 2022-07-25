@@ -57,12 +57,12 @@ const usePatch = (
         } else if (Array.isArray(requestName)) {
           requestName.forEach((item) => {
             syncDataRequest(item.path).then((res) => {
-              dispatch({ type: item.name + "/set", payload: res });
+              dispatch({ type: item.name + "/set", payload: res.results });
             });
           });
         } else {
           syncDataRequest().then((res) => {
-            dispatch({ type: requestName + "/set", payload: res });
+            dispatch({ type: requestName + "/set", payload: res.results });
           });
         }
         return res.data;

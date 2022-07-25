@@ -51,8 +51,10 @@ const Home = () => {
             },
           ]}
         />
-        {permissions.includes("add_aqarpost") && <Publisher name="أحمد محمد" />}
-        {permissions.includes("view_aqarpost") && (
+        {permissions?.includes("add_aqarpost") && (
+          <Publisher name="أحمد محمد" />
+        )}
+        {permissions?.includes("view_aqarpost") && (
           <>
             <Typography
               variant="h6"
@@ -63,11 +65,11 @@ const Home = () => {
             </Typography>
             <Stack spacing={2} sx={{ paddingBottom: "30px" }}>
               {isPending &&
-                skeletonNumber.map((skeleton, index) => (
+                skeletonNumber?.map((skeleton, index) => (
                   <PostSkeleton key={index} />
                 ))}
-              {postsStore &&
-                postsStore.map((post, index) => (
+              {Boolean(postsStore?.length) &&
+                postsStore?.map((post, index) => (
                   <Post
                     name={post.user}
                     key={post.id}
@@ -78,7 +80,7 @@ const Home = () => {
                     {post.content}
                   </Post>
                 ))}
-              {!isPending && !postsStore.length && (
+              {!isPending && !postsStore?.length && (
                 <Typography
                   variant="h5"
                   sx={{

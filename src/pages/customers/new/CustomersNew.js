@@ -38,7 +38,7 @@ const dummyColumns = [
   },
   {
     field: "saler",
-    headerName: "مسؤول المبيعات",
+    headerName: "موظف",
   },
   {
     field: "channel",
@@ -174,7 +174,7 @@ const CustomersNew = () => {
   useEffect(() => {
     if (!Boolean(startPoint) || !Boolean(endPoint)) return;
     getRequest().then((res) => {
-      dispatch({ type: "newClients/set", payload: res });
+      dispatch({ type: "newClients/set", payload: res.results });
     });
   }, [startPoint, endPoint]);
 
@@ -251,7 +251,7 @@ const CustomersNew = () => {
         />
       </Stack>
       <DataGrid
-        rows={parseToProperData(newClients)}
+        rows={Boolean(newClients.length) ? parseToProperData(newClients) : null}
         columns={dummyColumns}
         maxRowsPerPage={10}
         onDelete={() => {}}

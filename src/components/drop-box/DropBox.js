@@ -124,7 +124,7 @@ const DropBox = ({ variant }) => {
         </Paper>
         {Boolean(files.length) && (
           <Stack divider={<Divider />}>
-            {files.map((file, index) => (
+            {files?.map((file, index) => (
               <Card
                 sx={{
                   bgcolor: "transparent",

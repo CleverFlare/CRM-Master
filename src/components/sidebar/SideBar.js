@@ -68,32 +68,32 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
         {
           text: "جميع العملاء",
           path: "/customers/total",
-          disabled: !permissions.includes("view_aqarclient"),
+          disabled: !permissions?.includes("view_aqarclient"),
         },
         {
           text: "العملاء الجدد",
           path: "/customers/new",
-          disabled: !permissions.includes("view_aqarclient"),
+          disabled: !permissions?.includes("view_aqarclient"),
         },
         {
           text: "العملاء المحذوفة",
           path: "/customers/deleted",
-          disabled: !permissions.includes("view_aqarclient"),
+          disabled: !permissions?.includes("view_aqarclient"),
         },
         {
           text: "إضافة عميل جديد",
           path: "/customers/add-new",
-          disabled: !permissions.includes("add_aqarclient"),
+          disabled: !permissions?.includes("add_aqarclient"),
         },
         {
           text: "إضافة حالة عميل",
           path: "/customers/add-status",
-          disabled: !permissions.includes("add_aqarevent"),
+          disabled: !permissions?.includes("add_aqarevent"),
         },
         {
           text: "حالات العميل",
           path: "/customers/statuses",
-          disabled: !permissions.includes("view_aqarevent"),
+          disabled: !permissions?.includes("view_aqarevent"),
         },
         {
           text: "إستيراد عملاء",
@@ -117,12 +117,12 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
         {
           text: "عرض المشاريع",
           path: "/projects/display",
-          disabled: !permissions.includes("view_aqarproject"),
+          disabled: !permissions?.includes("view_aqarproject"),
         },
         {
           text: "إضافة مشروع جديد",
           path: "/projects/new",
-          disabled: !permissions.includes("add_aqarproject"),
+          disabled: !permissions?.includes("add_aqarproject"),
         },
       ],
     },
@@ -142,22 +142,22 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
         {
           text: "إضافة موظف جديد",
           path: "/employees/new",
-          disabled: !permissions.includes("add_aqaremployee"),
+          disabled: !permissions?.includes("add_aqaremployee"),
         },
         {
           text: "بيانات الموظفين",
           path: "/employees/data",
-          disabled: !permissions.includes("view_aqaremployee"),
+          disabled: !permissions?.includes("view_aqaremployee"),
         },
         {
           text: "إضافة وظيفة",
           path: "/employees/add-job",
-          disabled: !permissions.includes("add_aqarjob"),
+          disabled: !permissions?.includes("add_aqarjob"),
         },
         {
           text: "الوظائف",
           path: "/employees/jobs",
-          disabled: !permissions.includes("view_aqarjob"),
+          disabled: !permissions?.includes("view_aqarjob"),
         },
       ],
     },
@@ -171,12 +171,12 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
         {
           text: "إضافة قناة",
           path: "/channels/add-new",
-          disabled: !permissions.includes("add_aqarchannel"),
+          disabled: !permissions?.includes("add_aqarchannel"),
         },
         {
           text: "عرض القنوات",
           path: "/channels/display",
-          disabled: !permissions.includes("view_aqarchannel"),
+          disabled: !permissions?.includes("view_aqarchannel"),
         },
       ],
     },
@@ -297,7 +297,7 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
         </Box>
       </Box>
       <List>
-        {menuItems.map((item, index) => {
+        {menuItems?.map((item, index) => {
           if (item === "divider")
             return (
               <Divider
@@ -362,7 +362,7 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
                   </ListItemButton>
 
                   <Collapse in={item.expander} timeout="auto" unmountOnExit>
-                    {item.children.map((child, index) => {
+                    {item.children?.map((child, index) => {
                       if (child.disabled) return;
                       return (
                         <ListItemButton

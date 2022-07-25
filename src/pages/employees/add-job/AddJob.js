@@ -54,7 +54,7 @@ const AddJob = () => {
       const requestBody = {
         title: controls.name,
         organization: 1,
-        permissions: permissionsState.map((permission) => ({
+        permissions: permissionsState?.map((permission) => ({
           codename: permission,
         })),
       };
@@ -142,7 +142,7 @@ const AddJob = () => {
                     <Switch
                       value="add_aqarpost"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("add_aqarpost")}
+                      checked={permissionsState?.includes("add_aqarpost")}
                     />
                   </Grid>
                   <Grid
@@ -158,7 +158,7 @@ const AddJob = () => {
                     <Switch
                       value="delete_aqarpost"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("delete_aqarpost")}
+                      checked={permissionsState?.includes("delete_aqarpost")}
                     />
                   </Grid>
                   <Grid
@@ -174,7 +174,7 @@ const AddJob = () => {
                     <Switch
                       value="view_aqarpost"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("view_aqarpost")}
+                      checked={permissionsState?.includes("view_aqarpost")}
                     />
                   </Grid>
                   <Grid
@@ -190,7 +190,7 @@ const AddJob = () => {
                     <Switch
                       value="change_aqarpost"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("change_aqarpost")}
+                      checked={permissionsState?.includes("change_aqarpost")}
                     />
                   </Grid>
                   <Grid
@@ -218,7 +218,7 @@ const AddJob = () => {
                     <Switch
                       value="add_aqaremployee"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("add_aqaremployee")}
+                      checked={permissionsState?.includes("add_aqaremployee")}
                     />
                   </Grid>
                   <Grid
@@ -234,7 +234,9 @@ const AddJob = () => {
                     <Switch
                       value="delete_aqaremployee"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("delete_aqaremployee")}
+                      checked={permissionsState?.includes(
+                        "delete_aqaremployee"
+                      )}
                     />
                   </Grid>
                   <Grid
@@ -250,7 +252,7 @@ const AddJob = () => {
                     <Switch
                       value="view_aqaremployee"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("view_aqaremployee")}
+                      checked={permissionsState?.includes("view_aqaremployee")}
                     />
                   </Grid>
                   <Grid
@@ -266,7 +268,9 @@ const AddJob = () => {
                     <Switch
                       value="change_aqaremployee"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("change_aqaremployee")}
+                      checked={permissionsState?.includes(
+                        "change_aqaremployee"
+                      )}
                     />
                   </Grid>
                   <Grid
@@ -282,7 +286,7 @@ const AddJob = () => {
                     <Switch
                       value="add_aqarjob"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("add_aqarjob")}
+                      checked={permissionsState?.includes("add_aqarjob")}
                     />
                   </Grid>
                   <Grid
@@ -298,7 +302,7 @@ const AddJob = () => {
                     <Switch
                       value="delete_aqarjob"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("delete_aqarjob")}
+                      checked={permissionsState?.includes("delete_aqarjob")}
                     />
                   </Grid>
                   <Grid
@@ -314,7 +318,7 @@ const AddJob = () => {
                     <Switch
                       value="view_aqarjob"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("view_aqarjob")}
+                      checked={permissionsState?.includes("view_aqarjob")}
                     />
                   </Grid>
                   <Grid
@@ -330,7 +334,7 @@ const AddJob = () => {
                     <Switch
                       value="change_aqarjob"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("change_aqarjob")}
+                      checked={permissionsState?.includes("change_aqarjob")}
                     />
                   </Grid>
                 </Grid>
@@ -369,7 +373,7 @@ const AddJob = () => {
                     <Switch
                       value="add_aqarclient"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("add_aqarclient")}
+                      checked={permissionsState?.includes("add_aqarclient")}
                     />
                   </Grid>
                   <Grid
@@ -385,7 +389,7 @@ const AddJob = () => {
                     <Switch
                       value="delete_aqarclient"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("delete_aqarclient")}
+                      checked={permissionsState?.includes("delete_aqarclient")}
                     />
                   </Grid>
                   <Grid
@@ -401,7 +405,7 @@ const AddJob = () => {
                     <Switch
                       value="view_aqarclient"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("view_aqarclient")}
+                      checked={permissionsState?.includes("view_aqarclient")}
                     />
                   </Grid>
                   <Grid
@@ -417,7 +421,7 @@ const AddJob = () => {
                     <Switch
                       value="change_aqarclient"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("change_aqarclient")}
+                      checked={permissionsState?.includes("change_aqarclient")}
                     />
                   </Grid>
                   <Grid
@@ -433,7 +437,7 @@ const AddJob = () => {
                     <Switch
                       value="add_aqarevent"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("add_aqarevent")}
+                      checked={permissionsState?.includes("add_aqarevent")}
                     />
                   </Grid>
                   <Grid
@@ -449,7 +453,7 @@ const AddJob = () => {
                     <Switch
                       value="delete_aqarevent"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("delete_aqarevent")}
+                      checked={permissionsState?.includes("delete_aqarevent")}
                     />
                   </Grid>
                   <Grid
@@ -465,7 +469,7 @@ const AddJob = () => {
                     <Switch
                       value="change_aqarevent"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("change_aqarevent")}
+                      checked={permissionsState?.includes("change_aqarevent")}
                     />
                   </Grid>
                   <Grid
@@ -481,7 +485,7 @@ const AddJob = () => {
                     <Switch
                       value="view_aqarevent"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("view_aqarevent")}
+                      checked={permissionsState?.includes("view_aqarevent")}
                     />
                   </Grid>
                 </Grid>
@@ -520,7 +524,7 @@ const AddJob = () => {
                     <Switch
                       value="add_aqarproject"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("add_aqarproject")}
+                      checked={permissionsState?.includes("add_aqarproject")}
                     />
                   </Grid>
                   <Grid
@@ -536,7 +540,7 @@ const AddJob = () => {
                     <Switch
                       value="delete_aqarproject"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("delete_aqarproject")}
+                      checked={permissionsState?.includes("delete_aqarproject")}
                     />
                   </Grid>
                   <Grid
@@ -552,7 +556,7 @@ const AddJob = () => {
                     <Switch
                       value="view_aqarproject"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("view_aqarproject")}
+                      checked={permissionsState?.includes("view_aqarproject")}
                     />
                   </Grid>
                   <Grid
@@ -568,7 +572,7 @@ const AddJob = () => {
                     <Switch
                       value="change_aqarproject"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("change_aqarproject")}
+                      checked={permissionsState?.includes("change_aqarproject")}
                     />
                   </Grid>
                 </Grid>
@@ -607,7 +611,7 @@ const AddJob = () => {
                     <Switch
                       value="add_aqarchannel"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("add_aqarchannel")}
+                      checked={permissionsState?.includes("add_aqarchannel")}
                     />
                   </Grid>
                   <Grid
@@ -623,7 +627,7 @@ const AddJob = () => {
                     <Switch
                       value="delete_aqarchannel"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("delete_aqarchannel")}
+                      checked={permissionsState?.includes("delete_aqarchannel")}
                     />
                   </Grid>
                   <Grid
@@ -639,7 +643,7 @@ const AddJob = () => {
                     <Switch
                       value="view_aqarchannel"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("view_aqarchannel")}
+                      checked={permissionsState?.includes("view_aqarchannel")}
                     />
                   </Grid>
                   <Grid
@@ -655,7 +659,7 @@ const AddJob = () => {
                     <Switch
                       value="change_aqarchannel"
                       onChange={handleTogglePermission}
-                      checked={permissionsState.includes("change_aqarchannel")}
+                      checked={permissionsState?.includes("change_aqarchannel")}
                     />
                   </Grid>
                 </Grid>

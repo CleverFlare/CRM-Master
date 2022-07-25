@@ -59,7 +59,7 @@ const dummyColumns = [
   },
   {
     field: "agent",
-    headerName: "مسؤول المبيعات",
+    headerName: "الموظف",
   },
   {
     field: "createdBy",
@@ -180,7 +180,7 @@ const CustomerDetails = ({
     const newArray = [];
     array?.map((item) => {
       const object = {
-        project: item.bussiness.map((project) => project.name).join(" ، "),
+        project: item.bussiness.join(" ، "),
         channel: item.channel,
         agent: item.agent,
         status: item.event,
@@ -243,7 +243,7 @@ const CustomerDetails = ({
       value: initials.channel,
     },
     {
-      name: "مسؤول المبيعات",
+      name: "موظف",
       value: initials.saler,
       icon: (
         <IconButton sx={{ color: "white" }} onClick={() => setTab("agent")}>
@@ -280,11 +280,11 @@ const CustomerDetails = ({
   useEffect(() => {
     if (Boolean(status.legth)) return;
     statusGetRequest().then((res) => {
-      dispatch({ type: "status/set", payload: res });
+      dispatch({ type: "status/set", payload: res.results });
     });
     if (Boolean(employees?.length)) return;
     employeesGetRequest().then((res) => {
-      dispatch({ type: "employees/set", payload: res });
+      dispatch({ type: "employees/set", payload: res.results });
     });
   }, []);
 
@@ -378,7 +378,7 @@ const CustomerDetails = ({
             }}
             spacing={2}
           >
-            {clientDetails.map((clientDetail, index) => (
+            {clientDetails?.map((clientDetail, index) => (
               <Stack
                 direction="row"
                 key={clientDetail.name + index}
@@ -414,7 +414,7 @@ const CustomerDetails = ({
                 <Table>
                   <TableHead>
                     <TableRow>
-                      {dummyColumns.map((headData, index) => (
+                      {dummyColumns?.map((headData, index) => (
                         <TableCell
                           sx={{
                             color: "white",
@@ -435,7 +435,7 @@ const CustomerDetails = ({
                     {[...convertToProperData(initials?.allData?.history)]?.map(
                       (row, index) => (
                         <TableRow key={index}>
-                          {dummyColumns.map((column, index) => (
+                          {dummyColumns?.map((column, index) => (
                             <TableCell sx={{ color: "white" }} key={index}>
                               {row[column.field]}
                             </TableCell>

@@ -9,7 +9,7 @@ const useUpload = (url, data) => {
 
   useEffect(() => {
     const formData = new FormData();
-    Object.keys(data).map((key, index) => formData.append(`${key}`, data.key));
+    Object.keys(data)?.map((key, index) => formData.append(`${key}`, data.key));
     const xhr = new XMLHttpRequest();
 
     req.open("POST", url);
