@@ -12,6 +12,7 @@ import { useSelector, useDispatch } from "react-redux";
 import useGet from "../../../hooks/useGet";
 import useDelete from "../../../hooks/useDelete";
 import useFormatTimeAndDate from "../../../hooks/useFormatTimeAndDate";
+import usePagination from "../../../hooks/usePagination";
 
 const dummyColumns = [
   {
@@ -36,6 +37,10 @@ const Jobs = () => {
   const jobs = useSelector((state) => state.jobs.value);
   const [jobsGetRequest, jobsGetRequestError] = useGet("aqar/api/router/Job/");
   const format = useFormatTimeAndDate();
+  const [current, limit, isPending, onNext, onPrev] = usePagination(
+    "aqar/api/router/Employee/",
+    { storeValuesToDispatch: "employees" }
+  );
   const [deleteRequest, successAlert, errorAlert] = useDelete(
     "aqar/api/router/Job/",
     "تم حذف الوظيفة بنجاح"
@@ -55,7 +60,6 @@ const Jobs = () => {
   };
 
   useEffect(() => {
-    if (Boolean(jobs.length)) return;
     jobsGetRequest().then((res) => {
       dispatch({ type: "jobs/set", payload: res.results });
     });
@@ -70,6 +74,11 @@ const Jobs = () => {
       <Wrapper>
         <Parameter links={[{ text: "الموظفين" }, { text: "الوظائف" }]} />
         <DataGrid
+          current={current}
+          max={limit}
+          onNext={onNext}
+          onPrev={onPrev}
+          isPending={isPending}
           rows={Boolean(jobs.length) ? convertIntoProperObject(jobs) : null}
           columns={dummyColumns}
           nameWithSearch

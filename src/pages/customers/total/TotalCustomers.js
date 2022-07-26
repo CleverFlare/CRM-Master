@@ -15,21 +15,21 @@ const TotalCustomers = () => {
   const [initials, setInitials] = useState({});
   const permissions = useSelector((state) => state.permissions.value);
   const [exportObject, setExportObject] = useState({});
-  const [customersGetRequest, customersGetRequestError] = useGet(
-    "aqar/api/router/Client/"
-  );
+  const [selectAll, setSelectAll] = useState({
+    selectedAll: false,
+    exclude: [],
+  });
+  const [customersGetRequest] = useGet("aqar/api/router/Client/");
 
   const [data, setData] = useState([]);
   const [exportComp, setExportComp] = useState(null);
   const allCustomers = useSelector((state) => state.allCustomers.value);
-  const [current, limit, onNext, onPrev] = usePagination(
+  const [current, limit, isPending, onNext, onPrev] = usePagination(
     "aqar/api/router/Client/",
     {
       storeValuesToDispatch: "allCustomers",
-    },
-    setData
+    }
   );
-  console.log(current);
   const dispatch = useDispatch();
 
   const dummyColumns = [
@@ -42,28 +42,10 @@ const TotalCustomers = () => {
               if (Boolean(allCustomers.length)) {
                 switch (e.target.checked) {
                   case true:
-                    parseToProperData(allCustomers)?.map((item, index) => {
-                      setExportObject((old) => {
-                        old[`${index}`] = {
-                          //prettier-ignore
-                          "الأسم": item.name,
-                          //prettier-ignore
-                          "الهاتف": item.phone,
-                          //prettier-ignore
-                          "المشروع": item.project,
-                          //prettier-ignore
-                          "تعليق": item.comment,
-                          //prettier-ignore
-                          "موظف": item.saler,
-                          //prettier-ignore
-                          "القناة": item.channel,
-                        };
-                        return { ...old };
-                      });
-                    });
+                    setSelectAll((old) => ({ ...old, selectedAll: true }));
                     break;
                   case false:
-                    setExportObject({});
+                    setSelectAll((old) => ({ ...old, selectedAll: false }));
                 }
               }
             }}
@@ -72,38 +54,58 @@ const TotalCustomers = () => {
       ),
       customeContent: (params) => (
         <Checkbox
-          checked={Boolean(
-            Object?.keys(exportObject)?.includes(`${params.rowIndex}`)
-          )}
+          checked={
+            (selectAll.selectedAll &&
+              !selectAll.exclude?.includes(params.id)) ||
+            Boolean(Object.keys(exportObject)?.includes(`${params.id}`))
+          }
           onChange={(e) => {
             e.stopPropagation();
             switch (e.target.checked) {
               case true:
-                setExportObject((old) => {
-                  // const assignment = old;
-                  old[`${params.rowIndex}`] = {
-                    //prettier-ignore
-                    "الأسم": params.name,
-                    //prettier-ignore
-                    "الهاتف": params.phone,
-                    //prettier-ignore
-                    "المشروع": params.project,
-                    //prettier-ignore
-                    "تعليق": params.comment,
-                    //prettier-ignore
-                    "موظف": params.saler,
-                    //prettier-ignore
-                    "القناة": params.channel,
-                  };
-                  return { ...old };
-                });
+                if (selectAll.selectedAll) {
+                  if (selectAll.exclude.length === 1)
+                    return setSelectAll((old) => ({ ...old, exclude: [] }));
+                  const index = selectAll.exclude.indexOf(params.id);
+                  console.log(index);
+                  // const newArray = selectAll.exclude.splice(index, 1);
+                  setSelectAll((old) => {
+                    old.exclude.splice(index, 1);
+                    return {
+                      ...old,
+                      exclude: [...old.exclude],
+                    };
+                  });
+                } else {
+                  setExportObject((old) => {
+                    old[`${params.id}`] = {
+                      //prettier-ignore
+                      "الأسم": params.name,
+                      //prettier-ignore
+                      "الهاتف": params.phone,
+                      //prettier-ignore
+                      "المشروع": params.project,
+                      //prettier-ignore
+                      "تعليق": params.comment,
+                      //prettier-ignore
+                      "الموظف": params.saler,
+                    };
+                    return { ...old };
+                  });
+                }
                 break;
               case false:
-                setExportObject((old) => {
-                  old[`${params.rowIndex}`] = null;
-                  delete old[`${params.rowIndex}`];
-                  return { ...old };
-                });
+                if (selectAll.selectedAll) {
+                  setSelectAll((old) => ({
+                    ...old,
+                    exclude: [...old.exclude, params.id],
+                  }));
+                } else {
+                  setExportObject((old) => {
+                    delete old[`${params.id}`];
+                    return { ...old };
+                  });
+                }
                 break;
             }
           }}
@@ -166,15 +168,12 @@ const TotalCustomers = () => {
 
   useEffect(() => {
     customersGetRequest().then((res) => {
-      // dispatch({
-      //   type: "allCustomers/set",
-      //   payload: res.results,
-      // });
-      setData([...res.results]);
+      dispatch({
+        type: "allCustomers/set",
+        payload: res.results,
+      });
     });
   }, []);
-
-  console.log(allCustomers);
 
   const handleDelete = (e, rowData) => {
     deleteRequest("allCustomers", rowData.id);
@@ -195,18 +194,21 @@ const TotalCustomers = () => {
             },
           ]}
         />
-
         <DataGrid
-          rows={Boolean(data?.length) ? parseToProperData(data) : null}
+          rows={
+            Boolean(allCustomers?.length)
+              ? parseToProperData(allCustomers)
+              : null
+          }
           onView={(e, rowData) => {
             setInitials(rowData);
             setOpenDetails(true);
-            console.log(rowData);
           }}
           current={current}
           max={limit}
           onNext={onNext}
           onPrev={onPrev}
+          isPending={isPending}
           columns={dummyColumns}
           maxRowsPerPage={7}
           onDelete={
@@ -230,7 +232,11 @@ const TotalCustomers = () => {
           <Button
             variant="contained"
             onClick={() => {
-              if (!Boolean(Object.keys(exportObject).length)) return;
+              if (
+                !Boolean(Object.keys(exportObject).length) ||
+                selectAll.selectedAll
+              )
+                return;
               setExportComp(
                 <CSVDownload
                   data={Object.keys(exportObject)?.map(

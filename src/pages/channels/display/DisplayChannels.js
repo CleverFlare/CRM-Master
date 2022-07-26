@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import usePost from "../../../hooks/usePost";
 import useDelete from "../../../hooks/useDelete";
 import useFormatTimeAndDate from "../../../hooks/useFormatTimeAndDate";
+import usePagination from "../../../hooks/usePagination";
 
 const dummyColumns = [
   {
@@ -40,6 +41,10 @@ const dummyRows = [
 ];
 
 const DisplayChannels = () => {
+  const [current, limit, isPending, onNext, onPrev] = usePagination(
+    "aqar/api/router/Channel/",
+    { storeValuesToDispatch: "channels" }
+  );
   const permissions = useSelector((state) => state.permissions.value);
   const format = useFormatTimeAndDate();
   const parseToProperData = (json) => {
@@ -72,7 +77,7 @@ const DisplayChannels = () => {
   );
 
   useEffect(() => {
-    if (Boolean(channels?.length)) return;
+    // if (Boolean(channels?.length)) return;
     channelsGetRequest().then((res) => {
       console.log("breh");
       const parsedData = parseToProperData(res);
@@ -94,6 +99,11 @@ const DisplayChannels = () => {
     <Wrapper>
       <Parameter links={[{ text: "القنوات" }, { text: "عرض القنوات" }]} />
       <DataGrid
+        current={current}
+        max={limit}
+        onNext={onNext}
+        onPrev={onPrev}
+        isPending={isPending}
         rows={Boolean(channels?.length) ? parseToProperData(channels) : null}
         columns={dummyColumns}
         nameWithSearch

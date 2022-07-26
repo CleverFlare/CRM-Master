@@ -541,7 +541,9 @@ const CustomerDetails = ({
                       {comment.created_at.split("T")[0].replace(/-/gi, "/")}
                     </Typography>
                   </Stack>
-                  <Typography variant="body2">{comment.comment}</Typography>
+                  <Typography variant="body2">
+                    {Boolean(comment.comment) ? comment.comment : "s"}
+                  </Typography>
                 </Stack>
               </Stack>
             ))}

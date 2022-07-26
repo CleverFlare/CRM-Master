@@ -14,6 +14,7 @@ import useDelete from "../../../hooks/useDelete";
 import CustomersEditDialog from "../../../components/customers-edit-dialog/CustomersEditDialog";
 import { GridRowEditStartReasons } from "@mui/x-data-grid";
 import EditCustomerPassword from "../../../components/edit-customer-password/EditCustomerPassword";
+import usePagination from "../../../hooks/usePagination";
 
 const dummyColumns = [
   {
@@ -164,6 +165,10 @@ const EmployeesData = () => {
     id: 0,
   });
   const [isEditPassOpened, setIsEditPassOpened] = useState(false);
+  const [current, limit, isPending, onNext, onPrev] = usePagination(
+    "aqar/api/router/Employee/",
+    { storeValuesToDispatch: "employees" }
+  );
   const dispatch = useDispatch();
   const [employeeGetRequest, employeeGetRequestError] = useGet(
     "aqar/api/router/Employee/"
@@ -207,13 +212,16 @@ const EmployeesData = () => {
           links={[{ text: "الموظفين" }, { text: "بيانات الموظفين" }]}
         />
         <DataGrid
+          current={current}
+          max={limit}
+          onNext={onNext}
+          onPrev={onPrev}
+          isPending={isPending}
           rows={
             Boolean(employees?.length)
-              ? parseToProperData(employees).filter((employee) => {
-                  console.log(employee);
-                  console.log(storeUsername);
-                  return employee.username !== storeUsername;
-                })
+              ? parseToProperData(employees).filter(
+                  (employee) => employee.username !== storeUsername
+                )
               : []
           }
           columns={dummyColumns}

@@ -1,12 +1,14 @@
 import {
   Backdrop,
   Box,
+  Chip,
   CircularProgress,
   Collapse,
   Divider,
   FormControl,
   IconButton,
   InputAdornment,
+  MenuItem,
   Paper,
   Stack,
   Table,
@@ -15,6 +17,7 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Typography,
 } from "@mui/material";
 import FilterItem from "./items/FilterItem";
 import TablePagination from "./items/TablePagination";
@@ -30,9 +33,13 @@ import BlockIcon from "@mui/icons-material/Block";
 import areaMenu from "./assets/AreaMenuMapping";
 import code from "./assets/CountryCodeMapping";
 import projectsMenu from "./assets/ProjectsMenuMapping";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useGet from "../../hooks/useGet";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import CustomChip from "./components/custom-chip/CustomChip";
+import AddFilter from "./components/add-filter/AddFilter";
 
 const balance = "filter";
 
@@ -51,6 +58,7 @@ const DataGrid = ({
   onInput = () => {},
   max = 1,
   current,
+  isPending = false,
 }) => {
   const [rowsCopy, setRowsCopy] = useState(null);
   const gotTheRows = false;
@@ -62,6 +70,7 @@ const DataGrid = ({
   const [sliceStart, setSliceStart] = useState(0);
   const dispatch = useDispatch();
   const projects = useSelector((state) => state.projects.value);
+  const [filters, setFilters] = useState([]);
   const [projectsGetRequest, projectsGetRequestError] = useGet(
     "aqar/api/router/Project/"
   );
@@ -100,11 +109,27 @@ const DataGrid = ({
   // }, [currentPage]);
 
   useEffect(() => {
-    if (Boolean(projects?.length)) return;
+    // if (Boolean(projects?.length)) return;
     projectsGetRequest().then((res) =>
       dispatch({ type: "projects/set", payload: res.results })
     );
   }, []);
+
+  const handleAddNewFilter = (filterOutput) => {
+    setFilters((old) => [...old, filterOutput]);
+  };
+
+  const handleRemoveFilter = (index) => {
+    const newFilters = filters;
+    newFilters.splice(index, 1);
+    setFilters([...newFilters]);
+  };
+
+  const handleEditFilter = (output, index) => {
+    const newFilters = filters;
+    newFilters[index].output = output;
+    setFilters([...newFilters]);
+  };
 
   return (
     <Paper sx={{ overflowX: "auto", marginBlock: 5 }} elevation={2}>
@@ -112,19 +137,65 @@ const DataGrid = ({
         <Box sx={{ overflowX: "auto" }}>
           <Stack
             direction="column"
-            sx={{ width: "max-content", minWidth: "100%" }}
+            sx={{
+              width: "max-content",
+              minWidth: "100%",
+              position: "relative",
+            }}
           >
             {/* Grid Header */}
 
             {/* filter items were here */}
-            {/* <Divider orientation="horizontal" /> */}
+            <Stack direction="row" sx={{ p: 2 }} spacing={2}>
+              <Paper variant="outlined">
+                <Stack
+                  direction="row"
+                  justifyContent="center"
+                  alignItems="center"
+                  sx={{ paddingInline: 2, height: "100%" }}
+                  spacing={2}
+                >
+                  <Typography variant="body2">عرض العناصر</Typography>
+                  <TextField
+                    variant="standard"
+                    select
+                    sx={{
+                      width: 70,
+                      borderRadius: "100vmax",
+                      "& .MuiInputBase-root, & .MuiSelect-standard": {
+                        borderRadius: "100vmax",
+                      },
+                      "& .MuiSelect-standard": {
+                        paddingBlock: "0",
+                      },
+                    }}
+                    defaultValue="10"
+                    SelectProps={{
+                      IconComponent: KeyboardArrowDownIcon,
+                    }}
+                  >
+                    <MenuItem value="10">10</MenuItem>
+                  </TextField>
+                </Stack>
+              </Paper>
+              {filters.map((filter, index) => (
+                <CustomChip
+                  info={{ type: filter?.type, data: filter?.output }}
+                  key={filter.type + " " + index}
+                  onDelete={() => handleRemoveFilter(index)}
+                  onEdit={(output) => handleEditFilter(output, index)}
+                />
+              ))}
+              <AddFilter onFilter={handleAddNewFilter} />
+            </Stack>
+            <Divider orientation="horizontal" />
             {/* Grid Content */}
             <Box
               sx={{
                 maxHeight: 600,
                 height: 600,
                 minHeight: 600,
-                overflowY: "auto",
+                overflowY: isPending ? "hidden" : "auto",
               }}
             >
               {rowsCopy && (
@@ -208,6 +279,25 @@ const DataGrid = ({
                                 onEdit) && (
                                 <TableCell>
                                   <Stack direction="row" spacing={2}>
+                                    {onView && (
+                                      <IconButton
+                                        size="small"
+                                        sx={{
+                                          bgcolor: "#495f9b",
+                                          color: "white",
+                                          borderRadius: 2,
+                                          "&:hover": {
+                                            backgroundColor: "#5c77c1",
+                                          },
+                                        }}
+                                        onClick={(event) => {
+                                          event.stopPropagation();
+                                          onView(event, row);
+                                        }}
+                                      >
+                                        <RemoveRedEyeIcon />
+                                      </IconButton>
+                                    )}
                                     {onChangePassword && (
                                       <IconButton
                                         size="small"
@@ -293,13 +383,19 @@ const DataGrid = ({
                   </TableBody>
                 </Table>
               )}
-              {rows === null && (
+              {isPending && (
                 <Box
                   sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
                     minHeight: "100%",
+                    bgcolor: "#fff",
                   }}
                 >
                   <CircularProgress color="primary" />

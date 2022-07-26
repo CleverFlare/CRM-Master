@@ -165,15 +165,12 @@ const CustomersAddNew = () => {
   };
 
   useEffect(() => {
-    if (projects.length) return;
     projectsGetRequest().then((res) => {
       dispatch({ type: "projects/set", payload: res.results });
     });
-    if (channels.length) return;
     channelsGetRequest().then((res) => {
       dispatch({ type: "channels/set", payload: res.results });
     });
-    if (employees.length) return;
     employeesGetRequest().then((res) => {
       dispatch({ type: "employees/set", payload: res.results });
     });

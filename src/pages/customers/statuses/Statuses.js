@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useDelete from "../../../hooks/useDelete";
 import useFormatTimeAndDate from "../../../hooks/useFormatTimeAndDate";
+import usePagination from "../../../hooks/usePagination";
 
 const dummyColumns = [
   {
@@ -30,6 +31,10 @@ const Statuses = () => {
   const token = useSelector((state) => state.token.value);
   const domain = useSelector((state) => state.domain.value);
   const status = useSelector((state) => state.status.value);
+  const [current, limit, isPending, onNext, onPrev] = usePagination(
+    "aqar/api/router/Status/",
+    { storeValuesToDispatch: "statuses" }
+  );
   const format = useFormatTimeAndDate();
   const [deleteRequest, deleteSuccessAlert, deleteErrorAlert] = useDelete(
     "aqar/api/router/Status/",
@@ -42,7 +47,7 @@ const Statuses = () => {
   };
 
   useEffect(() => {
-    if (status.length) return;
+    // if (status.length) return;
     fetch(domain + "aqar/api/router/Status/", {
       method: "GET",
       headers: {
@@ -78,6 +83,11 @@ const Statuses = () => {
     <Wrapper>
       <Parameter links={[{ text: "العملاء" }, { text: "حالات العميل" }]} />
       <DataGrid
+        current={current}
+        max={limit}
+        onNext={onNext}
+        onPrev={onPrev}
+        isPending={isPending}
         rows={Boolean(status.length) ? parseToProperData(status) : null}
         columns={dummyColumns}
         nameWithSearch

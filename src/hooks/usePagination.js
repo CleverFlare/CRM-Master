@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import useGet from "./useGet";
 
-const usePagination = (path, { storeValuesToDispatch = "" }, setter) => {
+const usePagination = (path, { storeValuesToDispatch = "" }) => {
   const [currentPage, setCurrent] = useState(1);
+
+  const [isPending, setIsPending] = useState(true);
 
   const [limitPage, setLimit] = useState(null);
 
@@ -27,49 +29,35 @@ const usePagination = (path, { storeValuesToDispatch = "" }, setter) => {
     path + "?page=" + (currentPage - 1)
   );
 
-  getLimit().then((res) => setLimit(Math.ceil(res.count / 8)));
+  useEffect(() => {
+    getLimit().then((res) => {
+      setIsPending(false);
+      setLimit(Math.ceil(res.count / res.results.length));
+    });
+  }, []);
 
   const onNext = async () => {
     if (currentPage + 1 > limitPage) return;
-    return nextPageGetRequest().then((res) => {
-      if (currentPage + 1 > limitPage) return;
-      console.log(!Boolean(res.next));
-      if (Boolean(res.next)) {
-        //null == return false
-        setCurrent((old) => old + 1);
-      }
-      // if (Boolean(storeValuesToDispatch))
-      //   dispatch({
-      //     type: storeValuesToDispatch + "/set",
-      //     payload: res.results,
-      //   });
-      setter([...res.results]);
+    setIsPending(true);
+    setCurrent((old) => old + 1);
+    nextPageGetRequest().then((res) => {
+      dispatch({ type: storeValuesToDispatch + "/set", payload: res.results });
+      // setter([...res.results]);
+      setIsPending(false);
     });
   };
 
   const onPrev = async () => {
     if (currentPage - 1 <= 0) return;
-    return prevPageGetRequest().then((res) => {
-      if (currentPage - 1 <= 0) return;
-      console.log(!Boolean(res.previous));
-      if (!Boolean(res.previous)) {
-        setCurrent((old) => old - 1);
-      }
-      // if (Boolean(storeValuesToDispatch))
-      // switch (Boolean(setter)) {
-      //   case true:
-      //     break;
-      //   case false:
-      //     dispatch({
-      //       type: storeValuesToDispatch + "/set",
-      //       payload: res.results,
-      //     });
-      //     break;
-      // }
-      setter([...res.results]);
+    setIsPending(true);
+    setCurrent((old) => old - 1);
+    prevPageGetRequest().then((res) => {
+      dispatch({ type: storeValuesToDispatch + "/set", payload: res.results });
+      // setter([...res.results]);
+      setIsPending(false);
     });
   };
-  return [currentPage, limitPage, onNext, onPrev];
+  return [currentPage, limitPage, isPending, onNext, onPrev];
 };
 
 export default usePagination;

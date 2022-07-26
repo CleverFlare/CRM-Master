@@ -64,7 +64,7 @@ const DropBox = ({ variant }) => {
     if (variant !== "upload") {
       handleExport();
     } else {
-      handleUpload();
+      fileRef.current.click();
     }
   };
 

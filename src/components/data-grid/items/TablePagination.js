@@ -12,6 +12,8 @@ const TablePagination = ({
   onPrev = () => {},
   onInput = () => {},
 }) => {
+  const [disableRight, setDisableRight] = useState(false);
+  const [disableLeft, setDisableLeft] = useState(false);
   // const handleChange = (event) => {
   //   setPage(event.target.value);
   // };
@@ -29,6 +31,20 @@ const TablePagination = ({
   //   if (page > max) setPage(max);
   // }, [page]);
 
+  useEffect(() => {
+    if (current <= 1) {
+      setDisableLeft(true);
+    } else {
+      setDisableLeft(false);
+    }
+
+    if (current >= max) {
+      setDisableRight(true);
+    } else {
+      setDisableRight(false);
+    }
+  }, [max, current]);
+
   return (
     <Stack
       direction="row"
@@ -38,7 +54,15 @@ const TablePagination = ({
       spacing={1}
       sx={{ direction: "ltr" }}
     >
-      <IconButton onClick={onNext}>
+      <IconButton
+        onClick={onNext}
+        disabled={disableRight}
+        sx={{
+          "&.Mui-disabled": {
+            opacity: ".2",
+          },
+        }}
+      >
         <ArrowForwardIosIcon
           sx={{ width: "15px", height: "15px" }}
           color="primary"
@@ -67,7 +91,15 @@ const TablePagination = ({
           }}
         />
       </Box>
-      <IconButton onClick={onPrev}>
+      <IconButton
+        onClick={onPrev}
+        disabled={disableLeft}
+        sx={{
+          "&.Mui-disabled": {
+            opacity: ".2",
+          },
+        }}
+      >
         <ArrowBackIosNewIcon
           sx={{ width: "15px", height: "15px" }}
           color="primary"

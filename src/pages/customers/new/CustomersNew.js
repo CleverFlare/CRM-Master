@@ -18,6 +18,7 @@ import { useState } from "react";
 import useGet from "../../../hooks/useGet";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
+import usePagination from "../../../hooks/usePagination";
 
 const dummyColumns = [
   {
@@ -140,6 +141,20 @@ const dummyRows = [
 const CustomersNew = () => {
   const [startPoint, setStartPoint] = useState("");
   const [endPoint, setEndPoint] = useState("");
+  const [current, limit, isPending, onNext, onPrev] = usePagination(
+    "aqar/api/router/NewClient/?start=" +
+      (Boolean(endPoint)
+        ? endPoint.split("-").reverse().join("-")
+        : startPoint.split("-").reverse().join("-")) +
+      "&end=" +
+      (Boolean(startPoint)
+        ? startPoint.split("-").reverse().join("-")
+        : endPoint.split("-").reverse().join("-")) +
+      "",
+    {
+      storeValuesToDispatch: "newCustomers",
+    }
+  );
   const [getRequest, getRequestError] = useGet(
     "aqar/api/router/NewClient/?start=" +
       (Boolean(endPoint)
@@ -255,6 +270,11 @@ const CustomersNew = () => {
         columns={dummyColumns}
         maxRowsPerPage={10}
         onDelete={() => {}}
+        current={current}
+        max={limit}
+        onNext={onNext}
+        onPrev={onPrev}
+        isPending={isPending}
       />
     </Wrapper>
   );

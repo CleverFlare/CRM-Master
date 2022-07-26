@@ -11,6 +11,7 @@ import { useState } from "react";
 import usePost from "../../../hooks/usePost";
 import useDelete from "../../../hooks/useDelete";
 import useGet from "../../../hooks/useGet";
+import usePagination from "../../../hooks/usePagination";
 
 const dummyRows = [
   {
@@ -115,8 +116,10 @@ const dummyRows = [
 ];
 
 const CustomersDeleted = () => {
-  const token = useSelector((state) => state.token.value);
-  const domain = useSelector((state) => state.domain.value);
+  const [current, limit, isPending, onNext, onPrev] = usePagination(
+    "aqar/api/router/RestoreClient/",
+    { storeValuesToDispatch: "deletedCustomers" }
+  );
   const [customersGetRequest, customersGetRequestError] = useGet(
     "aqar/api/router/RestoreClient/"
   );
@@ -153,7 +156,7 @@ const CustomersDeleted = () => {
   const dispatch = useDispatch();
   const [selected, setSelected] = useState([]);
   useEffect(() => {
-    if (Boolean(deletedCustomers?.length)) return;
+    // if (Boolean(deletedCustomers?.length)) return;
     customersGetRequest().then((res) => {
       dispatch({ type: "deletedCustomers/set", payload: res.results });
     });
@@ -237,6 +240,11 @@ const CustomersDeleted = () => {
           }
           columns={dummyColumns}
           maxRowsPerPage={10}
+          current={current}
+          max={limit}
+          onNext={onNext}
+          onPrev={onPrev}
+          isPending={isPending}
         />
         <Stack
           sx={{ width: "100%", marginTop: "20px" }}
