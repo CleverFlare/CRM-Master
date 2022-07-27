@@ -74,6 +74,7 @@ const Statuses = () => {
       returnedArray.push({
         name: item.name,
         createdAt: format(item.created_at),
+        id: item.id,
       });
     });
     return returnedArray;

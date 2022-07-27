@@ -42,7 +42,6 @@ const usePagination = (path, { storeValuesToDispatch = "" }) => {
     setCurrent((old) => old + 1);
     nextPageGetRequest().then((res) => {
       dispatch({ type: storeValuesToDispatch + "/set", payload: res.results });
-      // setter([...res.results]);
       setIsPending(false);
     });
   };
@@ -53,7 +52,6 @@ const usePagination = (path, { storeValuesToDispatch = "" }) => {
     setCurrent((old) => old - 1);
     prevPageGetRequest().then((res) => {
       dispatch({ type: storeValuesToDispatch + "/set", payload: res.results });
-      // setter([...res.results]);
       setIsPending(false);
     });
   };

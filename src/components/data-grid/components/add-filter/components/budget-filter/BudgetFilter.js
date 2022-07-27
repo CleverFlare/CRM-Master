@@ -6,15 +6,15 @@ import NumberFormat from "react-number-format";
 const options = [
   {
     name: "يساوي",
-    value: "equals",
+    value: "يساوي",
   },
   {
     name: "اكبر من",
-    value: "greater",
+    value: "اكبر",
   },
   {
     name: "اصغر من",
-    value: "less",
+    value: "اصغر",
   },
 ];
 
@@ -23,6 +23,7 @@ const BudgetFilter = ({ onFilter = () => {} }) => {
   const [value, setValue] = useState("");
 
   useEffect(() => {
+    if (!Boolean(value)) return onFilter(null);
     onFilter({
       eval: type,
       value: value,

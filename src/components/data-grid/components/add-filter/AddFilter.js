@@ -4,7 +4,7 @@ import { useState } from "react";
 import React from "react";
 import filtersMapping from "../../mappings/filters";
 
-const AddFilter = ({ onFilter }) => {
+const AddFilter = ({ onFilter, filters }) => {
   const [results, setResults] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -32,6 +32,7 @@ const AddFilter = ({ onFilter }) => {
   };
 
   const handleSubmit = () => {
+    if (!Boolean(results)) return;
     onFilter({ type: filterInfo.type, output: results });
     handleCloseFilter();
     handleClose();
@@ -73,6 +74,12 @@ const AddFilter = ({ onFilter }) => {
           {filtersMapping.map((filter, index) => (
             <MenuItem
               onClick={(e) => setFilterAnchorEL(e.currentTarget)}
+              disabled={
+                (filter?.disableCondition &&
+                  filters?.find(filter?.disableCondition)) ||
+                (filter?.onlyOnce &&
+                  filters?.find((item) => item?.type === filter?.type))
+              }
               onMouseEnter={() =>
                 setFilterInfo({
                   type: filter?.type,

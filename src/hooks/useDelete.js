@@ -30,7 +30,7 @@ const useDelete = (
   const request = async (requestName, id = null) => {
     setIsPending(true);
     return axios
-      .delete(host + (id ? id : ""), {
+      .delete(host + (id ? id + "/" : ""), {
         headers: {
           //prettier-ignore
           "Authorization": "Token " + token,

@@ -24,10 +24,17 @@ import AddStatus from "./pages/customers/add-status/AddStatus";
 import Statuses from "./pages/customers/statuses/Statuses";
 import DisplayChannels from "./pages/channels/display/DisplayChannels";
 import useGet from "./hooks/useGet";
+import dialCodes from "./dial codes";
+import flags from "./flags";
+import dialInfo from "./dialInfoJs";
 
 function App() {
   const permissions = useSelector((state) => state.permissions.value);
   const token = useSelector((state) => state.token.value);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch({ type: "dial/set", payload: [...dialInfo] });
+  }, []);
   return (
     <div className="App">
       <Router>
@@ -108,3 +115,6 @@ function App() {
 }
 
 export default App;
+
+// username: owner_01000015160
+// password: 0000

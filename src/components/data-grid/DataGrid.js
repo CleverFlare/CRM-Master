@@ -40,6 +40,7 @@ import useGet from "../../hooks/useGet";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import CustomChip from "./components/custom-chip/CustomChip";
 import AddFilter from "./components/add-filter/AddFilter";
+import amountMapping from "./mappings/amount";
 
 const balance = "filter";
 
@@ -134,6 +135,57 @@ const DataGrid = ({
   return (
     <Paper sx={{ overflowX: "auto", marginBlock: 5 }} elevation={2}>
       <Paper variant="outlined">
+        <Stack
+          direction="row"
+          sx={{ p: 2, maxWidth: "100%", flexWrap: "wrap", rowGap: 2 }}
+          spacing={2}
+        >
+          <Paper variant="outlined">
+            <Stack
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
+              sx={{ paddingInline: 2, height: "100%" }}
+              spacing={2}
+            >
+              <Typography variant="body2">عرض العناصر</Typography>
+              <TextField
+                variant="standard"
+                select
+                sx={{
+                  width: 70,
+                  borderRadius: "100vmax",
+                  "& .MuiInputBase-root, & .MuiSelect-standard": {
+                    borderRadius: "100vmax",
+                  },
+                  "& .MuiSelect-standard": {
+                    paddingBlock: "0",
+                  },
+                }}
+                defaultValue={amountMapping[0]}
+                SelectProps={{
+                  IconComponent: KeyboardArrowDownIcon,
+                }}
+              >
+                {amountMapping.map((item, index) => (
+                  <MenuItem value={item} key={item + " " + index}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Stack>
+          </Paper>
+          {filters.map((filter, index) => (
+            <CustomChip
+              info={{ type: filter?.type, data: filter?.output }}
+              key={filter.type + " " + index}
+              onDelete={() => handleRemoveFilter(index)}
+              onEdit={(output) => handleEditFilter(output, index)}
+            />
+          ))}
+          <AddFilter onFilter={handleAddNewFilter} filters={filters} />
+        </Stack>
+        <Divider orientation="horizontal" />
         <Box sx={{ overflowX: "auto" }}>
           <Stack
             direction="column"
@@ -146,49 +198,6 @@ const DataGrid = ({
             {/* Grid Header */}
 
             {/* filter items were here */}
-            <Stack direction="row" sx={{ p: 2 }} spacing={2}>
-              <Paper variant="outlined">
-                <Stack
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="center"
-                  sx={{ paddingInline: 2, height: "100%" }}
-                  spacing={2}
-                >
-                  <Typography variant="body2">عرض العناصر</Typography>
-                  <TextField
-                    variant="standard"
-                    select
-                    sx={{
-                      width: 70,
-                      borderRadius: "100vmax",
-                      "& .MuiInputBase-root, & .MuiSelect-standard": {
-                        borderRadius: "100vmax",
-                      },
-                      "& .MuiSelect-standard": {
-                        paddingBlock: "0",
-                      },
-                    }}
-                    defaultValue="10"
-                    SelectProps={{
-                      IconComponent: KeyboardArrowDownIcon,
-                    }}
-                  >
-                    <MenuItem value="10">10</MenuItem>
-                  </TextField>
-                </Stack>
-              </Paper>
-              {filters.map((filter, index) => (
-                <CustomChip
-                  info={{ type: filter?.type, data: filter?.output }}
-                  key={filter.type + " " + index}
-                  onDelete={() => handleRemoveFilter(index)}
-                  onEdit={(output) => handleEditFilter(output, index)}
-                />
-              ))}
-              <AddFilter onFilter={handleAddNewFilter} />
-            </Stack>
-            <Divider orientation="horizontal" />
             {/* Grid Content */}
             <Box
               sx={{

@@ -70,11 +70,11 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
           path: "/customers/total",
           disabled: !permissions?.includes("view_aqarclient"),
         },
-        {
-          text: "العملاء الجدد",
-          path: "/customers/new",
-          disabled: !permissions?.includes("view_aqarclient"),
-        },
+        // {
+        //   text: "العملاء الجدد",
+        //   path: "/customers/new",
+        //   disabled: !permissions?.includes("view_aqarclient"),
+        // },
         {
           text: "العملاء المحذوفة",
           path: "/customers/deleted",

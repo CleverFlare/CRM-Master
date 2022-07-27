@@ -26,12 +26,14 @@ const CustomChip = ({
       <Chip
         label={
           <Stack direction="row" spacing={1} sx={{ direction: "ltr" }}>
-            <Typography>{info?.type}:</Typography>
+            <Typography sx={{ fontWeight: "bold" }}>
+              {info?.type} {info?.data?.eval && `(${info?.data?.eval})`}:
+            </Typography>
             <Typography>
               {typeof info?.data === "string" && info?.data}
             </Typography>
             <Typography>
-              {typeof info?.data === "object" && info?.data?.value}
+              {typeof info?.data === "object" && info?.data?.value.trim()}
             </Typography>
           </Stack>
         }

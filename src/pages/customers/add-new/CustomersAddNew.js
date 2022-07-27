@@ -50,6 +50,7 @@ const CustomersAddNew = () => {
   const projects = useSelector((state) => state.projects.value);
   const channels = useSelector((state) => state.channels.value);
   const employees = useSelector((state) => state.employees.value);
+  const dials = useSelector((state) => state.dial.value);
   const dispatch = useDispatch();
   const validate = useValidate();
 
@@ -61,19 +62,10 @@ const CustomersAddNew = () => {
 
   const [errors, setErrors] = useState({});
 
-  const countriesCodeInit =
-    "(+20)" +
-    (
-      <img
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/2560px-Flag_of_Egypt.svg.png"
-        style={{ maxWidth: 20 }}
-      />
-    );
-
   const [controls, setControl, resetControls] = useControls({
     name: "",
     phone: "",
-    code: countriesCodeInit,
+    code: dials[0].dial,
     email: "",
     saler: "",
     mediator: "",
@@ -146,7 +138,7 @@ const CustomersAddNew = () => {
           first_name: controls.name.split(" ")[0],
           last_name: controls.name.split(" ")[1],
           email: controls.email,
-          phone: controls.phone,
+          phone: controls.code + controls.phone,
           user_permissions: [],
           permissions: [],
         },
@@ -246,38 +238,74 @@ const CustomersAddNew = () => {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start" sx={{ margin: 0 }}>
-                      <FormControl
+                      <TextField
                         variant="standard"
-                        sx={{ width: "max-content" }}
+                        select
+                        sx={{
+                          "& .MuiSelect-standard": {
+                            width: 60,
+                          },
+                        }}
+                        onChange={({ target: { value } }) =>
+                          setControl("code", value)
+                        }
+                        value={controls.code}
+                        PaperProps={{
+                          sx: { maxHeight: 50, overflowY: "hidden" },
+                        }}
+                        SelectProps={{
+                          defaultValue: "",
+                          displayEmpty: true,
+                          renderValue: (selected) => {
+                            if (!selected) {
+                              return (
+                                <Typography
+                                  sx={{
+                                    color: "currentColor",
+                                    opacity: "0.42",
+                                  }}
+                                >
+                                  الكود
+                                </Typography>
+                              );
+                            } else {
+                              const selectedCountry = dials.filter(
+                                (item) => item.dial === selected
+                              )[0];
+                              console.log(selectedCountry);
+                              return (
+                                <Stack direction="row" spacing={1}>
+                                  <img
+                                    src={selectedCountry.flag}
+                                    style={{ maxWidth: 20 }}
+                                  />
+                                  <Typography>
+                                    {selectedCountry.dial}
+                                  </Typography>
+                                </Stack>
+                              );
+                            }
+                          },
+                          MenuProps: {
+                            PaperProps: { style: { maxHeight: "250px" } },
+                          },
+                          IconComponent: KeyboardArrowDownIcon,
+                        }}
                       >
-                        <Select
-                          defaultValue={countries[0].code + countries[0].flag}
-                          sx={{
-                            "& .MuiSelect-standard": {
-                              display: "flex",
-                              alignItems: "center",
-                            },
-                          }}
-                          onChange={({ target: { value } }) =>
-                            setControl("code", value)
-                          }
-                          value={controls.code}
-                        >
-                          {countries?.map((item, index) => (
-                            <MenuItem key={index} value={item.code + item.flag}>
-                              <ListItemIcon
-                                sx={{
-                                  minWidth: "max-content",
-                                  marginRight: "5px",
-                                }}
-                              >
-                                {item.flag}
-                              </ListItemIcon>
-                              <ListItemText primary={item.code} />
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+                        {dials?.map((item, index) => (
+                          <MenuItem key={index} value={item.dial}>
+                            <ListItemIcon
+                              sx={{
+                                minWidth: "max-content",
+                                marginRight: "5px",
+                              }}
+                            >
+                              <img src={item.flag} style={{ maxWidth: 20 }} />
+                            </ListItemIcon>
+                            <ListItemText primary={item.code} />
+                          </MenuItem>
+                        ))}
+                      </TextField>
                     </InputAdornment>
                   ),
                 }}
