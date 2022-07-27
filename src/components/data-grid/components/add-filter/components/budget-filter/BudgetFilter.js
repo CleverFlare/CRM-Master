@@ -26,7 +26,7 @@ const BudgetFilter = ({ onFilter = () => {} }) => {
     if (!Boolean(value)) return onFilter(null);
     onFilter({
       eval: type,
-      value: value,
+      value: value.replace(",", ""),
     });
   }, [value]);
 
