@@ -16,13 +16,13 @@ const filtersMapping = [
     name: "كود البلد",
     type: "كود بلد",
     component: <DialCode />,
-    parameter: () => "phone",
+    parameter: () => "user__phone",
   },
   {
     name: "المشروع",
     type: "مشروع",
     component: <ProjectFilter />,
-    parameter: () => "bussiness",
+    parameter: () => "bussiness__name",
   },
   {
     name: "الحالة/العملاء الجدد",
@@ -47,9 +47,9 @@ const filtersMapping = [
     parameter: (item) => {
       switch (item.eval) {
         case "اكبر":
-          return "max_budget_gte";
+          return "max_budget__gte";
         case "اصغر":
-          return "max_budget_lte";
+          return "max_budget__lte";
         case "يساوي":
           return "max_budget";
       }
