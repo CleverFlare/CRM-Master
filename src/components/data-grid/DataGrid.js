@@ -144,7 +144,7 @@ const DataGrid = ({
 
   useEffect(() => {
     getUsingFilters().then((res) => {
-      dispatch({ type: "projects/set", payload: res.results });
+      dispatch({ type: syncName + "/set", payload: res.results });
     });
   }, [parameters]);
 
