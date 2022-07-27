@@ -195,11 +195,7 @@ const TotalCustomers = () => {
           ]}
         />
         <DataGrid
-          rows={
-            Boolean(allCustomers?.length)
-              ? parseToProperData(allCustomers)
-              : null
-          }
+          rows={parseToProperData(allCustomers)}
           onView={(e, rowData) => {
             setInitials(rowData);
             setOpenDetails(true);
