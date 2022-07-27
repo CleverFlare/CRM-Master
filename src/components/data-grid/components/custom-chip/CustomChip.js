@@ -25,8 +25,13 @@ const CustomChip = ({
     <Box>
       <Chip
         label={
-          <Stack direction="row" spacing={1} sx={{ direction: "ltr" }}>
-            <Typography sx={{ fontWeight: "bold" }}>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{ direction: "ltr" }}
+            alignItems="center"
+          >
+            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
               {info?.type} {info?.data?.eval && `(${info?.data?.eval})`}:
             </Typography>
             <Typography>
@@ -63,6 +68,7 @@ const CustomChip = ({
           variant="contained"
           sx={{ marginInline: 2, marginTop: 2 }}
           onClick={() => {
+            if (!Boolean(results)) return;
             handleClose();
             onEdit(results);
           }}

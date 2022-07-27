@@ -800,14 +800,6 @@ const dialInfo = [
     unicode: "U+1F1EE U+1F1F2",
   },
   {
-    dial: "+972",
-    name: "Israel",
-    code: "IL",
-    flag: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/IL.svg",
-    emoji: "🇮🇱",
-    unicode: "U+1F1EE U+1F1F1",
-  },
-  {
     dial: "+39",
     name: "Italy",
     code: "IT",

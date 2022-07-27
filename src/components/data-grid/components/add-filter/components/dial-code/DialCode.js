@@ -38,7 +38,6 @@ const DialCode = ({ onFilter }) => {
               const selectedCountry = dials.filter(
                 (item) => item.dial === selected
               )[0];
-              console.log(selectedCountry);
               return (
                 <Stack direction="row" spacing={1}>
                   <img src={selectedCountry.flag} style={{ maxWidth: 20 }} />

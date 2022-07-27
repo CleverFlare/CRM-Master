@@ -214,6 +214,8 @@ const TotalCustomers = () => {
           onDelete={
             permissions?.includes("delete_aqarclient") ? handleDelete : null
           }
+          filterURL="aqar/api/router/Client/"
+          dispatchName="allCustomers"
         />
         <Stack
           direction="row"

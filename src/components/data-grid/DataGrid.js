@@ -41,6 +41,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import CustomChip from "./components/custom-chip/CustomChip";
 import AddFilter from "./components/add-filter/AddFilter";
 import amountMapping from "./mappings/amount";
+import filtersMapping from "./mappings/filters";
 
 const balance = "filter";
 
@@ -60,40 +61,29 @@ const DataGrid = ({
   max = 1,
   current,
   isPending = false,
+  filterURL,
+  syncName,
 }) => {
+  const [parameters, setParameters] = useState("?");
+
   const [rowsCopy, setRowsCopy] = useState(null);
-  const gotTheRows = false;
-  const [openEditInfo, setOpenEditInfo] = useState(false);
-  const [openEditPass, setOpenEditPass] = useState(false);
-  const [initials, setInitial] = useState(false);
-  const [pages, setPages] = useState(19);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [sliceStart, setSliceStart] = useState(0);
+
+  const [getUsingFilters, getUsingFiltersError] = useGet(
+    filterURL + parameters
+  );
+
   const dispatch = useDispatch();
-  const projects = useSelector((state) => state.projects.value);
+
   const [filters, setFilters] = useState([]);
+
   const [projectsGetRequest, projectsGetRequestError] = useGet(
     "aqar/api/router/Project/"
   );
-  const [sliceEnd, setSliceEnd] = useState(maxRowsPerPage);
-
-  const handleSetInitials = (value) => {
-    setInitial(value);
-  };
-
-  const handleCloseEditInfo = () => {
-    setOpenEditInfo(false);
-  };
-
-  const handleCloseEditPass = () => {
-    setOpenEditPass(false);
-  };
 
   const handleSearchName = (event) => {
     const filteredArray = rows.filter((item, index) =>
       item.name?.includes(event.target.value)
     );
-    console.log(filteredArray);
     setRowsCopy(filteredArray);
   };
 
@@ -101,22 +91,21 @@ const DataGrid = ({
     if (rows) {
       setRowsCopy(rows);
     }
-    // setPages(Math.ceil(rows?.length / maxRowsPerPage));
   }, [rows]);
 
-  // useEffect(() => {
-  //   setSliceStart(maxRowsPerPage * (currentPage - 1));
-  //   setSliceEnd(maxRowsPerPage * currentPage);
-  // }, [currentPage]);
-
   useEffect(() => {
-    // if (Boolean(projects?.length)) return;
     projectsGetRequest().then((res) =>
       dispatch({ type: "projects/set", payload: res.results })
     );
   }, []);
 
   const handleAddNewFilter = (filterOutput) => {
+    if (
+      filters.some(
+        (item) => JSON.stringify(item) === JSON.stringify(filterOutput)
+      )
+    )
+      return;
     setFilters((old) => [...old, filterOutput]);
   };
 
@@ -129,8 +118,35 @@ const DataGrid = ({
   const handleEditFilter = (output, index) => {
     const newFilters = filters;
     newFilters[index].output = output;
+    newFilters[index].parameter = filtersMapping
+      .find((item) => item?.type === newFilters[index]?.type)
+      .parameter(output);
     setFilters([...newFilters]);
   };
+
+  useEffect(() => {
+    setParameters(
+      "?" +
+        filters
+          .map(
+            (item) =>
+              item?.parameter +
+              "=" +
+              (typeof item?.output === "string"
+                ? item?.output === "العملاء الجدد"
+                  ? "true"
+                  : item?.output
+                : item?.output?.value)
+          )
+          .join("&")
+    );
+  }, [filters]);
+
+  useEffect(() => {
+    getUsingFilters().then((res) => {
+      dispatch({ type: "projects/set", payload: res.results });
+    });
+  }, [parameters]);
 
   return (
     <Paper sx={{ overflowX: "auto", marginBlock: 5 }} elevation={2}>
@@ -275,7 +291,6 @@ const DataGrid = ({
                                       </TableCell>
                                     );
                                   } else {
-                                    // console.log(column.field);
                                     throw Error(
                                       `The field "${column.field}" does not match any key in the object, error fired at index ${rowIndex}`
                                     );

@@ -33,7 +33,13 @@ const AddFilter = ({ onFilter, filters }) => {
 
   const handleSubmit = () => {
     if (!Boolean(results)) return;
-    onFilter({ type: filterInfo.type, output: results });
+    onFilter({
+      type: filterInfo.type,
+      parameter: filtersMapping
+        .find((item) => item.type === filterInfo.type)
+        .parameter(results),
+      output: results,
+    });
     handleCloseFilter();
     handleClose();
   };
@@ -74,12 +80,12 @@ const AddFilter = ({ onFilter, filters }) => {
           {filtersMapping.map((filter, index) => (
             <MenuItem
               onClick={(e) => setFilterAnchorEL(e.currentTarget)}
-              disabled={
+              disabled={Boolean(
                 (filter?.disableCondition &&
                   filters?.find(filter?.disableCondition)) ||
-                (filter?.onlyOnce &&
-                  filters?.find((item) => item?.type === filter?.type))
-              }
+                  (filter?.onlyOnce &&
+                    filters?.find((item) => item?.type === filter?.type))
+              )}
               onMouseEnter={() =>
                 setFilterInfo({
                   type: filter?.type,
