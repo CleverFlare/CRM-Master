@@ -134,7 +134,7 @@ const DataGrid = ({
               "=" +
               (typeof item?.output === "string"
                 ? item?.output === "العملاء الجدد"
-                  ? "true"
+                  ? "1"
                   : item?.output
                 : item?.output?.value)
           )
