@@ -9,9 +9,11 @@ import CustomerDetails from "../../../components/customer-details/CustomerDetail
 import { Button, Checkbox, Stack, Typography } from "@mui/material";
 import { CSVLink, CSVDownload } from "react-csv";
 import usePagination from "../../../hooks/usePagination";
+import CustomersInfo from "../../../components/customers-info-dialog/CustomersInfo";
 
 const TotalCustomers = () => {
   const [openDetails, setOpenDetails] = useState(false);
+  const [openInfo, setOpenInfo] = useState(false);
   const [initials, setInitials] = useState({});
   const permissions = useSelector((state) => state.permissions.value);
   const [exportObject, setExportObject] = useState({});
@@ -210,6 +212,10 @@ const TotalCustomers = () => {
           onDelete={
             permissions?.includes("delete_aqarclient") ? handleDelete : null
           }
+          onEdit={(e, rowData) => {
+            setInitials(rowData);
+            setOpenInfo(true);
+          }}
           filterURL="aqar/api/router/Client/"
           syncName="allCustomers"
         />
@@ -260,6 +266,13 @@ const TotalCustomers = () => {
           <CustomerDetails
             isOpened={openDetails}
             onClose={() => setOpenDetails(false)}
+            initials={initials}
+          />
+        )}
+        {permissions?.includes("change_aqarclient") && (
+          <CustomersInfo
+            isOpened={openInfo}
+            onClose={() => setOpenInfo(false)}
             initials={initials}
           />
         )}

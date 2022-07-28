@@ -233,11 +233,7 @@ const CustomersDeleted = () => {
           ]}
         />
         <DataGrid
-          rows={
-            Boolean(deletedCustomers?.length)
-              ? parseToProperData(deletedCustomers)
-              : null
-          }
+          rows={parseToProperData(deletedCustomers)}
           columns={dummyColumns}
           maxRowsPerPage={10}
           current={current}

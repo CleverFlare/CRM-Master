@@ -40,7 +40,7 @@ const usePatch = (
         };
     return axios
       .patch(
-        host + path + (Boolean(id) ? id : ""),
+        host + path + (Boolean(id) ? id + "/" : ""),
         json ? JSON.stringify(requestBody) : requestBody,
         {
           headers,

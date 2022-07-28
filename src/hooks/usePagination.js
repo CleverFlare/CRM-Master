@@ -5,6 +5,8 @@ import useGet from "./useGet";
 const usePagination = (path, { storeValuesToDispatch = "" }) => {
   const [currentPage, setCurrent] = useState(1);
 
+  const filters = useSelector((state) => state.parameters.value);
+
   const [isPending, setIsPending] = useState(true);
 
   const [limitPage, setLimit] = useState(null);
@@ -21,20 +23,29 @@ const usePagination = (path, { storeValuesToDispatch = "" }) => {
       requestInfo.value.topLevelDomain +
       "/"
   );
-  const [getLimit, getLimitError] = useGet(path);
+  const [getLimit, getLimitError] = useGet(
+    path + "?page=" + currentPage + (Boolean(filters) ? "&" + filters : "")
+  );
   const [nextPageGetRequest, nextPageGetRequestError] = useGet(
-    path + "?page=" + (currentPage + 1)
+    path +
+      "?page=" +
+      (currentPage + 1) +
+      (Boolean(filters) ? "&" + filters : "")
   );
   const [prevPageGetRequest, prevPageGetRequestError] = useGet(
-    path + "?page=" + (currentPage - 1)
+    path +
+      "?page=" +
+      (currentPage - 1) +
+      (Boolean(filters) ? "&" + filters : "")
   );
 
   useEffect(() => {
     getLimit().then((res) => {
       setIsPending(false);
       setLimit(Math.ceil(res.count / res.results.length));
+      dispatch({ type: storeValuesToDispatch + "/set", payload: res.results });
     });
-  }, []);
+  }, [filters]);
 
   const onNext = async () => {
     if (currentPage + 1 > limitPage) return;

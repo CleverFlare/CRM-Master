@@ -15,6 +15,7 @@ import userInfoSlice from "./store/userInfoSlice";
 import permissionsSlice from "./store/permissionsSlice";
 import newClientsSlice from "./store/newClientsSlice";
 import countriesCodeSlice from "./store/countriesCodeSlice";
+import parametersSlice from "./store/parametersSlice";
 
 export default configureStore({
   reducer: {
@@ -34,5 +35,6 @@ export default configureStore({
     permissions: permissionsSlice,
     newClients: newClientsSlice,
     dial: countriesCodeSlice,
+    parameters: parametersSlice,
   },
 });

@@ -43,6 +43,10 @@ const TablePagination = ({
     } else {
       setDisableRight(false);
     }
+
+    if (isNaN(max)) {
+      max = 1;
+    }
   }, [max, current]);
 
   return (

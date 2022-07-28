@@ -64,13 +64,13 @@ const DataGrid = ({
   filterURL,
   syncName,
 }) => {
-  const [parameters, setParameters] = useState("?");
+  // const [parameters, setParameters] = useState("?");
 
   const [rowsCopy, setRowsCopy] = useState(null);
 
-  const [getUsingFilters, getUsingFiltersError] = useGet(
-    filterURL + parameters
-  );
+  // const [getUsingFilters, getUsingFiltersError] = useGet(
+  //   filterURL + parameters
+  // );
 
   const dispatch = useDispatch();
 
@@ -125,28 +125,41 @@ const DataGrid = ({
   };
 
   useEffect(() => {
-    setParameters(
-      "?" +
-        filters
-          .map(
-            (item) =>
-              item?.parameter +
-              "=" +
-              (typeof item?.output === "string"
-                ? item?.output === "العملاء الجدد"
-                  ? "1"
-                  : item?.output
-                : item?.output?.value)
-          )
-          .join("&")
-    );
+    // setParameters(
+    //   "?" +
+    //     filters
+    //       .map(
+    //         (item) =>
+    //           item?.parameter +
+    //           "=" +
+    //           (typeof item?.output === "string"
+    //             ? item?.output === "العملاء الجدد"
+    //               ? "1"
+    //               : encodeURIComponent(item?.output)
+    //             : encodeURIComponent(item?.output?.value))
+    //       )
+    //       .join("&")
+    // );
+    const parsedParameters = filters
+      .map(
+        (item) =>
+          item?.parameter +
+          "=" +
+          (typeof item?.output === "string"
+            ? item?.output === "العملاء الجدد"
+              ? "1"
+              : encodeURIComponent(item?.output)
+            : encodeURIComponent(item?.output?.value))
+      )
+      .join("&");
+    dispatch({ type: "parameters/set", payload: parsedParameters });
   }, [filters]);
 
-  useEffect(() => {
-    getUsingFilters().then((res) => {
-      dispatch({ type: syncName + "/set", payload: res.results });
-    });
-  }, [parameters]);
+  // useEffect(() => {
+  //   getUsingFilters().then((res) => {
+  //     dispatch({ type: syncName + "/set", payload: res.results });
+  //   });
+  // }, [parameters]);
 
   return (
     <Paper sx={{ overflowX: "auto", marginBlock: 5 }} elevation={2}>
