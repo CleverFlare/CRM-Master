@@ -141,16 +141,30 @@ const DataGrid = ({
     //       .join("&")
     // );
     const parsedParameters = filters
-      .map(
-        (item) =>
+      .map((item) => {
+        console.log(
+          item?.output
+            .replace(/من: | إلى:/gi, "")
+            .split("-")
+            .reverse()
+            .join("-")
+        );
+        return (
           item?.parameter +
           "=" +
           (typeof item?.output === "string"
             ? item?.output === "العملاء الجدد"
               ? "1"
-              : encodeURIComponent(item?.output)
+              : encodeURIComponent(
+                  item?.output
+                    .replace(/من: | إلى:/gi, "")
+                    .split("-")
+                    .reverse()
+                    .join("-")
+                )
             : encodeURIComponent(item?.output?.value))
-      )
+        );
+      })
       .join("&");
     dispatch({ type: "parameters/set", payload: parsedParameters });
   }, [filters]);
