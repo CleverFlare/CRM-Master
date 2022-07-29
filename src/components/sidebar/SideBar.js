@@ -27,6 +27,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Box } from "@mui/system";
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import ApartmentIcon from "@mui/icons-material/Apartment";
 import { useDispatch, useSelector } from "react-redux";
 
 const SideBar = ({ width, name, role, permanent, open, onClose }) => {
@@ -36,6 +37,7 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
   const [projects, setProjects] = useState(false);
   const [employees, setEmployees] = useState(false);
   const [settings, setSettings] = useState(false);
+  const [units, setUnits] = useState(false);
   const userInfo = useSelector((state) => state.userInfo.value);
   const dispatch = useDispatch();
 
@@ -177,6 +179,25 @@ const SideBar = ({ width, name, role, permanent, open, onClose }) => {
           text: "عرض القنوات",
           path: "/channels/display",
           disabled: !permissions?.includes("view_aqarchannel"),
+        },
+      ],
+    },
+    {
+      type: "parent",
+      text: "الوحدات",
+      icon: <ApartmentIcon sx={{ color: "white" }} />,
+      expander: units,
+      setExpander: setUnits,
+      children: [
+        {
+          text: "إضافة وحدة",
+          path: "/units/add-new",
+          disabled: false,
+        },
+        {
+          text: "عرض الوحدات",
+          path: "/units/view",
+          disabled: false,
         },
       ],
     },

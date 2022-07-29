@@ -27,6 +27,8 @@ import useGet from "./hooks/useGet";
 import dialCodes from "./dial codes";
 import flags from "./flags";
 import dialInfo from "./dialInfoJs";
+import UnitsAddNew from "./pages/units/add-new/UnitsAddNew";
+import UnitsView from "./pages/units/view/UnitsView";
 
 function App() {
   const permissions = useSelector((state) => state.permissions.value);
@@ -101,6 +103,8 @@ function App() {
               {permissions?.includes("view_aqarjob") && (
                 <Route path="/employees/jobs" element={<Jobs />} />
               )}
+              <Route path="/units/add-new" element={<UnitsAddNew />} />
+              <Route path="/units/view" element={<UnitsView />} />
             </Routes>
           </Layout>
         )}

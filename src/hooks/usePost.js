@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import useGet from "./useGet";
 
-const usePatch = (
+const usePost = (
   path,
   successMessage = "تم الإرسال بنجاح!",
   onSuccess = () => {}
@@ -112,4 +112,4 @@ const usePatch = (
   ];
 };
 
-export default usePatch;
+export default usePost;
