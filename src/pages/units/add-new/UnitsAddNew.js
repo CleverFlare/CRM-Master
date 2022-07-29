@@ -11,6 +11,10 @@ import {
   Button,
   InputAdornment,
   IconButton,
+  Input,
+  FormControlLabel,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -23,20 +27,18 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { Box } from "@mui/system";
 import { useRef } from "react";
+import NumberFormat from "react-number-format";
 
 const UnitsAddNew = () => {
   const sm = useMediaQuery("(max-width:912px)");
   const fileInputRef = useRef();
   const [errors, setErrors] = useState();
   const [postRequest, successAlert, errorAlert, isPending] = usePost(
-    "",
+    "aqar/api/router/Unit/",
     "تم إضافة وحدة بنجاح!"
   );
   const validate = useValidate();
   const [controls, setControl, resetControls] = useControls({
-    name: "",
-    phone: "",
-    code: "",
     district: "",
     address: "",
     type: "",
@@ -48,26 +50,11 @@ const UnitsAddNew = () => {
     price: "",
     client: "",
     notes: "",
-    pictures: [],
+    pictures: {},
   });
 
   const handleSubmit = () => {
     validate([
-      {
-        name: "name",
-        value: controls.name,
-        isRequired: true,
-      },
-      {
-        name: "phone",
-        value: controls.phone,
-        isRequired: true,
-      },
-      {
-        name: "code",
-        value: controls.code,
-        isRequired: true,
-      },
       {
         name: "district",
         value: controls.district,
@@ -92,6 +79,12 @@ const UnitsAddNew = () => {
         name: "area",
         value: controls.area,
         isRequired: true,
+        validation: [
+          {
+            regex: /(?<=^\d\d\d)\.(?=\d)|^\d\d\d$/gi,
+            value: "تأكد انه يوجد ثلاث ارقم فقط قبل العلامة العشرية",
+          },
+        ],
       },
       {
         name: "rooms",
@@ -125,12 +118,35 @@ const UnitsAddNew = () => {
       },
       {
         name: "pictures",
-        value: controls.pictures.join(""),
+        value: Object.keys(controls.pictures)
+          .map((picture) => controls.pictures[picture].name)
+          .join(""),
         isRequired: true,
       },
     ]).then((output) => {
       setErrors(output?.errors);
+      console.log(output?.errors);
       if (!output?.ok) return;
+      const formData = new FormData();
+      formData.append("address", controls?.address);
+      formData.append("area", controls?.district);
+      Object.keys(controls?.pictures).map((picture) => {
+        formData.append("image", controls?.pictures[picture]);
+      });
+      formData.append("unit_number", controls?.floor);
+      formData.append("room_number", controls?.rooms);
+      formData.append("bath_count", controls?.bathrooms);
+      formData.append("bath_count", controls?.bathrooms);
+      formData.append("price", controls?.price.replace(",", ""));
+      formData.append("comment", controls?.notes);
+      formData.append("unit_type", controls?.type);
+      formData.append("area_size", controls?.area.replace(" متر", ""));
+      formData.append("complete_type", controls?.genre);
+      formData.append("client", controls?.client);
+      postRequest(formData, false).then((res) => {
+        if (!res) return;
+        resetControls();
+      });
     });
   };
 
@@ -143,10 +159,13 @@ const UnitsAddNew = () => {
           multiple
           ref={fileInputRef}
           style={{ display: "none" }}
+          onChange={(e) => {
+            setControl("pictures", e.target.files);
+          }}
         />
         <Stack sx={{ padding: 2, bgcolor: "#f8f8f9" }}>
           <Typography sx={{ fontWeight: "bold" }}>مرحبا بك!</Typography>
-          <Typography>الرجاء ملئ المعلومات الآتية لاضافة عميل جديد</Typography>
+          <Typography>الرجاء ملئ المعلومات الآتية لاضافة وحدة جديدة</Typography>
         </Stack>
         <Divider orientation="horizontal" />
         <Stack direction="column" spacing={sm ? 2 : 5} sx={{ padding: 2 }}>
@@ -202,7 +221,8 @@ const UnitsAddNew = () => {
             justifyContent="space-between"
             spacing={sm ? 2 : 1}
           >
-            <TextField
+            <NumberFormat
+              customInput={TextField}
               variant="standard"
               label="الدور"
               placeholder="الدور"
@@ -215,7 +235,11 @@ const UnitsAddNew = () => {
               error={Boolean(errors?.floor)}
               helperText={errors?.floor}
             />
-            <TextField
+            <NumberFormat
+              customInput={TextField}
+              suffix=" متر"
+              decimalSeparator="."
+              decimalScale={3}
               variant="standard"
               label="المساحة"
               placeholder="المساحة"
@@ -228,7 +252,8 @@ const UnitsAddNew = () => {
               error={Boolean(errors?.area)}
               helperText={errors?.area}
             />
-            <TextField
+            <NumberFormat
+              customInput={TextField}
               variant="standard"
               label="عدد الغرف"
               placeholder="عدد الغرف"
@@ -247,7 +272,8 @@ const UnitsAddNew = () => {
             justifyContent="space-between"
             spacing={sm ? 2 : 1}
           >
-            <TextField
+            <NumberFormat
+              customInput={TextField}
               variant="standard"
               label="عدد الحمامات"
               placeholder="عدد الحمامات"
@@ -273,7 +299,9 @@ const UnitsAddNew = () => {
               error={Boolean(errors?.genre)}
               helperText={errors?.genre}
             />
-            <TextField
+            <NumberFormat
+              customInput={TextField}
+              thousandSeparator
               variant="standard"
               label="السعر"
               placeholder="السعر"
@@ -338,12 +366,17 @@ const UnitsAddNew = () => {
                   </InputAdornment>
                 ),
               }}
+              value={Object.keys(controls.pictures)
+                .map((picture) => controls.pictures[picture]?.name)
+                .join(" - ")}
               fullWidth={sm}
               error={Boolean(errors?.price)}
               helperText={errors?.price}
             />
           </Stack>
         </Stack>
+        {successAlert}
+        {errorAlert}
         <Stack
           direction="row"
           justifyContent="center"
